@@ -1,4 +1,4 @@
 package inventory;
 
-public class Animal {
+public class Pet {
 }
