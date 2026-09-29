@@ -97,7 +97,8 @@ public class DataValidation {
             String digitFormat = input.replaceAll("[-\\s]", "");
 
             if (!digitFormat.matches("^09\\d{9}$")) {
-                System.out.println("Invalid Phone Number. Please use the following format: 09123456789, 0912-345-6789, or 0912 345 6789.");
+                System.out.println(
+                        "Invalid Phone Number. Please use the following format: 09123456789, 0912-345-6789, or 0912 345 6789.");
             } else {
                 input = digitFormat.substring(0, 4) + " "
                         + digitFormat.substring(4, 7) + " "
@@ -122,7 +123,8 @@ public class DataValidation {
             if (input.isEmpty()) {
                 System.out.println("Error: Email Address cannot be empty.");
             } else if (!input.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$")) {
-                System.out.println("Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
+                System.out.println(
+                        "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
             } else {
                 isValidated = true;
             }
@@ -225,14 +227,36 @@ public class DataValidation {
     public static void printIntChoiceError(int... choices) {
         System.out.println(
                 "Invalid choice. Choose from: " +
-                        getValidIntChoices(choices) + "."
-        );
+                        getValidIntChoices(choices) + ".");
     }
 
     public static void printCharChoiceError(char... choices) {
         System.out.println(
                 "Invalid choice. Choose from: " +
-                        getValidCharChoices(choices) + "."
-        );
+                        getValidCharChoices(choices) + ".");
+    }
+
+    public static double validatePriceInput(Scanner sc, String prompt) { // TODO ADJUST ERROR MESSAGE(REFLECT ACTUAL
+                                                                         // LIMIT)
+        boolean isRunning = true;
+        double number = 0;
+        String inputNumber = "";
+
+        while (isRunning) {
+            System.out.print(prompt);
+            inputNumber = sc.nextLine().trim();
+
+            if (!inputNumber.matches("-?(0|[1-9]\\d*)(\\.\\d+)?")) {
+                System.out.println("Invalid Input. Only input numbers without leading zeroes. Try Again.");
+                continue;
+            }
+            number = Double.parseDouble(inputNumber);
+            if (number < 1 || number > 1000000) {
+                System.out.println("Invalid Price Input. Price must be between P1.00 - P1,000,000.00. Try Again.");
+                continue;
+            }
+            isRunning = false;
+        }
+        return number;
     }
 }
