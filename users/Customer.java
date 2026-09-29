@@ -45,7 +45,7 @@ public class Customer extends User{
                 case 4 -> filterByPrice(sc);
                 case 5 -> requestAdoption(sc);
                 case 6 -> cancelAdoption(sc);
-                case 6 -> requestReturn(sc);
+                case 7 -> requestReturn(sc);
                 case 0 -> isDone = true;
             }
         }
