@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 public class DisplayUtils {
     public static final int TABLE_WIDTH = 100;
-    public static final int MENU_WIDTH = 40;
+    public static final int MENU_WIDTH = 60;
 
-    private static void centeredTitle(String tableName, int width) {
+    public static void centeredTitle(String tableName, int width) {
         System.out.println("=".repeat(width));
         int padding = (width - tableName.length()) / 2;
         System.out.println(" ".repeat(Math.max(0, padding)) + tableName);
@@ -19,16 +19,11 @@ public class DisplayUtils {
         centeredTitle(tableName, TABLE_WIDTH);
 
         System.out.printf(
-                "%-10s | %-20s | %-15s | %-15s | %-10s | %-5s | %-12s | %-20s | %-20s%n",
+                "%-10s | %-20s | %-15s | %-15s%n",
                 "Pet ID",
                 "Pet Name",
                 "Type",
-                "Breed",
-                "Gender",
-                "Age",
-                "Price",
-                "Adoption History",
-                "Medical History"
+                "Status"
         );
 
         System.out.println("-".repeat(TABLE_WIDTH));
@@ -38,15 +33,12 @@ public class DisplayUtils {
         centeredTitle(tableName, TABLE_WIDTH);
 
         System.out.printf(
-                "%-20s | %-15s | %-15s | %-10s | %-5s | %-15s | %-20s | %-20s%n",
+                "%-20s | %-15s | %-15s | %-5s | %-15s%n",
                 "Pet Name",
                 "Type",
                 "Breed",
-                "Gender",
                 "Age",
-                "Adoption Status",
-                "Adoption History",
-                "Medical History"
+                "Status"
         );
 
         System.out.println("-".repeat(TABLE_WIDTH));
@@ -63,16 +55,11 @@ public class DisplayUtils {
 
         for (Pet pet : pets) {
             System.out.printf(
-                    "%-10s | %-20s | %-15s | %-15s | %-10s | %-5d | %-12s | %-20s | %-20s%n",
+                    "%-10s | %-20s | %-15s | %-15s%n",
                     pet.getPetID(),
                     pet.getPetName(),
                     pet.getType(),
-                    pet.getBreed(),
-                    pet.getGender(),
-                    pet.getAge(),
-                    String.format("Php %,.2f", pet.getPrice()),
-                    pet.getAdoptionHistory(),
-                    pet.getMedicalHistory()
+                    pet.getAdoptionStatus()
             );
         }
 
@@ -89,17 +76,13 @@ public class DisplayUtils {
         customerPetHeader("AVAILABLE PETS");
 
         for (Pet pet : pets) {
-
             System.out.printf(
-                    "%-20s | %-15s | %-15s | %-10s | %-5d | %-15s | %-20s | %-20s%n",
+                    "%-20s | %-15s | %-15s | %-5d | %-15s%n",
                     pet.getPetName(),
                     pet.getType(),
                     pet.getBreed(),
-                    pet.getGender(),
                     pet.getAge(),
-                    pet.getAdoptionStatus(),
-                    pet.getAdoptionHistory(),
-                    pet.getMedicalHistory()
+                    pet.getAdoptionStatus()
             );
         }
 
@@ -119,12 +102,49 @@ public class DisplayUtils {
         System.out.println("=".repeat(MENU_WIDTH));
     }
 
+    public static void displayPetDetails(Pet pet) {
+
+        printSummaryBox("PET DETAILS",
+                new String[][]{
+                        {"Pet ID", pet.getPetID()},
+                        {"Name", pet.getPetName()},
+                        {"Type", pet.getType()},
+                        {"Breed", pet.getBreed()},
+                        {"Gender", String.valueOf(pet.getGender())},
+                        {"Age", String.valueOf(pet.getAge())},
+                        {"Price", String.format("Php %,.2f", pet.getPrice())},
+                        {"Status", pet.getAdoptionStatus()},
+                        {"Adoption History", pet.getAdoptionHistory()},
+                        {"Medical History", pet.getMedicalHistory()}
+                }
+        );
+    }
+
+    public static void printDivider(String tableName) {
+        String divider = " " + tableName + " ";
+        int dashCount = (MENU_WIDTH - divider.length()) / 2;
+
+        System.out.println(
+                "-".repeat(Math.max(0, dashCount))
+                        + divider
+                        + "-".repeat(Math.max(0,
+                        MENU_WIDTH - dashCount - divider.length()))
+        );
+    }
+
     public static void printMenu(String tableName, String... options) {
         centeredTitle(tableName, MENU_WIDTH);
+        int ctr = 1;
 
-        for (int i = 0; i < options.length; i++) {
-            System.out.printf(" [%d] %s%n", i + 1, options[i]);
+        for (String option : options) {
+            if (option.startsWith("#")) {
+                System.out.println();
+                printDivider(option.substring(1));
+                continue;
+            }
+            System.out.printf(" [%d] %s%n", ctr++, option);
         }
+        System.out.println(" [0] Back");
         System.out.println("=".repeat(MENU_WIDTH));
     }
 }
