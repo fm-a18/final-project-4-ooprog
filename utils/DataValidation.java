@@ -1,14 +1,15 @@
 package utils;
 
 
+import java.util.Scanner;
 import java.time.format.DateTimeFormatter;
 import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 public class DataValidation {
     public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+    public static final Scanner sc = new Scanner(System.in);
 
-    public static String validateName(Scanner sc, String field) {
+    public static String validateName(String field) {
         boolean isValidated = false;
         String input = "";
         while (!isValidated) {
@@ -31,7 +32,7 @@ public class DataValidation {
         return input;
     }
 
-    public static String validateEmailAddress(Scanner sc) {
+    public static String validateEmailAddress() {
         boolean isValidated = false;
         String input = "";
 
@@ -58,7 +59,7 @@ public class DataValidation {
         return FileHandler.findRecord("USER_LIST.txt", emailAddress, 2) != null;
     }
 
-    public static String validateAddress(Scanner sc) {
+    public static String validateAddress() {
         boolean isValidated = false;
         String input = "";
 
@@ -80,7 +81,7 @@ public class DataValidation {
         return input;
     }
 
-    public static String validatePhoneNumber(Scanner sc) {
+    public static String validatePhoneNumber() {
         boolean isValidated = false;
         String input = "";
 
@@ -100,7 +101,8 @@ public class DataValidation {
             String digitFormat = input.replaceAll("[-\\s]", "");
 
             if (!digitFormat.matches("^09\\d{9}$")) {
-                System.out.println("Invalid Phone Number. Please use the following format: 09123456789, 0912-345-6789, or 0912 345 6789.");
+                System.out.println(
+                        "Invalid Phone Number. Please use the following format: 09123456789, 0912-345-6789, or 0912 345 6789.");
             } else {
                 input = digitFormat.substring(0, 4) + " "
                         + digitFormat.substring(4, 7) + " "
@@ -111,7 +113,7 @@ public class DataValidation {
         return input;
     }
 
-    public static String validatePassword(Scanner sc) {
+    public static String validatePassword() {
         boolean isValidated = false;
         String input = "";
         while (!isValidated) {
@@ -125,7 +127,8 @@ public class DataValidation {
             if (input.isEmpty()) {
                 System.out.println("Error: Email Address cannot be empty.");
             } else if (!input.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$")) {
-                System.out.println("Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
+                System.out.println(
+                        "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
             } else {
                 isValidated = true;
             }
@@ -133,7 +136,7 @@ public class DataValidation {
         return input;
     }
 
-    public static int intChoiceValidation(Scanner sc, String prompt, int... choices) {
+    public static int intChoiceValidation(String prompt, int... choices) {
         int value = 0;
         boolean isValidated = false;
         while (!isValidated) {
@@ -166,7 +169,7 @@ public class DataValidation {
         return value;
     }
 
-    public static char charChoiceValidation(Scanner sc, String prompt, char... choices) {
+    public static char charChoiceValidation(String prompt, char... choices) {
         boolean isValidated = false;
         char input = ' ';
         while (!isValidated) {
@@ -228,14 +231,36 @@ public class DataValidation {
     public static void printIntChoiceError(int... choices) {
         System.out.println(
                 "Invalid choice. Choose from: " +
-                        getValidIntChoices(choices) + "."
-        );
+                        getValidIntChoices(choices) + ".");
     }
 
     public static void printCharChoiceError(char... choices) {
         System.out.println(
                 "Invalid choice. Choose from: " +
-                        getValidCharChoices(choices) + "."
-        );
+                        getValidCharChoices(choices) + ".");
+    }
+
+    public static double validatePriceInput(String prompt) { // TODO ADJUST ERROR MESSAGE(REFLECT ACTUAL
+                                                                         // LIMIT)
+        boolean isRunning = true;
+        double number = 0;
+        String inputNumber = "";
+
+        while (isRunning) {
+            System.out.print(prompt);
+            inputNumber = sc.nextLine().trim();
+
+            if (!inputNumber.matches("-?(0|[1-9]\\d*)(\\.\\d+)?")) {
+                System.out.println("Invalid Input. Only input numbers without leading zeroes. Try Again.");
+                continue;
+            }
+            number = Double.parseDouble(inputNumber);
+            if (number < 1 || number > 1000000) {
+                System.out.println("Invalid Price Input. Price must be between P1.00 - P1,000,000.00. Try Again.");
+                continue;
+            }
+            isRunning = false;
+        }
+        return number;
     }
 }

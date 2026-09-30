@@ -6,12 +6,10 @@ import utils.FileHandler;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import static utils.DataValidation.emailExists;
 
 public class Main {
-    public static Scanner sc = new Scanner(System.in);
     public static final ArrayList<User> listOfUsers = new ArrayList<>();
     public static final ArrayList<Pet> listOfPets = new ArrayList<>();
 
@@ -33,7 +31,7 @@ public class Main {
             System.out.println("No User Records found.");
             return;
         }
-        String email = DataValidation.validateEmailAddress(sc);
+        String email = DataValidation.validateEmailAddress();
         String userData = FileHandler.findRecord("USER_LIST.txt", email, 2);
         if (userData == null) {
             System.out.println("Account not found");
@@ -41,7 +39,7 @@ public class Main {
         }
         String[] parts = userData.split("\\s*\\|\\s*");
 
-        String password = DataValidation.validatePassword(sc);
+        String password = DataValidation.validatePassword();
         if (!parts[5].equals(password)) {
             System.out.println("Incorrect password.");
             return;
@@ -50,21 +48,21 @@ public class Main {
     }
 
     public static void userSignUp() {
-        String firstName = DataValidation.validateName(sc, "First");
-        String lastName = DataValidation.validateName(sc, "Last");
+        String firstName = DataValidation.validateName("First");
+        String lastName = DataValidation.validateName( "Last");
         String emailAddress;
         boolean emailExists;
         do{
-            emailAddress = DataValidation.validateEmailAddress(sc);
+            emailAddress = DataValidation.validateEmailAddress();
             emailExists = emailExists(emailAddress);
             if(emailExists){
                 System.out.println("Email has already been registered. Please try a different one.");
             }
         } while(emailExists);
 
-        String address = DataValidation.validateAddress(sc);
-        String phoneNumber = DataValidation.validatePhoneNumber(sc);
-        String password = DataValidation.validatePassword(sc);
+        String address = DataValidation.validateAddress();
+        String phoneNumber = DataValidation.validatePhoneNumber();
+        String password = DataValidation.validatePassword();
 
         boolean isFileSaved = false;
 
@@ -76,7 +74,7 @@ public class Main {
                 isFileSaved = true;
             } catch (IOException e) {
                 System.out.println("Error in writing file. Try again? (Y/N)");
-                char retry = DataValidation.charChoiceValidation(sc, "Error in writing file. Try again? (Y/N)", 'Y', 'N');
+                char retry = DataValidation.charChoiceValidation("Error in writing file. Try again? (Y/N)", 'Y', 'N');
                 if (retry != 'Y') {
                     isFileSaved = true;
                 }
@@ -93,7 +91,7 @@ public class Main {
                     "Login",
                     "Sign Up",
                     "Exit");
-            int getRole = DataValidation.intChoiceValidation(sc, "Selection Option", 1, 2, 3);
+            int getRole = DataValidation.intChoiceValidation("Selection Option", 1, 2, 3);
             switch (getRole) {
                 case 1 -> userLogin();
                 case 2 -> userSignUp();

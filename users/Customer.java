@@ -35,7 +35,7 @@ public class Customer extends User{
                     "#Return",
                     "Request Pet Return"
             );
-            int choice = DataValidation.intChoiceValidation(sc,"Select Option",
+            int choice = DataValidation.intChoiceValidation("Select Option",
                     1, 2, 3, 4, 5, 6, 7, 0);
 
             switch(choice) {
