@@ -1,14 +1,15 @@
 package utils;
 
 
+import java.util.Scanner;
 import java.time.format.DateTimeFormatter;
 import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 public class DataValidation {
     public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+    public static final Scanner sc = new Scanner(System.in);
 
-    public static String validateName(Scanner sc, String field) {
+    public static String validateName(String field) {
         boolean isValidated = false;
         String input = "";
         while (!isValidated) {
@@ -31,7 +32,7 @@ public class DataValidation {
         return input;
     }
 
-    public static String validateEmailAddress(Scanner sc) {
+    public static String validateEmailAddress() {
         boolean isValidated = false;
         String input = "";
 
@@ -58,7 +59,7 @@ public class DataValidation {
         return FileHandler.findRecord("USER_LIST.txt", emailAddress, 2) != null;
     }
 
-    public static String validateAddress(Scanner sc) {
+    public static String validateAddress() {
         boolean isValidated = false;
         String input = "";
 
@@ -80,7 +81,7 @@ public class DataValidation {
         return input;
     }
 
-    public static String validatePhoneNumber(Scanner sc) {
+    public static String validatePhoneNumber() {
         boolean isValidated = false;
         String input = "";
 
@@ -112,7 +113,7 @@ public class DataValidation {
         return input;
     }
 
-    public static String validatePassword(Scanner sc) {
+    public static String validatePassword() {
         boolean isValidated = false;
         String input = "";
         while (!isValidated) {
@@ -135,7 +136,7 @@ public class DataValidation {
         return input;
     }
 
-    public static int intChoiceValidation(Scanner sc, String prompt, int... choices) {
+    public static int intChoiceValidation(String prompt, int... choices) {
         int value = 0;
         boolean isValidated = false;
         while (!isValidated) {
@@ -168,7 +169,7 @@ public class DataValidation {
         return value;
     }
 
-    public static char charChoiceValidation(Scanner sc, String prompt, char... choices) {
+    public static char charChoiceValidation(String prompt, char... choices) {
         boolean isValidated = false;
         char input = ' ';
         while (!isValidated) {
@@ -239,7 +240,7 @@ public class DataValidation {
                         getValidCharChoices(choices) + ".");
     }
 
-    public static double validatePriceInput(Scanner sc, String prompt) { // TODO ADJUST ERROR MESSAGE(REFLECT ACTUAL
+    public static double validatePriceInput(String prompt) { // TODO ADJUST ERROR MESSAGE(REFLECT ACTUAL
                                                                          // LIMIT)
         boolean isRunning = true;
         double number = 0;

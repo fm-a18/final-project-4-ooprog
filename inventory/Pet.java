@@ -1,6 +1,7 @@
 package inventory;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Pet {
     private String petID;
@@ -92,19 +93,32 @@ public abstract class Pet {
         this.price = price;
     }
 
-    public HashMap<String, String> getAdoptionHistory() {
-        return adoptionHistory;
-    }
-
     public void setAdoptionHistory(HashMap<String, String> adoptionHistory) {
         this.adoptionHistory = adoptionHistory;
     }
 
-    public HashMap<String, String> getMedicalHistory() {
-        return medicalHistory;
-    }
-
     public void setMedicalHistory(HashMap<String, String> medicalHistory) {
         this.medicalHistory = medicalHistory;
+    }
+    private String formatHistory(HashMap<String, String> history, String emptyMessage) {
+    if (history == null || history.isEmpty()) {
+        return emptyMessage;
+    }
+
+    StringBuilder sb = new StringBuilder();
+
+    for (Map.Entry<String, String> entry : history.entrySet()) {
+        sb.append(String.format("%s - %s%n", entry.getKey(), entry.getValue()));
+    }
+
+    return sb.toString();
+}
+
+    public String getAdoptionHistory() {
+        return formatHistory(adoptionHistory, "No adoption history");
+    }
+
+    public String getMedicalHistory() {
+        return formatHistory(medicalHistory, "No medical history");
     }
 }

@@ -40,7 +40,7 @@ public class Admin extends User{
                     "#Shelter Management",
                     "Manage Incoming Pets"
             );
-            int choice = DataValidation.intChoiceValidation(sc,"Select Option",
+            int choice = DataValidation.intChoiceValidation("Select Option",
                     1, 2, 3, 4, 5, 6, 7, 8, 9, 0);
 
             switch(choice) {
