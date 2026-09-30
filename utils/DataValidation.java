@@ -1,6 +1,5 @@
 package utils;
 
-
 import java.util.Scanner;
 import java.time.format.DateTimeFormatter;
 import java.util.NoSuchElementException;
@@ -241,7 +240,7 @@ public class DataValidation {
     }
 
     public static double validatePriceInput(String prompt) { // TODO ADJUST ERROR MESSAGE(REFLECT ACTUAL
-                                                                         // LIMIT)
+                                                             // LIMIT)
         boolean isRunning = true;
         double number = 0;
         String inputNumber = "";
@@ -255,8 +254,8 @@ public class DataValidation {
                 continue;
             }
             number = Double.parseDouble(inputNumber);
-            if (number < 1 || number > 1000000) {
-                System.out.println("Invalid Price Input. Price must be between P1.00 - P1,000,000.00. Try Again.");
+            if (number < 500 || number > 1000) {
+                System.out.println("Invalid Price Input. Price must be between P500.00 - P1000.00. Try Again.");
                 continue;
             }
             isRunning = false;
