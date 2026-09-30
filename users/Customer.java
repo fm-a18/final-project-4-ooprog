@@ -5,8 +5,10 @@ import strategy.PetManager;
 import utils.DataValidation;
 import utils.DisplayUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.function.Function;
 
 
 public class Customer extends User{
@@ -67,8 +69,61 @@ public class Customer extends User{
     }
 
     private void searchByCategory(Scanner sc) {
+        if(pets.isEmpty()){
+            System.out.println("No pets found.");
+            return;
+        }
 
+        boolean isDone = false;
+        while(!isDone){
+            DisplayUtils.printMenu("SEARCH BY CATEGORY",
+                    "#Select Category",
+                    "Pet Name",
+                    "Type",
+                    "Breed",
+                    "Gender",
+                    "Age"
+            );
+            int choice = DataValidation.intChoiceValidation(sc, "Select Option",
+                    1, 2, 3, 4, 5, 0);
 
+            switch(choice){
+                case 1: //SEARCH PET BY NAME
+                    String name = DataValidation.validateName(sc, "Enter Pet Name: ");
+
+                    ArrayList<Pet> petNames = searchPets(name, pets, Pet::getName);
+                    if(petNames.isEmpty()){
+                        System.out.println("No pets found.");
+                        return;
+                    }
+
+                    DisplayUtils.displayPetsForCustomer(petNames);
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+            }
+        }
+    }
+
+    private ArrayList<Pet> searchPets(Object key, ArrayList<Pet> pets, Function <Pet,?> getters){
+        ArrayList<Pet> petArr = new ArrayList<>();
+
+        String cat = String.valueOf(key);
+
+        for(Pet pet : pets){
+            String category = String.valueOf(getters.apply(pet));
+            if(category.equalsIgnoreCase(cat)){
+                petArr.add(pet);
+            }
+        }
+
+        return petArr;
     }
 
     private void sortByCategory(Scanner sc) {
