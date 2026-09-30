@@ -26,4 +26,8 @@ public class PetManager {
     public ArrayList<Pet> getAllPets() {
         return pets;
     }
+
+    public ArrayList<Pet> searchByCategory(){
+
+    }
 }

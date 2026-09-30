@@ -1,6 +1,5 @@
 package utils;
 
-
 import java.time.format.DateTimeFormatter;
 import java.util.NoSuchElementException;
 import java.util.Scanner;

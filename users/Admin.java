@@ -64,6 +64,7 @@ public class Admin extends User{
     }
 
     private void searchByCategory(Scanner sc) {
+        ArrayList<Pet> pets = PetManager.getInstance().getAllPets();
     }
 
     private void sortByCategory(Scanner sc) {
