@@ -99,7 +99,28 @@ public class Customer extends User{
 
                     DisplayUtils.displayPetsForCustomer(petNames);
                     break;
-                case 2:
+                case 2: //SEARCH PET BY PET TYPE
+                    DisplayUtils.printMenu("SEARCH BY PET TYPE",
+                            "#Select Pet Type",
+                            "Dog",
+                            "Cat",
+                            "Bird"
+                    );
+                    int choiceType = DataValidation.intChoiceValidation(sc, "Select Option",
+                            1, 2, 3, 0);
+
+                    String type;
+                    if(choiceType == 1){type = "Dog";}
+                    else if(choiceType == 2){type = "Cat";}
+                    else{type = "Bird";}
+
+                    ArrayList<Pet> petTypes = searchPets(type, pets, Pet::getType);
+                    if(petTypes.isEmpty()){
+                        System.out.println("No pets found.");
+                        return;
+                    }
+
+                    DisplayUtils.displayPetsForCustomer(petTypes);
                     break;
                 case 3:
                     break;
