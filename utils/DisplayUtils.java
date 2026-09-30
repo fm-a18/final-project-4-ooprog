@@ -44,7 +44,7 @@ public class DisplayUtils {
         System.out.println("-".repeat(TABLE_WIDTH));
     }
 
-    public static void displayPetsForStaff(ArrayList<Pet> pets) {
+    public static void displayPetsForStaff(ArrayList<Pet> pets) { //ID, Name, Type, Adoption Status
 
         if (pets.isEmpty()) {
             System.out.println("No pets found.");
@@ -66,7 +66,7 @@ public class DisplayUtils {
         System.out.println("-".repeat(TABLE_WIDTH));
     }
 
-    public static void displayPetsForCustomer(ArrayList<Pet> pets) {
+    public static void displayPetsForCustomer(ArrayList<Pet> pets) { //Name, Type, Breed, Age, Adoption Status
 
         if (pets.isEmpty()) {
             System.out.println("No pets found.");
