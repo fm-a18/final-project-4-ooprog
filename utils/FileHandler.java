@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class FileHandler {
-    public static String findRecord(String fileName, String searchFor, int index) {
+    public static String findRecord(String fileName, String searchFor, int colIndex) {
         try (Scanner read = new Scanner(new File(fileName))) {
             while (read.hasNextLine()) {
                 String line = read.nextLine();
                 String[] parts = line.split("\\s*\\|\\s*");
-                if (parts.length > index && parts[index].equalsIgnoreCase(searchFor)) {
+                if (parts.length > colIndex && parts[colIndex].equalsIgnoreCase(searchFor)) {
                     return line;
                 }
             }
@@ -95,6 +95,8 @@ public class FileHandler {
         return results;
     }
 
-    public static ArrayList<String> displayAllRecords(String fileName)
+    public static ArrayList<String> displayAllRecords(String fileName) {
+
+    }
 
 }
