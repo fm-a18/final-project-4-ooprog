@@ -1,9 +1,13 @@
 package users;
 
+import inventory.Pet;
+import strategy.PetManager;
 import utils.DataValidation;
 import utils.DisplayUtils;
 
+import java.util.ArrayList;
 import java.util.Scanner;
+
 
 public class Customer extends User{
     public Customer(String firstName, String lastName, String emailAddress,
@@ -51,10 +55,20 @@ public class Customer extends User{
         }
     }
 
+    ArrayList<Pet> pets = PetManager.getInstance().getAllPets();
+
     private void viewAllPets() {
+        if(pets.isEmpty()) {
+            System.out.println("No pets found.");
+            return;
+        }
+
+        DisplayUtils.displayPetsForCustomer(pets);
     }
 
     private void searchByCategory(Scanner sc) {
+
+
     }
 
     private void sortByCategory(Scanner sc) {
