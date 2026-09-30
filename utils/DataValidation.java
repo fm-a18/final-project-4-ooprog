@@ -1,11 +1,13 @@
 package utils;
 
-import java.io.File;
-import java.io.IOException;
+
+import java.time.format.DateTimeFormatter;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class DataValidation {
+    public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
     public static String validateName(Scanner sc, String field) {
         boolean isValidated = false;
         String input = "";
@@ -17,6 +19,7 @@ public class DataValidation {
                 System.out.printf("Error: %s Name. Please try again.\n", field);
                 continue;
             }
+
             if (input.isEmpty()) {
                 System.out.printf("Error: %s name cannot be empty.\n", field);
             } else if (!input.matches("^[\\p{L}.,' -]+$")) {
