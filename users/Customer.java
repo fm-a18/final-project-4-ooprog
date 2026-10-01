@@ -133,7 +133,26 @@ public class Customer extends User{
 
                     DisplayUtils.displayPetsForCustomer(petBreeds);
                     break;
-                case 4:
+                case 4: //SEARCH PET BY GENDER
+                    DisplayUtils.printMenu("SEARCH BY PET GENDER",
+                            "#Select Gender",
+                            "Male",
+                            "Female"
+                    );
+                    int choiceGender = DataValidation.intChoiceValidation(sc, "Select Option",
+                            1, 2, 0);
+
+                    char gender;
+                    if(choiceGender == 1){gender = 'M';}
+                    else{gender = 'F';}
+
+                    ArrayList<Pet> petGender = searchPets(gender, pets, Pet::getGender);
+                    if(petGender.isEmpty()){
+                        System.out.println("No pets found.");
+                        return;
+                    }
+
+                    DisplayUtils.displayPetsForCustomer(petGender);
                     break;
                 case 5:
                     break;
