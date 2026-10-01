@@ -7,6 +7,7 @@ import utils.DisplayUtils;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 import java.util.function.Function;
 
@@ -211,12 +212,79 @@ public class Customer extends User{
     }
 
     private void filterByPrice(Scanner sc) {
-        ArrayList<String> priceArr = new ArrayList<>();
+        if(pets.isEmpty()){
+            System.out.println("No pets found.");
+            return;
+        }
 
+        boolean isDone = false;
+        while(!isDone){
+            DisplayUtils.printMenu("FILTER BY PRICE",
+                    "#Select Option",
+                    "Ascending Price",
+                    "Descending Price",
+                    "Price Range"
+            );
+            int choice = DataValidation.intChoiceValidation(sc, "Select Option",
+                    1, 2, 3, 0);
+
+            switch(choice){
+                case 1:
+                    ArrayList<Pet> sortedPetsAscending = sortByPrice(1, pets);
+                    if(sortedPetsAscending.isEmpty()){
+                        System.out.println("No pets found.");
+                        return;
+                    }
+                    DisplayUtils.displayPetsForCustomer(sortedPetsAscending);
+                    break;
+                case 2:
+                    ArrayList<Pet> sortedPetsDescending = sortByPrice(2, pets);
+                    if(sortedPetsDescending.isEmpty()){
+                        System.out.println("No pets found.");
+                        return;
+                    }
+                    DisplayUtils.displayPetsForCustomer(sortedPetsDescending);
+                    break;
+                case 3:
+                    ArrayList<Pet> filteredPets = filterByPriceRange(sc);
+
+                    if(filteredPets.isEmpty()){
+                        System.out.println("No pets found.");
+                        return;
+                    }
+                    DisplayUtils.displayPetsForCustomer(filteredPets);
+                    break;
+                case 0:
+                    isDone = true;
+                    break;
+            }
+        }
+    }
+
+    private ArrayList<Pet> sortByPrice(int order, ArrayList<Pet> pets) {
+    ArrayList<Pet> sortPrice = new ArrayList<>(pets);
+
+      Comparator<Pet> comparator = Comparator.comparingDouble(Pet::getPrice);
+
+      if(order == 2){
+        comparator = comparator.reversed();
+      }
+
+      sortPrice.sort(comparator);
+      return sortPrice;
+    }
+
+    private ArrayList<Pet> filterByPriceRange(Scanner sc) {
+        ArrayList<Pet> filteredPets = new ArrayList<>();
         double startingPrice = DataValidation.validatePriceInput("Enter Starting Price: ");
         double endingPrice = DataValidation.validatePriceInput("Enter Ending Price: ");
 
-
+        for(Pet pet : pets){
+            if(pet.getPrice() >= startingPrice && pet.getPrice() <= endingPrice){
+                filteredPets.add(pet);
+            }
+        }
+        return filteredPets;
     }
 
     private void requestAdoption(Scanner sc) {
