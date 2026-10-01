@@ -29,6 +29,10 @@ public abstract class Pet {
         this.medicalHistory = medicalHistory;
     }
 
+    public abstract String getPetIDPrefix();
+
+    public abstract String getCategory();
+
     public String getPetID() {
         return petID;
     }
@@ -100,19 +104,20 @@ public abstract class Pet {
     public void setMedicalHistory(HashMap<String, String> medicalHistory) {
         this.medicalHistory = medicalHistory;
     }
+
     private String formatHistory(HashMap<String, String> history, String emptyMessage) {
-    if (history == null || history.isEmpty()) {
-        return emptyMessage;
+        if (history == null || history.isEmpty()) {
+            return emptyMessage;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        for (Map.Entry<String, String> entry : history.entrySet()) {
+            sb.append(String.format("%s - %s%n", entry.getKey(), entry.getValue()));
+        }
+
+        return sb.toString();
     }
-
-    StringBuilder sb = new StringBuilder();
-
-    for (Map.Entry<String, String> entry : history.entrySet()) {
-        sb.append(String.format("%s - %s%n", entry.getKey(), entry.getValue()));
-    }
-
-    return sb.toString();
-}
 
     public String getAdoptionHistory() {
         return formatHistory(adoptionHistory, "No adoption history");
