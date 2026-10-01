@@ -8,20 +8,20 @@ public class DataValidation {
     public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
     public static final Scanner sc = new Scanner(System.in);
 
-    public static String validateName(String field) {
+    public static String validateString(String prompt) { // TODO IMPROVE ERROR MESSAGE
         boolean isValidated = false;
         String input = "";
         while (!isValidated) {
-            System.out.printf("%s Name: ", field);
+            System.out.print(prompt);
             try {
                 input = sc.nextLine().trim();
             } catch (java.util.NoSuchElementException e) {
-                System.out.printf("Error: %s Name. Please try again.\n", field);
+                System.out.print("Invalid String input. Please try again.\n");
                 continue;
             }
 
             if (input.isEmpty()) {
-                System.out.printf("Error: %s name cannot be empty.\n", field);
+                System.out.print("Invalid String input. Input cannot be empty. Try Again\n");
             } else if (!input.matches("^[\\p{L}.,' -]+$")) {
                 System.out.println("Error: Only letters, spaces, periods, commas, apostrophes, and hyphens allowed.");
             } else {
@@ -29,6 +29,32 @@ public class DataValidation {
             }
         }
         return input;
+    }
+
+    public static int validatePetAgeInput(String prompt) { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX PET AGE
+        boolean isRunning = true;
+        int number = 0;
+        String inputNumber = "";
+        while (isRunning) {
+            System.out.print(prompt);
+            inputNumber = sc.nextLine().trim();
+            if (!inputNumber.matches("-?(0|[1-9]\\d*)")) {
+                System.out.println("Invalid Input. Only input positive integers without leading zeros. Try Again.");
+                continue;
+            }
+            try {
+                number = Integer.parseInt(inputNumber);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid Input. Number is too large. Try Again.");
+                continue;
+            }
+            if (number < 1 && number > 15) {
+                System.out.println("Invalid Input. The age of the pet can only be from 1 - 15 years. Try again.");
+                continue;
+            }
+            isRunning = false;
+        }
+        return number;
     }
 
     public static String validateEmailAddress() {
