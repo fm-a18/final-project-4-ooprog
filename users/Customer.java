@@ -122,7 +122,16 @@ public class Customer extends User{
 
                     DisplayUtils.displayPetsForCustomer(petTypes);
                     break;
-                case 3:
+                case 3: //SEARCH PET BY PET BREED
+                    String breed = DataValidation.validateName(sc, "Enter Pet Breed: ");
+
+                    ArrayList<Pet> petBreeds = searchPets(breed, pets, Pet::getBreed);
+                    if(petBreeds.isEmpty()){
+                        System.out.println("No pets found.");
+                        return;
+                    }
+
+                    DisplayUtils.displayPetsForCustomer(petBreeds);
                     break;
                 case 4:
                     break;
