@@ -48,17 +48,17 @@ public class Main {
     }
 
     public static void userSignUp() {
-        String firstName = DataValidation.validateName("First");
-        String lastName = DataValidation.validateName( "Last");
+        String firstName = DataValidation.validateString("Enter First: ");
+        String lastName = DataValidation.validateString("Enter Last: ");
         String emailAddress;
         boolean emailExists;
-        do{
+        do {
             emailAddress = DataValidation.validateEmailAddress();
             emailExists = emailExists(emailAddress);
-            if(emailExists){
+            if (emailExists) {
                 System.out.println("Email has already been registered. Please try a different one.");
             }
-        } while(emailExists);
+        } while (emailExists);
 
         String address = DataValidation.validateAddress();
         String phoneNumber = DataValidation.validatePhoneNumber();
