@@ -46,10 +46,11 @@ public class Customer extends User{
             switch(choice) {
                 case 1 -> viewAllPets();
                 case 2 -> searchByCategory(sc);
-                case 3 -> filterByPrice(sc);
-                case 4 -> requestAdoption(sc);
-                case 5 -> cancelAdoption(sc);
-                case 6 -> requestReturn(sc);
+                case 3 -> searchSpecificPets(sc);
+                case 4 -> filterByPrice(sc);
+                case 5 -> requestAdoption(sc);
+                case 6 -> cancelAdoption(sc);
+                case 7 -> requestReturn(sc);
                 case 0 -> isDone = true;
             }
         }
@@ -182,10 +183,40 @@ public class Customer extends User{
         return petArr;
     }
 
+    private void searchSpecificPets(Scanner sc) {
+        if(pets.isEmpty()){
+            System.out.println("No pets found.");
+            return;
+        }
+
+        String name = DataValidation.validateName(sc, "Enter Pet Name: ");
+        String type = DataValidation.validateName(sc, "Enter Pet Type: ");
+        String breed = DataValidation.validateName(sc, "Enter Pet Breed: ");
+        char gender = DataValidation.validateGender(sc, "Enter Pet Gender (M/F): ");
+        int age = DataValidation.validatePetAge(sc, "Enter Pet Age: ");
+
+        for(Pet pet : pets){
+            if(pet.getName().equalsIgnoreCase(name) &&
+                    pet.getType().equalsIgnoreCase(type) &&
+                    pet.getBreed().equalsIgnoreCase(breed) &&
+                    pet.getGender() == gender &&
+                    pet.getAge() == age){
+                DisplayUtils.displayPetDetails(pet);
+                return;
+            }else{
+                System.out.println("No pets found.");
+                return;
+            }
+        }        
+    }
+
     private void filterByPrice(Scanner sc) {
         ArrayList<String> priceArr = new ArrayList<>();
 
-        double startingPrice = DataValidation.
+        double startingPrice = DataValidation.validatePriceInput("Enter Starting Price: ");
+        double endingPrice = DataValidation.validatePriceInput("Enter Ending Price: ");
+
+
     }
 
     private void requestAdoption(Scanner sc) {
