@@ -1,7 +1,14 @@
 package utils;
 
 import java.util.Scanner;
+
+import inventory.Bird;
+import inventory.Cat;
+import inventory.Dog;
+import inventory.Pet;
+
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 public class DataValidation {
@@ -287,5 +294,77 @@ public class DataValidation {
             isRunning = false;
         }
         return number;
+    }
+
+    public static String getCategoryPrefix(String category) {
+        if (category == null) {
+            return null;
+        }
+        switch (category.trim().toLowerCase()) {
+            case "dog":
+                return Dog.ID_PREFIX;
+            case "cat":
+                return Cat.ID_PREFIX;
+            case "bird":
+                return Bird.ID_PREFIX;
+            default:
+                return null;
+        }
+    }
+
+    // Prompts until the user enters an ID matching the category prefix + 4 digits
+    // (e.g. DO0001).
+    public static String validatePetIdInput(String prompt, String category) {
+        String prefix = getCategoryPrefix(category);
+        if (prefix == null) {
+            throw new IllegalArgumentException("Unknown pet category: " + category);
+        }
+
+        String input = "";
+        boolean isValidated = false;
+        while (!isValidated) {
+            System.out.print(prompt);
+            input = sc.nextLine().trim().toUpperCase();
+
+            if (input.isEmpty()) {
+                System.out.println("Error: Pet ID cannot be empty.");
+            } else if (!input.matches("^" + prefix + "\\d{4}$")) {
+                System.out.println("Invalid Pet ID. A " + category + " ID must start with " + prefix
+                        + " followed by 4 digits (e.g., " + prefix + "0001).");
+            } else {
+                isValidated = true;
+            }
+        }
+        return input;
+    }
+
+    // Builds a placeholder Pet of the given category, e.g. for lookups or
+    // comparisons. Returns null if unknown.
+    public static Pet createTempPet(String category, String petID) {
+        String name = "TEMP";
+        String breed = "N/A";
+        char gender = 'U';
+        int age = 0;
+        String status = "Available";
+        double price = 0.0;
+        HashMap<String, String> adoptionHistory = new HashMap<>();
+        HashMap<String, String> medicalHistory = new HashMap<>();
+
+        if (category == null) {
+            return null;
+        }
+        switch (category.trim().toLowerCase()) {
+            case "dog":
+                return new Dog(petID, name, Dog.TYPE, breed, gender, age, status, price, adoptionHistory,
+                        medicalHistory);
+            case "cat":
+                return new Cat(petID, name, Cat.TYPE, breed, gender, age, status, price, adoptionHistory,
+                        medicalHistory);
+            case "bird":
+                return new Bird(petID, name, Bird.TYPE, breed, gender, age, status, price, adoptionHistory,
+                        medicalHistory);
+            default:
+                return null;
+        }
     }
 }
