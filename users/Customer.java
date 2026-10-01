@@ -31,7 +31,6 @@ public class Customer extends User{
                     "#Browse Pets",
                     "View All Available Pets",
                     "Search by Category",
-                    "Sort by Category",
                     "Filter by Price",
 
                     "#Adoption",
@@ -42,16 +41,15 @@ public class Customer extends User{
                     "Request Pet Return"
             );
             int choice = DataValidation.intChoiceValidation(sc,"Select Option",
-                    1, 2, 3, 4, 5, 6, 7, 0);
+                    1, 2, 3, 4, 5, 6, 0);
 
             switch(choice) {
                 case 1 -> viewAllPets();
                 case 2 -> searchByCategory(sc);
-                case 3 -> sortByCategory(sc);
-                case 4 -> filterByPrice(sc);
-                case 5 -> requestAdoption(sc);
-                case 6 -> cancelAdoption(sc);
-                case 7 -> requestReturn(sc);
+                case 3 -> filterByPrice(sc);
+                case 4 -> requestAdoption(sc);
+                case 5 -> cancelAdoption(sc);
+                case 6 -> requestReturn(sc);
                 case 0 -> isDone = true;
             }
         }
@@ -184,10 +182,10 @@ public class Customer extends User{
         return petArr;
     }
 
-    private void sortByCategory(Scanner sc) {
-    }
-
     private void filterByPrice(Scanner sc) {
+        ArrayList<String> priceArr = new ArrayList<>();
+
+        double startingPrice = DataValidation.
     }
 
     private void requestAdoption(Scanner sc) {
