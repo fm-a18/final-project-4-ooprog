@@ -154,7 +154,16 @@ public class Customer extends User{
 
                     DisplayUtils.displayPetsForCustomer(petGender);
                     break;
-                case 5:
+                case 5: //SEARCH PET BY AGE
+                    int age = DataValidation.validatePetAge(sc, "Enter Pet Age: ");
+
+                    ArrayList<Pet> petAge = searchPets(age, pets, Pet::getAge);
+                    if(petAge.isEmpty()){
+                        System.out.println("No pets found");
+                        return;
+                    }
+
+                    DisplayUtils.displayPetsForCustomer(petAge);
                     break;
             }
         }
