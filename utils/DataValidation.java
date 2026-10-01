@@ -263,4 +263,10 @@ public class DataValidation {
         }
         return number;
     }
+
+    public static String transactionNumValidation() {
+    }
+
+    public static String petIdValidation() {
+    }
 }
