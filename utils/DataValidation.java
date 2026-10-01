@@ -355,14 +355,11 @@ public class DataValidation {
         }
         switch (category.trim().toLowerCase()) {
             case "dog":
-                return new Dog(petID, name, Dog.TYPE, breed, gender, age, status, price, adoptionHistory,
-                        medicalHistory);
+                return new Dog(petID, name, breed, gender, age, price);
             case "cat":
-                return new Cat(petID, name, Cat.TYPE, breed, gender, age, status, price, adoptionHistory,
-                        medicalHistory);
+                return new Cat(petID, name, breed, gender, age, price);
             case "bird":
-                return new Bird(petID, name, Bird.TYPE, breed, gender, age, status, price, adoptionHistory,
-                        medicalHistory);
+                return new Bird(petID, name, breed, gender, age, price);
             default:
                 return null;
         }

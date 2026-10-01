@@ -4,73 +4,47 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Pet {
-    private String petID;
-    private String name;
-    private String type;
-    private String breed;
-    private char gender;
+    private final String petID;
+    private final String name;
+    private final String breed;
+    private final char gender;
     private int age;
-    private String adoptionStatus;
     private double price;
+    private AdoptionStatus adoptionStatus;
     private HashMap<String, String> adoptionHistory;
     private HashMap<String, String> medicalHistory;
 
-    public Pet(String petID, String name, String type, String breed, char gender, int age, String adoptionStatus,
-            double price, HashMap<String, String> adoptionHistory, HashMap<String, String> medicalHistory) {
+    public Pet(String petID, String name, String breed, char gender, int age, double price) {
         this.petID = petID;
         this.name = name;
-        this.type = type;
         this.breed = breed;
         this.gender = gender;
         this.age = age;
-        this.adoptionStatus = adoptionStatus;
         this.price = price;
-        this.adoptionHistory = adoptionHistory;
-        this.medicalHistory = medicalHistory;
+
+        this.adoptionStatus = AdoptionStatus.AVAILABLE;
+        this.adoptionHistory = new HashMap<>();
+        this.medicalHistory = new HashMap<>();
     }
 
     public abstract String getPetIDPrefix();
 
-    public abstract String getCategory();
+    public abstract String getType();
 
     public String getPetID() {
         return petID;
-    }
-
-    public void setPetID(String petID) {
-        this.petID = petID;
     }
 
     public String getPetName() {
         return name;
     }
 
-    public void setPetName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getBreed() {
         return breed;
     }
 
-    public void setBreed(String breed) {
-        this.breed = breed;
-    }
-
     public char getGender() {
         return gender;
-    }
-
-    public void setGender(char gender) {
-        this.gender = gender;
     }
 
     public int getAge() {
@@ -81,14 +55,6 @@ public abstract class Pet {
         this.age = age;
     }
 
-    public String getAdoptionStatus() {
-        return adoptionStatus;
-    }
-
-    public void setAdoptionStatus(String adoptionStatus) {
-        this.adoptionStatus = adoptionStatus;
-    }
-
     public double getPrice() {
         return price;
     }
@@ -97,15 +63,26 @@ public abstract class Pet {
         this.price = price;
     }
 
-    public void setAdoptionHistory(HashMap<String, String> adoptionHistory) {
-        this.adoptionHistory = adoptionHistory;
+    public String getAdoptionStatus() {
+        return adoptionStatus.toString();
     }
 
-    public void setMedicalHistory(HashMap<String, String> medicalHistory) {
-        this.medicalHistory = medicalHistory;
+    public void setAdoptionStatus(AdoptionStatus adoptionStatus) {
+        if (adoptionStatus == null) {
+            throw new IllegalArgumentException("Adoption status cannot be null");
+        }
+        this.adoptionStatus = adoptionStatus;
     }
 
-    private String formatHistory(HashMap<String, String> history, String emptyMessage) {
+    public void addAdoptionHistory(String date, String details) {
+        adoptionHistory.put(date, details);
+    }
+
+    public void addMedicalHistory(String date, String details) {
+        medicalHistory.put(date, details);
+    }
+
+    private static String formatHistory(HashMap<String, String> history, String emptyMessage) {
         if (history == null || history.isEmpty()) {
             return emptyMessage;
         }
