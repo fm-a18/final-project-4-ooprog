@@ -24,10 +24,19 @@ public class PetManager {
     }
 
     public ArrayList<Pet> getAllPets() {
-        return pets;
+        //TODO
     }
 
     public ArrayList<Pet> searchByCategory(){
+        //TODO
+    }
 
+    public Pet findPetID(String petID){
+        for(Pet pet : pets){
+            if(pet.getPetID().equalsIgnoreCase(petID)){
+                return pet;
+            }
+        }
+        return null;
     }
 }
