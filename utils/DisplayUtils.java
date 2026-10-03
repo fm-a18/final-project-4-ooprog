@@ -68,11 +68,6 @@ public class DisplayUtils {
 
     public static void displayPetsForCustomer(ArrayList<Pet> pets) { //Name, Type, Breed, Age, Adoption Status
 
-        if (pets.isEmpty()) {
-            System.out.println("No pets found.");
-            return;
-        }
-
         customerPetHeader("AVAILABLE PETS");
 
         for (Pet pet : pets) {
