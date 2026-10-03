@@ -1,28 +1,34 @@
 package utils;
 
-
 import java.util.Scanner;
+
+import inventory.Bird;
+import inventory.Cat;
+import inventory.Dog;
+import inventory.Pet;
+
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 public class DataValidation {
     public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
     public static final Scanner sc = new Scanner(System.in);
 
-    public static String validateName(String field) {
+    public static String validateString(String prompt) { // TODO IMPROVE ERROR MESSAGE
         boolean isValidated = false;
         String input = "";
         while (!isValidated) {
-            System.out.printf("%s Name: ", field);
+            System.out.print(prompt);
             try {
                 input = sc.nextLine().trim();
             } catch (java.util.NoSuchElementException e) {
-                System.out.printf("Error: %s Name. Please try again.\n", field);
+                System.out.print("Invalid String input. Please try again.\n");
                 continue;
             }
 
             if (input.isEmpty()) {
-                System.out.printf("Error: %s name cannot be empty.\n", field);
+                System.out.print("Invalid String input. Input cannot be empty. Try Again\n");
             } else if (!input.matches("^[\\p{L}.,' -]+$")) {
                 System.out.println("Error: Only letters, spaces, periods, commas, apostrophes, and hyphens allowed.");
             } else {
@@ -30,6 +36,32 @@ public class DataValidation {
             }
         }
         return input;
+    }
+
+    public static int validatePetAgeInput(String prompt) { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX PET AGE
+        boolean isRunning = true;
+        int number = 0;
+        String inputNumber = "";
+        while (isRunning) {
+            System.out.print(prompt);
+            inputNumber = sc.nextLine().trim();
+            if (!inputNumber.matches("-?(0|[1-9]\\d*)")) {
+                System.out.println("Invalid Input. Only input positive integers without leading zeros. Try Again.");
+                continue;
+            }
+            try {
+                number = Integer.parseInt(inputNumber);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid Input. Number is too large. Try Again.");
+                continue;
+            }
+            if (number < 1 && number > 15) {
+                System.out.println("Invalid Input. The age of the pet can only be from 1 - 15 years. Try again.");
+                continue;
+            }
+            isRunning = false;
+        }
+        return number;
     }
 
     public static String validateEmailAddress() {
@@ -241,7 +273,7 @@ public class DataValidation {
     }
 
     public static double validatePriceInput(String prompt) { // TODO ADJUST ERROR MESSAGE(REFLECT ACTUAL
-                                                                         // LIMIT)
+                                                             // LIMIT)
         boolean isRunning = true;
         double number = 0;
         String inputNumber = "";
@@ -255,8 +287,8 @@ public class DataValidation {
                 continue;
             }
             number = Double.parseDouble(inputNumber);
-            if (number < 1 || number > 1000000) {
-                System.out.println("Invalid Price Input. Price must be between P1.00 - P1,000,000.00. Try Again.");
+            if (number < 500 || number > 1000) {
+                System.out.println("Invalid Price Input. Price must be between P500.00 - P1000.00. Try Again.");
                 continue;
             }
             isRunning = false;
@@ -264,9 +296,72 @@ public class DataValidation {
         return number;
     }
 
-    public static String transactionNumValidation() {
+    public static String getCategoryPrefix(String category) {
+        if (category == null) {
+            return null;
+        }
+        switch (category.trim().toLowerCase()) {
+            case "dog":
+                return Dog.ID_PREFIX;
+            case "cat":
+                return Cat.ID_PREFIX;
+            case "bird":
+                return Bird.ID_PREFIX;
+            default:
+                return null;
+        }
     }
 
-    public static String petIdValidation() {
+    // Prompts until the user enters an ID matching the category prefix + 4 digits
+    // (e.g. DO0001).
+    public static String validatePetIdInput(String prompt, String category) {
+        String prefix = getCategoryPrefix(category);
+        if (prefix == null) {
+            throw new IllegalArgumentException("Unknown pet category: " + category);
+        }
+
+        String input = "";
+        boolean isValidated = false;
+        while (!isValidated) {
+            System.out.print(prompt);
+            input = sc.nextLine().trim().toUpperCase();
+
+            if (input.isEmpty()) {
+                System.out.println("Error: Pet ID cannot be empty.");
+            } else if (!input.matches("^" + prefix + "\\d{4}$")) {
+                System.out.println("Invalid Pet ID. A " + category + " ID must start with " + prefix
+                        + " followed by 4 digits (e.g., " + prefix + "0001).");
+            } else {
+                isValidated = true;
+            }
+        }
+        return input;
+    }
+
+    // Builds a placeholder Pet of the given category, e.g. for lookups or
+    // comparisons. Returns null if unknown.
+    public static Pet createTempPet(String category, String petID) {
+        String name = "TEMP";
+        String breed = "N/A";
+        char gender = 'U';
+        int age = 0;
+        String status = "Available";
+        double price = 0.0;
+        HashMap<String, String> adoptionHistory = new HashMap<>();
+        HashMap<String, String> medicalHistory = new HashMap<>();
+
+        if (category == null) {
+            return null;
+        }
+        switch (category.trim().toLowerCase()) {
+            case "dog":
+                return new Dog(petID, name, breed, gender, age, price);
+            case "cat":
+                return new Cat(petID, name, breed, gender, age, price);
+            case "bird":
+                return new Bird(petID, name, breed, gender, age, price);
+            default:
+                return null;
+        }
     }
 }

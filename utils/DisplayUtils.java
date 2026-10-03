@@ -19,12 +19,12 @@ public class DisplayUtils {
         centeredTitle(tableName, TABLE_WIDTH);
 
         System.out.printf(
-                "%-10s | %-20s | %-15s | %-15s%n",
+                "%-10s | %-20s | %-15s | %-15s%n | %-10%n",
                 "Pet ID",
                 "Pet Name",
                 "Type",
-                "Status"
-        );
+                "Status",
+                "Price");
 
         System.out.println("-".repeat(TABLE_WIDTH));
     }
@@ -33,18 +33,18 @@ public class DisplayUtils {
         centeredTitle(tableName, TABLE_WIDTH);
 
         System.out.printf(
-                "%-20s | %-15s | %-15s | %-5s | %-15s%n",
+                "%-20s | %-15s | %-15s | %-5s | %-15s | %-10%n",
                 "Pet Name",
                 "Type",
                 "Breed",
                 "Age",
-                "Status"
-        );
+                "Status",
+                "Price");
 
         System.out.println("-".repeat(TABLE_WIDTH));
     }
 
-    public static void displayPetsForStaff(ArrayList<Pet> pets) { //ID, Name, Type, Adoption Status
+    public static void displayPetsForStaff(ArrayList<Pet> pets) { // ID, Name, Type, Adoption Status
 
         if (pets.isEmpty()) {
             System.out.println("No pets found.");
@@ -55,30 +55,30 @@ public class DisplayUtils {
 
         for (Pet pet : pets) {
             System.out.printf(
-                    "%-10s | %-20s | %-15s | %-15s%n",
+                    "%-10s | %-20s | %-15s | %-15s%n | %,10.2f%n",
                     pet.getPetID(),
                     pet.getPetName(),
                     pet.getType(),
-                    pet.getAdoptionStatus()
-            );
+                    pet.getAdoptionStatus(),
+                    pet.getPrice());
         }
 
         System.out.println("-".repeat(TABLE_WIDTH));
     }
 
-    public static void displayPetsForCustomer(ArrayList<Pet> pets) { //Name, Type, Breed, Age, Adoption Status
+    public static void displayPetsForCustomer(ArrayList<Pet> pets) { // Name, Type, Breed, Age, Adoption Status, Price
 
         customerPetHeader("AVAILABLE PETS");
 
         for (Pet pet : pets) {
             System.out.printf(
-                    "%-20s | %-15s | %-15s | %-5d | %-15s%n",
+                    "%-20s | %-15s | %-15s | %-5d | %-15s%n | %,10.2f%n",
                     pet.getPetName(),
                     pet.getType(),
                     pet.getBreed(),
                     pet.getAge(),
-                    pet.getAdoptionStatus()
-            );
+                    pet.getAdoptionStatus(),
+                    pet.getPrice());
         }
 
         System.out.println("-".repeat(TABLE_WIDTH));
@@ -100,19 +100,18 @@ public class DisplayUtils {
     public static void displayPetDetails(Pet pet) {
 
         printSummaryBox("PET DETAILS",
-                new String[][]{
-                        {"Pet ID", pet.getPetID()},
-                        {"Name", pet.getPetName()},
-                        {"Type", pet.getType()},
-                        {"Breed", pet.getBreed()},
-                        {"Gender", String.valueOf(pet.getGender())},
-                        {"Age", String.valueOf(pet.getAge())},
-                        {"Price", String.format("Php %,.2f", pet.getPrice())},
-                        {"Status", pet.getAdoptionStatus()},
-                        {"Adoption History", pet.getAdoptionHistory()},
-                        {"Medical History", pet.getMedicalHistory()}
-                }
-        );
+                new String[][] {
+                        { "Pet ID", pet.getPetID() },
+                        { "Name", pet.getPetName() },
+                        { "Type", pet.getType() },
+                        { "Breed", pet.getBreed() },
+                        { "Gender", String.valueOf(pet.getGender()) },
+                        { "Age", String.valueOf(pet.getAge()) },
+                        { "Price", String.format("Php %,.2f", pet.getPrice()) },
+                        { "Status", pet.getAdoptionStatus() },
+                        { "Adoption History", pet.getAdoptionHistory() },
+                        { "Medical History", pet.getMedicalHistory() }
+                });
     }
 
     public static void printDivider(String tableName) {
@@ -123,8 +122,7 @@ public class DisplayUtils {
                 "-".repeat(Math.max(0, dashCount))
                         + divider
                         + "-".repeat(Math.max(0,
-                        MENU_WIDTH - dashCount - divider.length()))
-        );
+                                MENU_WIDTH - dashCount - divider.length())));
     }
 
     public static void printMenu(String tableName, String... options) {
