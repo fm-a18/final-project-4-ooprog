@@ -83,14 +83,14 @@ public class Customer extends User{
                     "Gender",
                     "Age"
             );
-            int choice = DataValidation.intChoiceValidation(sc, "Select Option",
+            int choice = DataValidation.intChoiceValidation("Select Option",
                     1, 2, 3, 4, 5, 0);
 
             switch(choice){
                 case 1: //SEARCH PET BY NAME
-                    String name = DataValidation.validateName(sc, "Enter Pet Name: ");
+                    String name = DataValidation.validateString("Enter Pet Name: ");
 
-                    ArrayList<Pet> petNames = searchPets(name, pets, Pet::getName);
+                    ArrayList<Pet> petNames = searchPets(name, pets, Pet::getPetName);
                     if(petNames.isEmpty()){
                         System.out.println("No pets found.");
                         return;
@@ -105,7 +105,7 @@ public class Customer extends User{
                             "Cat",
                             "Bird"
                     );
-                    int choiceType = DataValidation.intChoiceValidation(sc, "Select Option",
+                    int choiceType = DataValidation.intChoiceValidation("Select Option",
                             1, 2, 3, 0);
 
                     String type;
@@ -122,7 +122,7 @@ public class Customer extends User{
                     DisplayUtils.displayPetsForCustomer(petTypes);
                     break;
                 case 3: //SEARCH PET BY PET BREED
-                    String breed = DataValidation.validateName(sc, "Enter Pet Breed: ");
+                    String breed = DataValidation.validateString("Enter Pet Breed: ");
 
                     ArrayList<Pet> petBreeds = searchPets(breed, pets, Pet::getBreed);
                     if(petBreeds.isEmpty()){
@@ -138,7 +138,7 @@ public class Customer extends User{
                             "Male",
                             "Female"
                     );
-                    int choiceGender = DataValidation.intChoiceValidation(sc, "Select Option",
+                    int choiceGender = DataValidation.intChoiceValidation("Select Option",
                             1, 2, 0);
 
                     char gender;
@@ -154,7 +154,7 @@ public class Customer extends User{
                     DisplayUtils.displayPetsForCustomer(petGender);
                     break;
                 case 5: //SEARCH PET BY AGE
-                    int age = DataValidation.validatePetAge(sc, "Enter Pet Age: ");
+                    int age = DataValidation.validatePetAgeInput("Enter Pet Age: ");
 
                     ArrayList<Pet> petAge = searchPets(age, pets, Pet::getAge);
                     if(petAge.isEmpty()){
@@ -189,14 +189,14 @@ public class Customer extends User{
             return;
         }
 
-        String name = DataValidation.validateName(sc, "Enter Pet Name: ");
-        String type = DataValidation.validateName(sc, "Enter Pet Type: ");
-        String breed = DataValidation.validateName(sc, "Enter Pet Breed: ");
-        char gender = DataValidation.validateGender(sc, "Enter Pet Gender (M/F): ");
-        int age = DataValidation.validatePetAge(sc, "Enter Pet Age: ");
+        String name = DataValidation.validateString("Enter Pet Name: ");
+        String type = DataValidation.validateString("Enter Pet Type: ");
+        String breed = DataValidation.validateString("Enter Pet Breed: ");
+        char gender = DataValidation.charChoiceValidation("Enter Pet Gender (M/F): ", 'M', 'F');
+        int age = DataValidation.validatePetAgeInput("Enter Pet Age: ");
 
         for(Pet pet : pets){
-            if(pet.getName().equalsIgnoreCase(name) &&
+            if(pet.getPetName().equalsIgnoreCase(name) &&
                     pet.getType().equalsIgnoreCase(type) &&
                     pet.getBreed().equalsIgnoreCase(breed) &&
                     pet.getGender() == gender &&
@@ -224,7 +224,7 @@ public class Customer extends User{
                     "Descending Price",
                     "Price Range"
             );
-            int choice = DataValidation.intChoiceValidation(sc, "Select Option",
+            int choice = DataValidation.intChoiceValidation("Select Option",
                     1, 2, 3, 0);
 
             switch(choice){
@@ -286,7 +286,7 @@ public class Customer extends User{
         return filteredPets;
     }
 
-    private void requestAdoption(Scanner sc) {
+    private void requestAdoption(Scanner sc) {   
     }
 
     private void cancelAdoption(Scanner sc) {
