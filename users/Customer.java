@@ -1,11 +1,10 @@
 package users;
 
 import inventory.Pet;
-import strategy.PetManager;
+import utils.PetManager;
 import utils.DataValidation;
 import utils.DisplayUtils;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;

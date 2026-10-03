@@ -1,7 +1,7 @@
 package users;
 
 import inventory.Pet;
-import strategy.PetManager;
+import utils.PetManager;
 import utils.DataValidation;
 import utils.DisplayUtils;
 import utils.FileHandler;
