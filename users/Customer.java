@@ -169,6 +169,7 @@ public class Customer extends User{
 
                     DisplayUtils.displayPetsForCustomer(petAge);
                     break;
+                case 0: isDone = true; break;
             }
         }
     }
@@ -179,7 +180,27 @@ public class Customer extends User{
             return;
         }
 
-        String petID = DataValidation.validateString("Enter Pet ID: ");
+        String category = "";
+        boolean isDone = false;
+        while(!isDone){
+            DisplayUtils.printMenu("TYPE OF PETS",
+                "#Select Option",
+                "Dog",
+                "Cat",
+                "Bird"
+            );
+
+            int type = DataValidation.intChoiceValidation("What type of pet are you searching for?: ", 1, 2, 3, 0);
+
+            switch(type){
+                case 1 -> category = "dog";
+                case 2 -> category = "cat";
+                case 3 -> category = "bird";
+                case 0 -> isDone = true;
+            }
+        }
+
+        String petID = DataValidation.validatePetIdInput("Enter Pet ID: ", category);
 
         for(Pet pet : pets){
             if(pet.getPetID().equalsIgnoreCase(petID)){
@@ -189,7 +210,16 @@ public class Customer extends User{
                 System.out.println("No pets found.");
                 return;
             }
-        }        
+        }
+    }
+
+    private void specificPetDetails() { // EDIT THIS
+        if(pets.isEmpty()){
+            System.out.println("No pets found.");
+            return;
+        }
+
+
     }
 
     private void filterByPrice() {
@@ -235,17 +265,8 @@ public class Customer extends User{
                     }
                     DisplayUtils.displayPetsForCustomer(filteredPets);
                     break;
-                case 0:
-                    isDone = true;
-                    break;
+                case 0: isDone = true; break;
             }
-        }
-    }
-
-    private void specificPetDetails() { // EDIT THIS
-        if(pets.isEmpty()){
-            System.out.println("No pets found.");
-            return;
         }
     }
 
