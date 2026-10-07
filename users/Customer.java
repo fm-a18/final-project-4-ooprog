@@ -32,6 +32,8 @@ public class Customer extends User{
                     "#Browse Pets",
                     "View All Available Pets",
                     "Search by Category",
+                    "Search Specific Pets",
+                    "View Specific Pet Details",
                     "Filter by Price",
 
                     "#Adoption",
