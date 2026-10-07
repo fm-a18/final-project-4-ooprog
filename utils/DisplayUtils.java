@@ -137,7 +137,6 @@ public class DisplayUtils {
             }
             System.out.printf(" [%d] %s%n", ctr++, option);
         }
-        System.out.println(" [0] Back");
         System.out.println("=".repeat(MENU_WIDTH));
     }
 }
