@@ -1,15 +1,15 @@
 package utils;
 
 import java.util.Scanner;
-
 import inventory.Bird;
 import inventory.Cat;
 import inventory.Dog;
 import inventory.Pet;
-
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class DataValidation {
     public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
@@ -138,6 +138,21 @@ public class DataValidation {
             }
         }
         return input;
+    }
+
+    public static LocalDate validateDate(String prompt) { //coordinator
+        LocalDate date = null;
+        while (date == null) {
+            System.out.print(prompt + ": ");
+            String input = sc.nextLine().trim();
+
+            try {
+                date = LocalDate.parse(input, dateFormat);
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid Date Format. Please use (MM-DD-YYYY).");
+            }
+        }
+        return date;
     }
 
     public static String validatePhoneNumber() {
