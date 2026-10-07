@@ -1,5 +1,6 @@
 package utils;
 
+import java.util.Random;
 import java.util.Scanner;
 
 import inventory.Bird;
@@ -310,6 +311,18 @@ public class DataValidation {
             default:
                 return null;
         }
+    }
+
+    public static String transactionNumGenerator() { //Needs validation for duplicates
+        int n = 10;
+        StringBuilder transactionNum = new StringBuilder();
+        String randomNum = "0123456789";
+        Random rand = new Random();
+
+        for (int i = 0; i < n; i++) {
+            transactionNum.append(randomNum.charAt(rand.nextInt(randomNum.length())));
+        }
+        return transactionNum.toString();
     }
 
     // Prompts until the user enters an ID matching the category prefix + 4 digits

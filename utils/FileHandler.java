@@ -150,8 +150,4 @@ public class FileHandler {
         return pet;
     }
 
-    public static void savePet(Pet pet){
-        append("PET_LIST.txt", pet.toFileString());
-    }
-
 }

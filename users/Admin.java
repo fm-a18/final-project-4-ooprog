@@ -1,5 +1,6 @@
 package users;
 
+import inventory.AdoptionStatus;
 import inventory.Pet;
 import utils.PetManager;
 import utils.DataValidation;
@@ -9,7 +10,9 @@ import utils.FileHandler;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Admin extends User{
+import static utils.DisplayUtils.printMenu;
+
+public abstract class Admin extends User{
     public static final Scanner sc = new Scanner(System.in);
 
     public Admin(String firstName, String lastName, String emailAddress,
@@ -27,7 +30,7 @@ public class Admin extends User{
         boolean isDone = false;
 
         while(!isDone){
-            DisplayUtils.printMenu("ADMIN MENU",
+            printMenu("ADMIN MENU",
                     "#Pet Management",
                     "View All Available Pets",
                     "Search by Category",
@@ -171,5 +174,16 @@ public class Admin extends User{
     }
 
     private void manageIncomingPets() {
+        System.out.println("Adoption Requests");
+        String record = findAndConfirmTransaction("RESERVE.txt", "Reserve");
+        if (record == null) return;
+
+        String[] parts = record.split("\\s*\\|\\s*");
+        String petID = parts[RES_PET_ID];
+        String transactionNum = parts[RES_TRANSACTION_ID];
+
+        FileHandler.appendRecord("ADOPTED_LIST.txt", record); //Documentation
+        FileHandler.removeRecord("RESERVE.txt", transactionNum, 0);
+        PetManager.getInstance().findPetID(petID).setAdoptionStatus(AdoptionStatus.ADOPTED);
     }
 }
