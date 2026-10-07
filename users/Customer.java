@@ -1,6 +1,7 @@
 package users;
 
 import inventory.Pet;
+import utils.FileHandler;
 import utils.PetManager;
 import utils.DataValidation;
 import utils.DisplayUtils;
@@ -43,12 +44,12 @@ public class Customer extends User {
 
             switch (choice) {
                 case 1 -> viewAllPets();
-                case 2 -> searchByCategory(sc);
-                case 3 -> searchSpecificPets(sc);
-                case 4 -> filterByPrice(sc);
-                case 5 -> requestAdoption(sc);
-                case 6 -> cancelAdoption(sc);
-                case 7 -> requestReturn(sc);
+                case 2 -> searchByCategory();
+                case 3 -> searchSpecificPets();
+                case 4 -> filterByPrice();
+                case 5 -> requestAdoption();
+                case 6 -> cancelAdoption();
+                case 7 -> requestReturn();
                 case 0 -> isDone = true;
             }
         }
@@ -65,7 +66,7 @@ public class Customer extends User {
         DisplayUtils.displayPetsForCustomer(pets);
     }
 
-    private void searchByCategory(Scanner sc) {
+    private void searchByCategory() {
         if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
@@ -80,14 +81,15 @@ public class Customer extends User {
                     "Breed",
                     "Gender",
                     "Age");
-            int choice = DataValidation.intChoiceValidation(sc, "Select Option",
+            int choice = DataValidation.intChoiceValidation("Select Option",
                     1, 2, 3, 4, 5, 0);
 
             switch (choice) {
                 case 1: // SEARCH PET BY NAME
-                    String name = DataValidation.validateName(sc, "Enter Pet Name: ");
+                    String name = DataValidation.validateString("Enter Pet Name: ");
 
-                    ArrayList<Pet> petNames = searchPets(name, pets, Pet::getName);
+                    ArrayList<Pet> petNames = FileHandler.filterRecords("PETS_LIST.txt", name, Pet::getPetName);
+
                     if (petNames.isEmpty()) {
                         System.out.println("No pets found.");
                         return;
@@ -101,7 +103,7 @@ public class Customer extends User {
                             "Dog",
                             "Cat",
                             "Bird");
-                    int choiceType = DataValidation.intChoiceValidation(sc, "Select Option",
+                    int choiceType = DataValidation.intChoiceValidation("Select Option",
                             1, 2, 3, 0);
 
                     String type;
@@ -113,7 +115,7 @@ public class Customer extends User {
                         type = "Bird";
                     }
 
-                    ArrayList<Pet> petTypes = searchPets(type, pets, Pet::getType);
+                    ArrayList<Pet> petTypes = FileHandler.filterRecords("PETS_LIST.txt", type, Pet::getType);
                     if (petTypes.isEmpty()) {
                         System.out.println("No pets found.");
                         return;
@@ -122,9 +124,9 @@ public class Customer extends User {
                     DisplayUtils.displayPetsForCustomer(petTypes);
                     break;
                 case 3: // SEARCH PET BY PET BREED
-                    String breed = DataValidation.validateName(sc, "Enter Pet Breed: ");
+                    String breed = DataValidation.validateString("Enter Pet Breed: ");
 
-                    ArrayList<Pet> petBreeds = searchPets(breed, pets, Pet::getBreed);
+                    ArrayList<Pet> petBreeds = FileHandler.filterRecords("PETS_LIST.txt", breed, Pet::getBreed);
                     if (petBreeds.isEmpty()) {
                         System.out.println("No pets found.");
                         return;
@@ -137,7 +139,7 @@ public class Customer extends User {
                             "#Select Gender",
                             "Male",
                             "Female");
-                    int choiceGender = DataValidation.intChoiceValidation(sc, "Select Option",
+                    int choiceGender = DataValidation.intChoiceValidation("Select Option",
                             1, 2, 0);
 
                     char gender;
@@ -147,7 +149,8 @@ public class Customer extends User {
                         gender = 'F';
                     }
 
-                    ArrayList<Pet> petGender = searchPets(gender, pets, Pet::getGender);
+                    ArrayList<Pet> petGender = FileHandler.filterRecords("PETS_LIST.txt", String.valueOf(gender),
+                            Pet::getGender);
                     if (petGender.isEmpty()) {
                         System.out.println("No pets found.");
                         return;
@@ -156,9 +159,10 @@ public class Customer extends User {
                     DisplayUtils.displayPetsForCustomer(petGender);
                     break;
                 case 5: // SEARCH PET BY AGE
-                    int age = DataValidation.validatePetAge(sc, "Enter Pet Age: ");
+                    int age = DataValidation.validatePetAgeInput("Enter Pet Age: ");
 
-                    ArrayList<Pet> petAge = searchPets(age, pets, Pet::getAge);
+                    ArrayList<Pet> petAge = FileHandler.filterRecords("PETS_LIST.txt", String.valueOf(age),
+                            Pet::getAge);
                     if (petAge.isEmpty()) {
                         System.out.println("No pets found");
                         return;
@@ -170,39 +174,16 @@ public class Customer extends User {
         }
     }
 
-    private ArrayList<Pet> searchPets(Object key, ArrayList<Pet> pets, Function<Pet, ?> getters) {
-        ArrayList<Pet> petArr = new ArrayList<>();
-
-        String cat = String.valueOf(key);
-
-        for (Pet pet : pets) {
-            String category = String.valueOf(getters.apply(pet));
-            if (category.equalsIgnoreCase(cat)) {
-                petArr.add(pet);
-            }
-        }
-
-        return petArr;
-    }
-
-    private void searchSpecificPets(Scanner sc) {
+    private void searchSpecificPets() {
         if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
 
-        String name = DataValidation.validateName(sc, "Enter Pet Name: ");
-        String type = DataValidation.validateName(sc, "Enter Pet Type: ");
-        String breed = DataValidation.validateName(sc, "Enter Pet Breed: ");
-        char gender = DataValidation.validateGender(sc, "Enter Pet Gender (M/F): ");
-        int age = DataValidation.validatePetAge(sc, "Enter Pet Age: ");
+        String petID = DataValidation.validateString("Enter Pet ID: ");
 
         for (Pet pet : pets) {
-            if (pet.getName().equalsIgnoreCase(name) &&
-                    pet.getType().equalsIgnoreCase(type) &&
-                    pet.getBreed().equalsIgnoreCase(breed) &&
-                    pet.getGender() == gender &&
-                    pet.getAge() == age) {
+            if (pet.getPetID().equalsIgnoreCase(petID)) {
                 DisplayUtils.displayPetDetails(pet);
                 return;
             } else {
@@ -212,7 +193,7 @@ public class Customer extends User {
         }
     }
 
-    private void filterByPrice(Scanner sc) {
+    private void filterByPrice() {
         if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
@@ -225,7 +206,7 @@ public class Customer extends User {
                     "Ascending Price",
                     "Descending Price",
                     "Price Range");
-            int choice = DataValidation.intChoiceValidation(sc, "Select Option",
+            int choice = DataValidation.intChoiceValidation("Select Option",
                     1, 2, 3, 0);
 
             switch (choice) {
@@ -246,7 +227,7 @@ public class Customer extends User {
                     DisplayUtils.displayPetsForCustomer(sortedPetsDescending);
                     break;
                 case 3:
-                    ArrayList<Pet> filteredPets = filterByPriceRange(sc);
+                    ArrayList<Pet> filteredPets = filterByPriceRange();
 
                     if (filteredPets.isEmpty()) {
                         System.out.println("No pets found.");
@@ -274,7 +255,7 @@ public class Customer extends User {
         return sortPrice;
     }
 
-    private ArrayList<Pet> filterByPriceRange(Scanner sc) {
+    private ArrayList<Pet> filterByPriceRange() {
         ArrayList<Pet> filteredPets = new ArrayList<>();
         double startingPrice = DataValidation.validatePriceInput("Enter Starting Price: ");
         double endingPrice = DataValidation.validatePriceInput("Enter Ending Price: ");
@@ -287,12 +268,13 @@ public class Customer extends User {
         return filteredPets;
     }
 
-    private void requestAdoption(Scanner sc) {
+    private void requestAdoption() {
+
     }
 
-    private void cancelAdoption(Scanner sc) {
+    private void cancelAdoption() {
     }
 
-    private void requestReturn(Scanner sc) {
+    private void requestReturn() {
     }
 }
