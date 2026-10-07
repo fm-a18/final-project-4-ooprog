@@ -338,6 +338,37 @@ public class DataValidation {
         return input;
     }
 
+    public static String categoryValidation(Scanner sc) {
+        boolean isValidated = false;
+        String input = "";
+
+        while (!isValidated) {
+            System.out.print("Category: ");
+            try {
+                input = sc.nextLine().trim();
+            } catch (java.util.NoSuchElementException e) {
+                System.out.println("Error: No input available. Please try again.");
+                continue;
+            }
+
+            if (input.isEmpty()) {
+                System.out.println("Error: Category cannot be empty.");
+            } else if (input.equalsIgnoreCase("Dog")) {
+                input = "Dog";
+                isValidated = true;
+            } else if (input.equalsIgnoreCase("Cat")) {
+                input = "Cat";
+                isValidated = true;
+            } else if (input.equalsIgnoreCase("Bird")) {
+                input = "Bird";
+                isValidated = true;
+            } else {
+                System.out.println("Error: Category " + input + " does not exist!");
+            }
+        }
+        return input;
+    }
+
     // Builds a placeholder Pet of the given category, e.g. for lookups or
     // comparisons. Returns null if unknown.
     public static Pet createTempPet(String category, String petID) {
