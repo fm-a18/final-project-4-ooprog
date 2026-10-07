@@ -2,7 +2,10 @@ package users;
 
 import utils.DataValidation;
 import utils.DisplayUtils;
-
+import inventory.Pet;
+import utils.PetManager;
+import utils.FileHandler;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Coordinator extends User{
@@ -63,9 +66,51 @@ public class Coordinator extends User{
     }
 
     private void viewAllPets() {
+        ArrayList<Pet> pets = PetManager.getInstance().getAllPets();
+        DisplayUtils.displayPetsForStaff(pets);
     }
 
     private void searchByCategory(Scanner sc) {
+        DisplayUtils.printMenu("Search By Category",
+                "#Pet Details",
+                "Pet Name", "Type", "Breed", "Gender", "Age",
+                "#Pet Records",
+                "Adoption Status", "Adoption History", "Medical History");
+
+        int choice = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3, 4, 5, 6, 7, 8, 0);
+
+        switch(choice) {
+            case 1: {
+                String petName = DataValidation.validateString("Enter pet name:");
+                FileHandler.filterRecords("PET_LIST.txt", 1, petName);
+            }
+            case 2: {
+                String petType = DataValidation.validateString("Enter pet type:");
+                FileHandler.filterRecords("PET_LIST.txt", 2, petType);
+            }
+            case 3: {
+                String petBreed = DataValidation.validateString("Enter pet breed:");
+                FileHandler.filterRecords("PET_LIST.txt", 3, petBreed);
+            }
+            case 4: {
+                String petGender = DataValidation.validateString("Enter pet gender:");
+                FileHandler.filterRecords("PET_LIST.txt", 4, petGender);
+            }
+            case 5: {
+                String petAge = DataValidation.validateString("Enter pet age:");
+                FileHandler.filterRecords("PET_LIST.txt", 5, petAge);
+            }
+            case 6: {
+                String petStatus = DataValidation.validateString("Enter adoption status:");
+                FileHandler.filterRecords("PET_LIST.txt", 6, petStatus);
+            }
+            case 7: {
+                // to be filled
+            }
+            case 8: {
+                // to be filled
+            }
+        }
     }
 
     private void sortByCategory(Scanner sc) {
