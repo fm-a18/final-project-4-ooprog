@@ -48,10 +48,11 @@ public class Customer extends User{
                 case 1 -> viewAllPets();
                 case 2 -> searchByCategory();
                 case 3 -> searchSpecificPets();
-                case 4 -> filterByPrice();
-                case 5 -> requestAdoption();
-                case 6 -> cancelAdoption();
-                case 7 -> requestReturn();
+                case 4 -> specificPetDetails();
+                case 5 -> filterByPrice();
+                case 6 -> requestAdoption();
+                case 7 -> cancelAdoption();
+                case 8 -> requestReturn();
                 case 0 -> isDone = true;
             }
         }
@@ -236,6 +237,13 @@ public class Customer extends User{
                     isDone = true;
                     break;
             }
+        }
+    }
+
+    private void specificPetDetails() { // EDIT THIS
+        if(pets.isEmpty()){
+            System.out.println("No pets found.");
+            return;
         }
     }
 
