@@ -38,9 +38,12 @@ public class Customer extends User {
                     "Cancel Adoption Request",
 
                     "#Return",
-                    "Request Pet Return");
+                    "Request Pet Return",
+
+                    "#Exit",
+                    "Log Out");
             int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 4, 5, 6, 7, 0);
+                    1, 2, 3, 4, 5, 6, 7);
 
             switch (choice) {
                 case 1 -> viewAllPets();
