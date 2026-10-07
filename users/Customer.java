@@ -9,7 +9,7 @@ import utils.DisplayUtils;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
-import java.util.function.Function;
+//import java.util.function.Function;
 
 
 public class Customer extends User{
@@ -49,12 +49,11 @@ public class Customer extends User{
             switch(choice) {
                 case 1 -> viewAllPets();
                 case 2 -> searchByCategory();
-                case 3 -> searchSpecificPets();
-                case 4 -> specificPetDetails();
-                case 5 -> filterByPrice();
-                case 6 -> requestAdoption();
-                case 7 -> cancelAdoption();
-                case 8 -> requestReturn();
+                case 3 -> findSpecificPets();
+                case 4 -> filterByPrice();
+                case 5 -> requestAdoption();
+                case 6 -> cancelAdoption();
+                case 7 -> requestReturn();
                 case 0 -> isDone = true;
             }
         }
@@ -103,22 +102,8 @@ public class Customer extends User{
 
                     DisplayUtils.displayPetsForCustomer(petNames);
                     break;
-                case 2: //SEARCH PET BY PET TYPE
-                    DisplayUtils.printMenu("SEARCH BY PET TYPE",
-                            "#Select Pet Type",
-                            "Dog",
-                            "Cat",
-                            "Bird"
-                    );
-                    int choiceType = DataValidation.intChoiceValidation("Select Option",
-                            1, 2, 3, 0);
-
-                    String type;
-                    if(choiceType == 1){type = "Dog";}
-                    else if(choiceType == 2){type = "Cat";}
-                    else{type = "Bird";}
-
-                    ArrayList<Pet> petTypes = FileHandler.filterRecords("PETS_LIST.txt", type, Pet::getType);
+                case 2: //VIEW PET BY PET TYPE
+                    ArrayList<Pet> petTypes = getSpecificPetDetailsPerType();
                     if(petTypes.isEmpty()){
                         System.out.println("No pets found.");
                         return;
@@ -174,52 +159,68 @@ public class Customer extends User{
         }
     }
 
-    private void searchSpecificPets() {
-        if(pets.isEmpty()){
-            System.out.println("No pets found.");
-            return;
-        }
-
-        String category = "";
+    private ArrayList<Pet> getSpecificPetDetailsPerType(){
+        String type = "";
         boolean isDone = false;
         while(!isDone){
-            DisplayUtils.printMenu("TYPE OF PETS",
-                "#Select Option",
+            DisplayUtils.printMenu("SEARCH BY PET TYPE",
+                "#Select Pet Type",
                 "Dog",
                 "Cat",
                 "Bird"
             );
+            int choiceType = DataValidation.intChoiceValidation("Select Option",
+                    1, 2, 3, 0);
 
-            int type = DataValidation.intChoiceValidation("What type of pet are you searching for?: ", 1, 2, 3, 0);
-
-            switch(type){
-                case 1 -> category = "dog";
-                case 2 -> category = "cat";
-                case 3 -> category = "bird";
+            switch(choiceType){
+                case 1 -> type = "dog";
+                case 2 -> type = "cat";
+                case 3 -> type = "bird";
                 case 0 -> isDone = true;
             }
         }
 
-        String petID = DataValidation.validatePetIdInput("Enter Pet ID: ", category);
-
-        for(Pet pet : pets){
-            if(pet.getPetID().equalsIgnoreCase(petID)){
-                DisplayUtils.displayPetDetails(pet);
-                return;
-            }else{
-                System.out.println("No pets found.");
-                return;
-            }
-        }
+        return FileHandler.filterRecords("PETS_LIST.txt", type, Pet::getType);
     }
 
-    private void specificPetDetails() { // EDIT THIS
+    
+    private void findSpecificPets() {
         if(pets.isEmpty()){
             System.out.println("No pets found.");
             return;
         }
 
+        ArrayList<Pet> petTypes = getSpecificPetDetailsPerType();
 
+        if(petTypes.isEmpty()){
+            System.out.println("No pets found.");
+            return;
+        }
+
+        DisplayUtils.displayPetsForCustomer(petTypes);
+
+        char viewDetailsChoice = DataValidation.charChoiceValidation("Do you want to view specific pet details? (y/n): ", 'y', 'n');
+
+
+
+        if(viewDetailsChoice == 'y'){
+            String type = petTypes.get(0).getType();
+            specificPetDetails(type, petTypes);
+        }else{
+            return;
+        }
+    }
+
+    private void specificPetDetails(String type, ArrayList<Pet> petTypes) { // EDIT THIS
+        String petID = DataValidation.validatePetIdInput("Enter Pet ID: ", type);
+
+        for(Pet pet : petTypes){
+            if(pet.getPetID().equalsIgnoreCase(petID)){
+                DisplayUtils.displayPetDetails(pet);
+                return;
+            }
+        }
+        System.out.println("No pet found with the given ID.");
     }
 
     private void filterByPrice() {
