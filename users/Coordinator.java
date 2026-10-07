@@ -13,6 +13,8 @@ import java.util.Scanner;
 import static users.Admin.pets;
 import java.time.format.DateTimeFormatter;
 
+import static users.Admin.pets;
+
 public class Coordinator extends User{
     public Coordinator(String firstName, String lastName, String emailAddress,
                        String address, String birthDay, String phoneNumber, String password){
@@ -91,6 +93,7 @@ public class Coordinator extends User{
             System.out.println("No pets found.");
             return;
         }
+
     }
 
     private void addPet(Scanner sc) {

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9e868a0e-dce9-4ac1-a456-509c340e0b73" name="Changes" comment="Made Search Pet by Pet Age">
+      <change beforePath="$PROJECT_DIR$/users/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/users/Customer.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="france" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;dc-pau&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/fm-a18/final-project-4-ooprog.git&quot;,
+    &quot;accountId&quot;: &quot;c376f347-73d5-49e0-a9d9-f43a44d8375d&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="3K1bn43bhrzeWxSB6gGbZjpsDiz" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Pauleen&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.Mappings&quot;
+  }
+}</component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9e868a0e-dce9-4ac1-a456-509c340e0b73" name="Changes" comment="" />
+      <created>1790728185490</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1790728185490</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Made viewAllPets method">
+      <option name="closed" value="true" />
+      <created>1790811278302</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1790811278302</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Made Search Pet by Name and a method searchPets">
+      <option name="closed" value="true" />
+      <created>1790812293295</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1790812293295</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Made Search Pet by Pet Type">
+      <option name="closed" value="true" />
+      <created>1790812791332</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1790812791332</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Made Search Pet by Pet Breed">
+      <option name="closed" value="true" />
+      <created>1790813087253</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1790813087253</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Made Search Pet by Pet Gender">
+      <option name="closed" value="true" />
+      <created>1790813300967</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1790813300967</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Made Search Pet by Pet Age">
+      <option name="closed" value="true" />
+      <created>1790821419457</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1790821419457</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Made viewAllPets method" />
+    <MESSAGE value="Made Search Pet by Name and a method searchPets" />
+    <MESSAGE value="Made Search Pet by Pet Type" />
+    <MESSAGE value="Made Search Pet by Pet Breed" />
+    <MESSAGE value="Made Search Pet by Pet Gender" />
+    <MESSAGE value="Made Search Pet by Pet Age" />
+    <option name="LAST_COMMIT_MESSAGE" value="Made Search Pet by Pet Age" />
+  </component>
+</project>
