@@ -38,6 +38,33 @@ public class DataValidation {
         return input;
     }
 
+    public static int validateCustomerAgeInput(String prompt) { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX
+                                                                // HUMAN AGE
+        boolean isRunning = true;
+        int number = 0;
+        String inputNumber = "";
+        while (isRunning) {
+            System.out.print(prompt);
+            inputNumber = sc.nextLine().trim();
+            if (!inputNumber.matches("-?(0|[1-9]\\d*)")) {
+                System.out.println("Invalid Input. Only input positive integers without leading zeros. Try Again.");
+                continue;
+            }
+            try {
+                number = Integer.parseInt(inputNumber);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid Input. Number is too large. Try Again.");
+                continue;
+            }
+            if (number < 18 && number > 90) {
+                System.out.println("Invalid Input. The age of the pet can only be from 18 - 90 years. Try again.");
+                continue;
+            }
+            isRunning = false;
+        }
+        return number;
+    }
+
     public static int validatePetAgeInput(String prompt) { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX PET AGE
         boolean isRunning = true;
         int number = 0;
@@ -69,7 +96,7 @@ public class DataValidation {
         String input = "";
 
         while (!isValidated) {
-            System.out.println("Email Address: ");
+            System.out.print("Email Address: ");
             try {
                 input = sc.nextLine().trim();
             } catch (NoSuchElementException e) {
@@ -133,7 +160,7 @@ public class DataValidation {
         String input = "";
 
         while (!isValidated) {
-            System.out.println("Phone Number: ");
+            System.out.print("Phone Number: ");
             try {
                 input = sc.nextLine().trim();
             } catch (NoSuchElementException e) {
@@ -164,7 +191,7 @@ public class DataValidation {
         boolean isValidated = false;
         String input = "";
         while (!isValidated) {
-            System.out.println("Password: ");
+            System.out.print("Password: ");
             try {
                 input = sc.nextLine().trim();
             } catch (NoSuchElementException e) {

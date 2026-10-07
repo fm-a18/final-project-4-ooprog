@@ -7,18 +7,18 @@ public class PetManager {
     private static PetManager instance;
     private ArrayList<Pet> pets;
 
-    private PetManager(){
+    private PetManager() {
         pets = new ArrayList<>();
     }
 
-    public static PetManager getInstance(){
-        if(instance == null){
+    public static PetManager getInstance() {
+        if (instance == null) {
             instance = new PetManager();
         }
         return instance;
     }
 
-    public void addPet(Pet pet){
+    public void addPet(Pet pet) {
         pets.add(pet);
     }
 
@@ -93,9 +93,9 @@ public class PetManager {
         }
     }
 
-    public Pet findPetID(String petID){
-        for(Pet pet : pets){
-            if(pet.getPetID().equalsIgnoreCase(petID)){
+    public Pet findPetID(String petID) {
+        for (Pet pet : pets) {
+            if (pet.getPetID().equalsIgnoreCase(petID)) {
                 return pet;
             }
         }

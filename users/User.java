@@ -5,48 +5,48 @@ import java.util.Scanner;
 public abstract class User {
     private final String firstName;
     private final String lastName;
+    private final int age;
     private String emailAddress;
     private String address;
-    private final String birthDay;
     private String phoneNumber;
     private String password;
 
-    public User(String firstName, String lastName, String emailAddress,
-                String address, String birthDay, String phoneNumber, String password){
+    public User(String firstName, String lastName, int age, String emailAddress,
+            String address, String phoneNumber, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.age = age;
         this.emailAddress = emailAddress;
         this.address = address;
-        this.birthDay = birthDay;
         this.phoneNumber = phoneNumber;
         this.password = password;
     }
 
-    public String getFirstName(){
+    public String getFirstName() {
         return firstName;
     }
 
-    public String getLastName(){
+    public String getLastName() {
         return lastName;
     }
 
-    public String getEmailAddress(){
+    public int getAge() {
+        return age;
+    }
+
+    public String getEmailAddress() {
         return emailAddress;
     }
 
-    public String getAddress(){
+    public String getAddress() {
         return address;
     }
 
-    public String getBirthDay(){
-        return birthDay;
-    }
-
-    public String getPhoneNumber(){
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
 
