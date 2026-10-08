@@ -338,6 +338,24 @@ public class DataValidation {
         return input;
     }
 
+    public static String validatePetID(String prompt, String regex){
+        String id = "";
+        boolean isValid = false;
+        while(!isValid){
+            System.out.print(prompt);
+            id = sc.nextLine().trim().toUpperCase();
+
+            if(id.isEmpty()){
+                System.out.println("Error: Pet ID cannot be empty.");
+            } else if(!id.matches(regex)){
+                System.out.println("Invalid Pet ID. Try another ID.");
+            } else{
+                isValid = true;
+            }
+        }
+        return id;
+    }
+
     // Builds a placeholder Pet of the given category, e.g. for lookups or
     // comparisons. Returns null if unknown.
     public static Pet createTempPet(String category, String petID) {
@@ -363,5 +381,12 @@ public class DataValidation {
             default:
                 return null;
         }
+    }
+
+    //TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS
+    private static int transactionCtr = 0;
+    public static String transactionNumGenerator(){
+        transactionCtr++;
+        return "T" + String.format("%07d", transactionCtr);
     }
 }

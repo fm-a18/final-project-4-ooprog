@@ -1,5 +1,6 @@
 package users;
 
+import inventory.AdoptionStatus;
 import inventory.Pet;
 import utils.FileHandler;
 import utils.PetManager;
@@ -298,7 +299,52 @@ public class Customer extends User{
     }
 
     private void requestAdoption() {  
+        //FILTER TO SHOW ONLY AVAILABLE PETS viewAllPets();
 
+        String petID = DataValidation.validatePetID("Enter Pet ID to request adoption: ", "^(?i)D|C|B\\d{4}$");
+
+        Pet selectedPet = null;
+    
+        for(Pet pet : pets){
+           if(pet.idExists(petID)){
+            selectedPet = pet;
+            break;
+           }
+        }
+
+        if(selectedPet == null) {
+            System.out.println("Pet ID: " + petID + " not found.");
+            return;
+        }
+
+        selectedPet.setAdoptionStatus(AdoptionStatus.PENDING_REVIEW);
+        //MAKE A TRANSACTION NUMBER AND SAVE TO RESERVE.TXT
+        String transactionNum = DataValidation.transactionNumGenerator();
+
+        //APPEND INFORMATION FROM USER_LIST.TXT AND PET_LIST.TXT TO RESERVE.TXT
+
+        //String adoptionStatusRecord = buildAdoptionStatusRecord();
+        
+    }
+
+    private static final int RES_TRANSACTION_ID   = 0;
+    private static final int RES_FIRST_NAME       = 1;
+    private static final int RES_LAST_NAME        = 2;
+    private static final int RES_EMAIL            = 3;
+    private static final int RES_PET_ID           = 4;
+    private static final int RES_PAYMENT_TYPE     = 5;
+    private static final int RES_DOWN_PAYMENT     = 6;
+    private static final int RES_BALANCE_LEFT     = 7;
+    private static final int RES_DATE_REQUESTED   = 8;
+
+    private String buildAdoptionStatusRecord() {
+
+        return String.join("|",
+                parts[RES_TRANSACTION_ID], parts[RES_FIRST_NAME], parts[RES_LAST_NAME],
+                parts[RES_EMAIL], parts[RES_PET_ID], parts[RES_PAYMENT_TYPE],
+                parts[RES_DOWN_PAYMENT], parts[RES_BALANCE_LEFT],
+                parts[RES_DATE_REQUESTED], dateFinalized, approvedByEmail
+        );
     }
 
     private void cancelAdoption() {
