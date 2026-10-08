@@ -31,6 +31,7 @@ public class Customer extends User {
                     "#Browse Pets",
                     "View All Available Pets",
                     "Search by Category",
+                    "Search Specific Pets",
                     "Filter by Price",
 
                     "#Adoption",
@@ -43,7 +44,7 @@ public class Customer extends User {
                     "#Exit",
                     "Log Out");
             int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 4, 5, 6, 7);
+                    1, 2, 3, 4, 5, 6, 7, 8);
 
             switch (choice) {
                 case 1 -> viewAllPets();
@@ -53,7 +54,7 @@ public class Customer extends User {
                 case 5 -> requestAdoption();
                 case 6 -> cancelAdoption();
                 case 7 -> requestReturn();
-                case 0 -> isDone = true;
+                case 8 -> isDone = true;
             }
         }
     }
