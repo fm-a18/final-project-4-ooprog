@@ -381,6 +381,23 @@ public class DataValidation {
         return input;
     }
 
+    public static String validatePetID(String prompt, String regex){
+        String id = "";
+        boolean isValid = false;
+        while(!isValid){
+            System.out.println("PET ID FORMAT: First letter of pet type (D, C, B) followed by 4 digits (e.g., D0001, C0002, B0003)");
+            System.out.print(prompt);
+            id = sc.nextLine().trim().toUpperCase();
+
+            if(id.isEmpty()){
+                System.out.println("Error: Pet ID cannot be empty.");
+            } else if(!id.matches(regex)){
+                System.out.println("Invalid Pet ID. Try another ID.");
+            } else{
+                isValid = true;
+            }
+        }
+        return id;
     public static String categoryValidation(Scanner sc) {
         boolean isValidated = false;
         String input = "";
@@ -437,5 +454,12 @@ public class DataValidation {
             default:
                 return null;
         }
+    }
+
+    //TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS
+    private static int transactionCtr = 0;
+    public static String transactionNumGenerator(){
+        transactionCtr++;
+        return "T" + String.format("%07d", transactionCtr);
     }
 }

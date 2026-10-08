@@ -67,6 +67,10 @@ public abstract class Pet {
         return adoptionStatus.toString();
     }
 
+    public boolean idExists(String petID){
+        return this.petID.equalsIgnoreCase(petID);
+    }
+
     public void setAdoptionStatus(AdoptionStatus adoptionStatus) {
         if (adoptionStatus == null) {
             throw new IllegalArgumentException("Adoption status cannot be null");
