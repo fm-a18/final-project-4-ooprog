@@ -16,10 +16,10 @@ import java.time.format.DateTimeFormatter;
 import static users.Admin.pets;
 
 public class Coordinator extends User{
-    public Coordinator(String firstName, String lastName, String emailAddress,
-                       String address, String birthDay, String phoneNumber, String password){
-        super(firstName, lastName, emailAddress,
-                address,birthDay, phoneNumber, password);
+    public Coordinator(String userID, String firstName, String lastName, String emailAddress,
+                       String address, int age, String phoneNumber, String password){
+        super(userID, firstName, lastName, emailAddress,
+                address, age, phoneNumber, password);
     }
 
     @Override

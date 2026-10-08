@@ -1,5 +1,6 @@
 package utils;
 
+import java.util.Random;
 import java.util.Scanner;
 import inventory.Bird;
 import inventory.Cat;
