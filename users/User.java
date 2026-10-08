@@ -17,6 +17,7 @@ public abstract class User {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.age = age;
         this.emailAddress = emailAddress;
         this.address = address;
         this.age = age;
@@ -35,27 +36,27 @@ public abstract class User {
         return firstName;
     }
 
-    public String getLastName(){
+    public String getLastName() {
         return lastName;
     }
 
-    public String getEmailAddress(){
-        return emailAddress;
+    public int getAge() {
+        return age;
     }
 
-    public String getAddress(){
-        return address;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
     public int getAge(){
         return age;
     }
 
-    public String getPhoneNumber(){
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
 

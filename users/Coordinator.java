@@ -1,12 +1,17 @@
 package users;
 
+import inventory.Dog;
 import utils.DataValidation;
 import utils.DisplayUtils;
 import inventory.Pet;
 import utils.PetManager;
 import utils.FileHandler;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
+import static users.Admin.pets;
+import java.time.format.DateTimeFormatter;
 
 import static users.Admin.pets;
 
@@ -21,6 +26,8 @@ public class Coordinator extends User{
     public String getRole(){
         return "Coordinator";
     }
+
+    public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
     public void showMenu(Scanner sc){
         DisplayUtils.printMenu("Pet Management",
@@ -77,65 +84,7 @@ public class Coordinator extends User{
     }
 
     private void searchByCategory(Scanner sc) {
-        // STRATEGY; TO BE CONTINUED
-        if(pets.isEmpty()){
-            System.out.println("No pets found.");
-            return;
-        }
-        boolean isDone = true;
-
-        while (isDone) {
-            DisplayUtils.printMenu("Search By Category",
-                    "#Pet Details",
-                    "Pet Name", "Type", "Breed", "Gender", "Age",
-                    "#Pet Records",
-                    "Adoption Status", "Adoption History", "Medical History");
-
-            int choice = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3, 4, 5, 6, 7, 8, 0);
-
-            switch (choice) {
-                case 1: {
-                    String petName = DataValidation.validateString("Enter pet name:");
-                    FileHandler.filterRecords("PET_LIST.txt", 1, petName);
-                    break;
-                }
-                case 2: {
-                    String petType = DataValidation.validateString("Enter pet type:");
-                    FileHandler.filterRecords("PET_LIST.txt", 2, petType);
-                    break;
-                }
-                case 3: {
-                    String petBreed = DataValidation.validateString("Enter pet breed:");
-                    FileHandler.filterRecords("PET_LIST.txt", 3, petBreed);
-                    break;
-                }
-                case 4: {
-                    String petGender = DataValidation.validateString("Enter pet gender:");
-                    FileHandler.filterRecords("PET_LIST.txt", 4, petGender);
-                    break;
-                }
-                case 5: {
-                    String petAge = DataValidation.validateString("Enter pet age:");
-                    FileHandler.filterRecords("PET_LIST.txt", 5, petAge);
-                    break;
-                }
-                case 6: {
-                    String petStatus = DataValidation.validateString("Enter adoption status:");
-                    FileHandler.filterRecords("PET_LIST.txt", 6, petStatus);
-                    break;
-                }
-                case 7: {
-                    // to be filled
-                }
-                case 8: {
-                    // to be filled
-                }
-                case 0: {
-                    isDone = false;
-                    break;
-                }
-            }
-        }
+        PetManager.getInstance().searchByCategory();
     }
 
     private void sortByCategory(Scanner sc) {
@@ -169,13 +118,12 @@ public class Coordinator extends User{
                     if (choicev1 == 'Y') {
                         String petMedHis = DataValidation.validateString("Enter medical history of pet: ");
                     }
-                    // to be filled, adoption histry
+                    System.out.println("Pet Added on " + LocalDate.now().format(dateFormat));
                     break;
                 }
                 case 2: {
                     String petID = DataValidation.validatePetIdInput("Enter Pet ID: ", "Cat");
-                    String petFirstName = DataValidation.validateString("Enter First Name: ");
-                    String petLastName = DataValidation.validateString("Enter Last Name: ");
+                    String petName = DataValidation.validateString("Enter Name: ");
                     String petBreed = DataValidation.validateString("Enter Breed: ");
                     char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
                     double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
@@ -183,7 +131,7 @@ public class Coordinator extends User{
                     if (choicev1 == 'Y') {
                         String petMedHis = DataValidation.validateString("Enter medical history of pet: ");
                     }
-                    // to be filled, adoption histry
+                    System.out.println("Pet Added on " + LocalDate.now().format(dateFormat));
                     break;
                 }
                 case 3: {
@@ -197,7 +145,7 @@ public class Coordinator extends User{
                     if (choicev1 == 'Y') {
                         String petMedHis = DataValidation.validateString("Enter medical history of pet: ");
                     }
-                    // to be filled, adoption histry
+                    System.out.println("Pet Added on " + LocalDate.now().format(dateFormat));
                     break;
                 }
                 case 0: {

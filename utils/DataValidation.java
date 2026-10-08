@@ -2,15 +2,15 @@ package utils;
 
 import java.util.Random;
 import java.util.Scanner;
-
 import inventory.Bird;
 import inventory.Cat;
 import inventory.Dog;
 import inventory.Pet;
-
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class DataValidation {
     public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
@@ -37,6 +37,33 @@ public class DataValidation {
             }
         }
         return input;
+    }
+
+    public static int validateCustomerAgeInput(String prompt) { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX
+                                                                // HUMAN AGE
+        boolean isRunning = true;
+        int number = 0;
+        String inputNumber = "";
+        while (isRunning) {
+            System.out.print(prompt);
+            inputNumber = sc.nextLine().trim();
+            if (!inputNumber.matches("-?(0|[1-9]\\d*)")) {
+                System.out.println("Invalid Input. Only input positive integers without leading zeros. Try Again.");
+                continue;
+            }
+            try {
+                number = Integer.parseInt(inputNumber);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid Input. Number is too large. Try Again.");
+                continue;
+            }
+            if (number < 18 && number > 90) {
+                System.out.println("Invalid Input. The age of the pet can only be from 18 - 90 years. Try again.");
+                continue;
+            }
+            isRunning = false;
+        }
+        return number;
     }
 
     public static int validatePetAgeInput(String prompt) { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX PET AGE
@@ -70,7 +97,7 @@ public class DataValidation {
         String input = "";
 
         while (!isValidated) {
-            System.out.println("Email Address: ");
+            System.out.print("Email Address: ");
             try {
                 input = sc.nextLine().trim();
             } catch (NoSuchElementException e) {
@@ -114,12 +141,27 @@ public class DataValidation {
         return input;
     }
 
+    public static LocalDate validateDate(String prompt) { //coordinator
+        LocalDate date = null;
+        while (date == null) {
+            System.out.print(prompt + ": ");
+            String input = sc.nextLine().trim();
+
+            try {
+                date = LocalDate.parse(input, dateFormat);
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid Date Format. Please use (MM-DD-YYYY).");
+            }
+        }
+        return date;
+    }
+
     public static String validatePhoneNumber() {
         boolean isValidated = false;
         String input = "";
 
         while (!isValidated) {
-            System.out.println("Phone Number: ");
+            System.out.print("Phone Number: ");
             try {
                 input = sc.nextLine().trim();
             } catch (NoSuchElementException e) {
@@ -150,7 +192,7 @@ public class DataValidation {
         boolean isValidated = false;
         String input = "";
         while (!isValidated) {
-            System.out.println("Password: ");
+            System.out.print("Password: ");
             try {
                 input = sc.nextLine().trim();
             } catch (NoSuchElementException e) {

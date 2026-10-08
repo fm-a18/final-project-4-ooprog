@@ -4,10 +4,12 @@ import inventory.Bird;
 import inventory.Cat;
 import inventory.Dog;
 import inventory.Pet;
+import inventory.AdoptionStatus;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.function.Function;
 
 public class FileHandler {
     public static String findRecord(String fileName, String searchFor, int colIndex) {
@@ -25,14 +27,51 @@ public class FileHandler {
         return null;
     }
 
-    public static ArrayList<String> filterRecords(String fileName, int index, String value) {
-        ArrayList<String> results = new ArrayList<>();
+
+    private static Pet parse(String line){
+        String[] parts = line.split("\\s*\\|\\s*");
+        if(parts.length < 8) {
+            return null;
+        }
+
+        try{
+            String petID = parts[0];
+            String petName = parts[1];
+            String petType = parts[2];
+            String petBreed = parts[3];
+            char petGender = parts[4].charAt(0);
+            int petAge = Integer.parseInt(parts[5]);
+            double petPrice = Double.parseDouble(parts[6]);
+            AdoptionStatus adoptionStatus = AdoptionStatus.valueOf(parts[7].toUpperCase());
+
+            Pet pet;
+            switch(petType.toLowerCase()){
+                case "dog" -> pet = new Dog(petID, petName, petBreed, petGender, petAge, petPrice);
+                case "cat" -> pet = new Cat(petID, petName, petBreed, petGender, petAge, petPrice);
+                case "bird" -> pet = new Bird(petID, petName, petBreed, petGender, petAge, petPrice);
+                default -> pet = null;
+            }
+
+            pet.setAdoptionStatus(adoptionStatus);
+            return pet;
+        }catch (IllegalArgumentException e){
+            return null;
+        }
+    }
+
+    public static ArrayList<Pet> filterRecords(String fileName, Object value, Function <Pet, ?> getters) {
+        ArrayList<Pet> results = new ArrayList<>();
+        String target = String.valueOf(value);
+
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\\s*\\|\\s*");
-                if (parts.length > index && parts[index].equalsIgnoreCase(value)) {
-                    results.add(line);
+                Pet pet = parse(line);
+                if (pet != null) continue;
+
+                String field = String.valueOf(getters.apply(pet));
+                if (field.equalsIgnoreCase(target)) {
+                    results.add(pet);
                 }
             }
         } catch (IOException e) {

@@ -44,23 +44,21 @@ public class DisplayUtils {
         System.out.println("-".repeat(TABLE_WIDTH));
     }
 
-    public static void displayPetsForStaff(ArrayList<Pet> pets) { // ID, Name, Type, Adoption Status
-
-        if (pets.isEmpty()) {
-            System.out.println("No pets found.");
-            return;
-        }
+    public static void displayPetsForStaff(ArrayList<Pet> pets) { // ID, Name, Type, Adoption Status, Medical History, Adoption History
 
         staffPetHeader("LIST OF PETS");
 
         for (Pet pet : pets) {
             System.out.printf(
-                    "%-10s | %-20s | %-15s | %-15s%n | %,10.2f%n",
+                    "%-10s | %-20s | %-15s | %-15s%n | %,10.2f%n | %-25s | %-25s%n",
                     pet.getPetID(),
                     pet.getPetName(),
                     pet.getType(),
                     pet.getAdoptionStatus(),
-                    pet.getPrice());
+                    pet.getPrice(),
+                    pet.getMedicalHistory(),
+                    pet.getAdoptionHistory());
+
         }
 
         System.out.println("-".repeat(TABLE_WIDTH));
@@ -137,7 +135,6 @@ public class DisplayUtils {
             }
             System.out.printf(" [%d] %s%n", ctr++, option);
         }
-        System.out.println(" [0] Back");
         System.out.println("=".repeat(MENU_WIDTH));
     }
 }
