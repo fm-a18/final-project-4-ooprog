@@ -3,6 +3,7 @@ import users.User;
 import utils.DataValidation;
 import utils.DisplayUtils;
 import utils.FileHandler;
+import users.Customer;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -14,15 +15,32 @@ public class Main {
     public static final ArrayList<Pet> listOfPets = new ArrayList<>();
 
     public static void adminPermissions() {
-
+        System.out.println("Admin");
     }
 
     public static void adoptionCoordinator() {
-
+        System.out.println("Coordinator");
     }
 
-    public static void adopter() {
+    public static void adopterSigning() {
+        boolean isDone = false;
+        while (!isDone) {
+            DisplayUtils.printMenu("CUSTOMER",
+                    "Sign Up",
+                    "Log In",
+                    "Exit");
+            int getChoice = DataValidation.intChoiceValidation("Selection Option", 1, 2, 3);
+            switch (getChoice) {
+                case 1 -> userSignUp();
+                case 2 -> userLogin();
+                case 3 -> isDone = true;
+            }
+        }
+    }
 
+    public static void adopterIn(Customer loggedInCustomer) {
+        listOfUsers.add(loggedInCustomer);
+        loggedInCustomer.showMenu(DataValidation.sc);
     }
 
     public static void userLogin() {
@@ -32,7 +50,7 @@ public class Main {
             return;
         }
         String email = DataValidation.validateEmailAddress();
-        String userData = FileHandler.findRecord("USER_LIST.txt", email, 2);
+        String userData = FileHandler.findRecord("USER_LIST.txt", email, 3);
         if (userData == null) {
             System.out.println("Account not found");
             return;
@@ -40,16 +58,20 @@ public class Main {
         String[] parts = userData.split("\\s*\\|\\s*");
 
         String password = DataValidation.validatePassword();
-        if (!parts[5].equals(password)) {
+        if (!parts[6].equals(password)) {
             System.out.println("Incorrect password.");
             return;
         }
         System.out.println("Login successful.");
+        Customer loggedInCustomer = new Customer(parts[0], parts[1], Integer.parseInt(parts[2]), parts[3], parts[4],
+                parts[5], parts[6]);
+        adopterIn(loggedInCustomer);
     }
 
     public static void userSignUp() {
-        String firstName = DataValidation.validateString("Enter First: ");
-        String lastName = DataValidation.validateString("Enter Last: ");
+        String firstName = DataValidation.validateString("Enter your First Name: ");
+        String lastName = DataValidation.validateString("Enter your Last Name: ");
+        int age = DataValidation.validateCustomerAgeInput("Enter your Age: ");
         String emailAddress;
         boolean emailExists;
         do {
@@ -68,7 +90,7 @@ public class Main {
 
         while (!isFileSaved) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("USER_LIST.txt", true))) {
-                writer.write(String.format("%s|%s|%s|%s|%s|%s%n", firstName, lastName, emailAddress,
+                writer.write(String.format("%s|%s|%s|%s|%s|%s|%s%n", firstName, lastName, age, emailAddress,
                         address, phoneNumber, password));
                 System.out.println("User successfully registered!");
                 isFileSaved = true;
@@ -88,16 +110,18 @@ public class Main {
         boolean isDone = false;
         while (!isDone) {
             DisplayUtils.printMenu("PET ADOPTION SYSTEM",
-                    "Login",
-                    "Sign Up",
-                    "Exit");
-            int getRole = DataValidation.intChoiceValidation("Selection Option", 1, 2, 3);
+                    "Customer",
+                    "Coordinator",
+                    "Admin",
+                    "Exit Program");
+            int getRole = DataValidation.intChoiceValidation("Selection Option", 1, 2, 3, 4);
             switch (getRole) {
-                case 1 -> userLogin();
-                case 2 -> userSignUp();
-                case 3 -> isDone = true;
+                case 1 -> adopterSigning();
+                case 2 -> adoptionCoordinator();
+                case 3 -> adminPermissions();
+                case 4 -> isDone = true;
             }
         }
-
+        System.out.println("Thank you!");
     }
 }

@@ -12,23 +12,22 @@ import java.util.Comparator;
 import java.util.Scanner;
 //import java.util.function.Function;
 
-
-public class Customer extends User{
-    public Customer(String firstName, String lastName, String emailAddress,
-                 String address, String birthDay, String phoneNumber, String password){
-        super(firstName, lastName, emailAddress,
-                address,birthDay, phoneNumber, password);
+public class Customer extends User {
+    public Customer(String firstName, String lastName, int age, String emailAddress,
+            String address, String phoneNumber, String password) {
+        super(firstName, lastName, age, emailAddress,
+                address, phoneNumber, password);
     }
 
     @Override
-    public String getRole(){
+    public String getRole() {
         return "Customer";
     }
 
-    public void showMenu(Scanner sc){
+    public void showMenu(Scanner sc) {
         boolean isDone = false;
 
-        while(!isDone){
+        while (!isDone) {
             DisplayUtils.printMenu("CUSTOMER MENU",
                     "#Browse Pets",
                     "View All Available Pets",
@@ -42,12 +41,14 @@ public class Customer extends User{
                     "Cancel Adoption Request",
 
                     "#Return",
-                    "Request Pet Return"
-            );
-            int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 4, 5, 6, 7, 0);
+                    "Request Pet Return",
 
-            switch(choice) {
+                    "#Exit",
+                    "Log Out");
+            int choice = DataValidation.intChoiceValidation("Select Option",
+                    1, 2, 3, 4, 5, 6, 7);
+
+            switch (choice) {
                 case 1 -> viewAllPets();
                 case 2 -> searchByCategory();
                 case 3 -> findSpecificPets();
@@ -63,7 +64,7 @@ public class Customer extends User{
     ArrayList<Pet> pets = PetManager.getInstance().getAllPets();
 
     private void viewAllPets() {
-        if(pets.isEmpty()) {
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
@@ -78,7 +79,7 @@ public class Customer extends User{
         }
 
         boolean isDone = false;
-        while(!isDone){
+        while (!isDone) {
             DisplayUtils.printMenu("SEARCH BY CATEGORY",
                     "#Select Category",
                     "Pet Name",
@@ -123,7 +124,7 @@ public class Customer extends User{
 
                     DisplayUtils.displayPetsForCustomer(petBreeds);
                     break;
-                case 4: //SEARCH PET BY GENDER
+                case 4: // SEARCH PET BY GENDER
                     DisplayUtils.printMenu("SEARCH BY PET GENDER",
                             "#Select Gender",
                             "Male",
@@ -133,8 +134,11 @@ public class Customer extends User{
                             1, 2, 0);
 
                     char gender;
-                    if(choiceGender == 1){gender = 'M';}
-                    else{gender = 'F';}
+                    if (choiceGender == 1) {
+                        gender = 'M';
+                    } else {
+                        gender = 'F';
+                    }
 
                     ArrayList<Pet> petGender = FileHandler.filterRecords("PETS_LIST.txt", String.valueOf(gender), Pet::getGender);
                     if(petGender.isEmpty()){
@@ -241,7 +245,7 @@ public class Customer extends User{
         }
 
         boolean isDone = false;
-        while(!isDone){
+        while (!isDone) {
             DisplayUtils.printMenu("FILTER BY PRICE",
                     "#Select Option",
                     "Ascending Price",
@@ -251,10 +255,10 @@ public class Customer extends User{
             int choice = DataValidation.intChoiceValidation("Select Option",
                     1, 2, 3, 0);
 
-            switch(choice){
+            switch (choice) {
                 case 1:
                     ArrayList<Pet> sortedPetsAscending = sortByPrice(1, pets);
-                    if(sortedPetsAscending.isEmpty()){
+                    if (sortedPetsAscending.isEmpty()) {
                         System.out.println("No pets found.");
                         return;
                     }
@@ -262,7 +266,7 @@ public class Customer extends User{
                     break;
                 case 2:
                     ArrayList<Pet> sortedPetsDescending = sortByPrice(2, pets);
-                    if(sortedPetsDescending.isEmpty()){
+                    if (sortedPetsDescending.isEmpty()) {
                         System.out.println("No pets found.");
                         return;
                     }
@@ -271,7 +275,7 @@ public class Customer extends User{
                 case 3:
                     ArrayList<Pet> filteredPets = filterByPriceRange();
 
-                    if(filteredPets.isEmpty()){
+                    if (filteredPets.isEmpty()) {
                         System.out.println("No pets found.");
                         return;
                     }
@@ -283,16 +287,16 @@ public class Customer extends User{
     }
 
     private ArrayList<Pet> sortByPrice(int order, ArrayList<Pet> pets) {
-    ArrayList<Pet> sortPrice = new ArrayList<>(pets);
+        ArrayList<Pet> sortPrice = new ArrayList<>(pets);
 
-      Comparator<Pet> comparator = Comparator.comparingDouble(Pet::getPrice);
+        Comparator<Pet> comparator = Comparator.comparingDouble(Pet::getPrice);
 
-      if(order == 2){
-        comparator = comparator.reversed();
-      }
+        if (order == 2) {
+            comparator = comparator.reversed();
+        }
 
-      sortPrice.sort(comparator);
-      return sortPrice;
+        sortPrice.sort(comparator);
+        return sortPrice;
     }
 
     private ArrayList<Pet> filterByPriceRange() {
@@ -300,8 +304,8 @@ public class Customer extends User{
         double startingPrice = DataValidation.validatePriceInput("Enter Starting Price: ");
         double endingPrice = DataValidation.validatePriceInput("Enter Ending Price: ");
 
-        for(Pet pet : pets){
-            if(pet.getPrice() >= startingPrice && pet.getPrice() <= endingPrice){
+        for (Pet pet : pets) {
+            if (pet.getPrice() >= startingPrice && pet.getPrice() <= endingPrice) {
                 filteredPets.add(pet);
             }
         }
