@@ -1,24 +1,18 @@
 package users;
 
 import inventory.AdoptionStatus;
-import inventory.Pet;
 import utils.PetManager;
 import utils.DataValidation;
-import utils.DisplayUtils;
 import utils.FileHandler;
-
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import static utils.DisplayUtils.printMenu;
 
 public abstract class Admin extends User{
-    public static final Scanner sc = new Scanner(System.in);
-
-    public Admin(String firstName, String lastName, String emailAddress,
-                 String address, String birthDay, String phoneNumber, String password){
-        super(firstName, lastName, emailAddress,
-                address,birthDay, phoneNumber, password);
+    public Admin(String userID, String firstName, String lastName, String emailAddress,
+                 String address, int age, String phoneNumber, String password){
+        super(userID, firstName, lastName, emailAddress,
+                address, age, phoneNumber, password);
     }
 
     @Override
@@ -36,7 +30,6 @@ public abstract class Admin extends User{
                     "Search by Category",
                     "Sort by Category",
                     "Add Pet",
-                    "Update Pet Status",
 
                     "#Adoption Management",
                     "Approve Adoption Request",
@@ -44,52 +37,46 @@ public abstract class Admin extends User{
                     "Approve Return Request",
 
                     "#Shelter Management",
-                    "Manage Incoming Pets"
+                    "Manage Incoming Pets",
+
+                    "#Return"
             );
             int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 4, 5, 6, 7, 8, 9, 0);
+                    1, 2, 3, 4, 5, 6, 7, 8, 0);
 
             switch(choice) {
                 case 1 -> viewAllPets();
                 case 2 -> searchByCategory();
-                case 3 -> sortByCategory();
+                case 3 -> filterByStatus();
                 case 4 -> addPet();
-                case 5 -> updatePetStatus();
-                case 6 -> approveAdoptionRequest();
-                case 7 -> cancelAdoptionRequest();
-                case 8 -> approvePetReturn();
-                case 9 -> manageIncomingPets();
+                case 5 -> approveAdoptionRequest();
+                case 6 -> cancelAdoptionRequest();
+                case 7 -> approvePetReturn();
+                case 8 -> manageIncomingPets();
                 case 0 -> isDone = true;
             }
         }
     }
 
-    public static final ArrayList<Pet> pets = new ArrayList<>();
-
     private void viewAllPets(){
-        ArrayList<Pet> pets = PetManager.getInstance().getAllPets();
-        DisplayUtils.displayPetsForStaff(pets);
+        PetManager.getInstance().getAllPets();
     }
 
     private void searchByCategory() {
-        ArrayList<Pet> pets = PetManager.getInstance().getAllPets();
-
+        PetManager.getInstance().searchByCategory();
     }
 
-    private void sortByCategory() {
+    private void filterByStatus() {
+        PetManager.getInstance().filterByStatus();
     }
 
     private void addPet() {
-        ArrayList<Pet> pets = PetManager.getInstance().addPet(pet);
+        PetManager.getInstance().addPet(pet);
     }
 
-    private void updatePetStatus() {
-        String searchForID = DataValidation.petIdValidation();
-    }
-
-    private String findAndConfirmTransaction(String fileName, String action){
+    public String findAndConfirmTransaction(String fileName, String action){
         String findTransactionNum = DataValidation.transactionNumValidation();
-        String record = FileHandler.findRecord("RESERVE.txt", findTransactionNum, 0);
+        String record = FileHandler.findRecord(fileName, findTransactionNum, 0);
 
         if (record == null){
             System.out.println("Transaction not found.");
@@ -98,9 +85,9 @@ public abstract class Admin extends User{
 
         System.out.println("Transaction number found.");
 
-        char approve = DataValidation.charChoiceValidation("Approve Adoption Request?", 'Y', 'N');
+        char approve = DataValidation.charChoiceValidation( "Approve " + action + "?", 'Y', 'N');
         if(approve != 'Y'){
-            System.out.println("Adoption not approved.");
+            System.out.println(action + " not approved.");
             return null;
         }
         return record;
@@ -175,7 +162,7 @@ public abstract class Admin extends User{
 
     private void manageIncomingPets() {
         System.out.println("Adoption Requests");
-        String record = findAndConfirmTransaction("RESERVE.txt", "Reserve");
+        String record = findAndConfirmTransaction("RESERVE.txt", "Adoption Request");
         if (record == null) return;
 
         String[] parts = record.split("\\s*\\|\\s*");
