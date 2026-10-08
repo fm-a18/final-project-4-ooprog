@@ -342,6 +342,7 @@ public class DataValidation {
         String id = "";
         boolean isValid = false;
         while(!isValid){
+            System.out.println("PET ID FORMAT: First letter of pet type (D, C, B) followed by 4 digits (e.g., D0001, C0002, B0003)");
             System.out.print(prompt);
             id = sc.nextLine().trim().toUpperCase();
 
