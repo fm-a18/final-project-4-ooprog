@@ -81,4 +81,17 @@ public class RecordManager {
     };
   }
 
+  private static Reservation parseReservation(String[] pet){
+    return new Reservation(
+      pet[AS_TRANSACTION_NUM].trim(), 
+      pet[AS_FIRST_NAME].trim(), 
+      pet[AS_LAST_NAME].trim(), 
+      pet[AS_EMAIL].trim(), 
+      pet[AS_PET_ID].trim(), 
+      pet[AS_PAYMENT_PLAN].trim(), 
+      Double.parseDouble(pet[AS_DOWN_PAYMENT].trim().replace(",", "")), 
+      Double.parseDouble(pet[AS_BALANCE_LEFT].trim().replace(",", "")), 
+      LocalDate.parse(pet[AS_DATE_REQUESTED].trim()));
+  }
+
 }
