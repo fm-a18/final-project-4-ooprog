@@ -5,6 +5,8 @@ import inventory.Pet;
 import utils.FileHandler;
 import utils.DataValidation;
 import utils.DisplayUtils;
+import utils.Reservation;
+import utils.RecordManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -373,7 +375,7 @@ public class Customer extends User {
         //APPEND INFORMATION FROM USER_LIST.TXT AND PET_LIST.TXT TO RESERVE.TXT
         String reservationRecord = buildAdoptionStatusRecord(selectedPet, paymentPlan, downPaymentAmount, balanceLeft, transactionNum);
         
-        FileHandler.appendRecord("RESERVE.txt", reservationRecord);
+        FileHandler.appendRecord("RESERVED.txt", reservationRecord);
     }
 
     private static String paymentPlanSelection(){
@@ -429,7 +431,7 @@ public class Customer extends User {
         parts[AS_EMAIL] = this.getEmailAddress();
         parts[AS_PET_ID] = selectedPet.getPetID();
         parts[AS_PAYMENT_PLAN] = paymentPlan;
-        parts[AS_DOWN_PAYMENT] = String.format("%,.2f", downPayment);;
+        parts[AS_DOWN_PAYMENT] = String.format("%,.2f", downPayment);
         parts[AS_BALANCE_LEFT] = String.format("%,.2f", balanceLeft);
         parts[AS_DATE_REQUESTED] = java.time.LocalDate.now().toString();
 
@@ -437,6 +439,53 @@ public class Customer extends User {
     }
 
     private void cancelAdoption() {
+        ArrayList<Reservation> reserveDetails = RecordManager.viewAllReserveRecords();
+        String transactionNum = DataValidation.transactionNumberValidation("Enter Transaction Number from your Request of Adoption Confirmation Message: ");
+
+        Reservation found = null;
+
+        for(Reservation reserve : reserveDetails){
+            if(reserve.getTransactionNum().equalsIgnoreCase(transactionNum)){
+                found = reserve;
+                break;
+            }
+        }
+
+        if(found != null){
+            System.out.println("Reservation found!");
+            DisplayUtils.printSummaryBox("PET DETAILS",
+                        new String[][] {
+                            { "Customer's Name", found.getFirstName() + " " + found.getLastName()},
+                            { "Customer's Email", found.getEmail()},
+                            { "Transaction Number", found.getTransactionNum()},
+                            { "Pet ID", found.getPetID()},
+                            { "Payment Plan", found.getPaymentPlan()},
+                            { "Down Payment", String.valueOf(found.getDownPayment())},
+                            { "Balance", String.valueOf(found.getBalanceLeft())},
+                            { "Date Requested", found.getDateRequested().toString()}
+                        }
+                );
+        }else {
+            System.out.println("No reservation found for transaction number: " + transactionNum);
+        }
+
+        char cancelAdoptionConfirmation = DataValidation.charChoiceValidation("Are you sure you want to cancel your reservation? (y/n): ", 'y', 'n');
+
+        if(cancelAdoptionConfirmation == 'n'){
+            System.out.println("Adoption Cancellation Cancelled.");
+            return;
+        }
+
+        ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
+        for(Pet pet : pets){
+            if(found.getPetID().equalsIgnoreCase(pet.getPetID())){
+                pet.setAdoptionStatus(AdoptionStatus.AVAILABLE);
+                break;
+            }
+        }
+
+        FileHandler.removeRecord("RESERVED.txt", found.getPetID(), AS_PET_ID);
+        System.out.println("Cancellation of Pet Request Adoption Successful.");
     }
 
     private void requestReturn() {

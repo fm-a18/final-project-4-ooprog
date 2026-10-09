@@ -462,4 +462,30 @@ public class DataValidation {
         transactionCtr++;
         return "T" + String.format("%07d", transactionCtr);
     }
+
+    public static String transactionNumberValidation(String prompt){
+        String transactionNum = "";
+        boolean isValid = false;
+        while(!isValid){
+            System.out.print(prompt);
+            try{
+                transactionNum = sc.nextLine().trim().toUpperCase();
+            }catch(NoSuchElementException e){
+                System.out.println("Error: Transaction Number cannot be empty. Please try again.");
+                continue;
+            }
+
+            if(transactionNum.isEmpty()){
+                System.out.println("Error: Transaction Number cannot be empty.");
+            }else if(!transactionNum.matches("^T\\d{7}$")){
+                System.out.println("Invalid Transaction Number. Please input the transaction number given after the request for adoption is granted.");
+            }else{
+                isValid = true;
+            }
+        }
+
+
+
+        return transactionNum;
+    }
 }
