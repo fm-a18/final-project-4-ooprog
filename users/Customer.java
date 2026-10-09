@@ -13,10 +13,9 @@ import java.util.Scanner;
 //import java.util.function.Function;
 
 public class Customer extends User {
-    public Customer(String firstName, String lastName, int age, String emailAddress,
-            String address, String phoneNumber, String password) {
-        super(firstName, lastName, age, emailAddress,
-                address, phoneNumber, password);
+    public Customer(String userID, String firstName, String lastName, int age, String emailAddress, String address, String phoneNumber, String password) {
+        super(userID, firstName, lastName, emailAddress,
+                address, age, phoneNumber, password);
     }
 
     @Override
