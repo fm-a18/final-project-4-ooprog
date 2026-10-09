@@ -15,37 +15,35 @@ import java.time.format.DateTimeFormatter;
 
 import static users.Admin.pets;
 
-public class Coordinator extends User{
-    public Coordinator(String firstName, String lastName, String emailAddress,
-                       String address, String birthDay, String phoneNumber, String password){
-        super(firstName, lastName, emailAddress,
-                address,birthDay, phoneNumber, password);
+public class Coordinator extends User {
+    public Coordinator(String firstName, String lastName, int age, String emailAddress,
+            String address, String phoneNumber, String password) {
+        super(firstName, lastName, age, emailAddress,
+                address, phoneNumber, password);
     }
 
     @Override
-    public String getRole(){
+    public String getRole() {
         return "Coordinator";
     }
 
     public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
-    public void showMenu(Scanner sc){
+    public void showMenu(Scanner sc) {
         DisplayUtils.printMenu("Pet Management",
                 "View All Available Pets",
                 "Search by Category",
                 "Sort by Category",
                 "Add Pet",
-                "Update Pet Status"
-        );
+                "Update Pet Status");
 
         DisplayUtils.printMenu("Customer Assistance",
                 "Request for Adoption",
-                "Request for Pet Return"
-        );
+                "Request for Pet Return");
 
         boolean isDone = false;
 
-        while(!isDone){
+        while (!isDone) {
             DisplayUtils.printMenu("ADMIN MENU",
                     "#Pet Management",
                     "View All Available Pets",
@@ -56,12 +54,11 @@ public class Coordinator extends User{
 
                     "#Customer Assistance",
                     "Request Adoption",
-                    "Request Pet Return"
-            );
+                    "Request Pet Return");
             int choice = DataValidation.intChoiceValidation("Select Option",
                     1, 2, 3, 4, 5, 6, 7, 0);
 
-            switch(choice) {
+            switch (choice) {
                 case 1 -> viewAllPets();
                 case 2 -> searchByCategory(sc);
                 case 3 -> sortByCategory(sc);
@@ -75,7 +72,7 @@ public class Coordinator extends User{
     }
 
     private void viewAllPets() {
-        if(pets.isEmpty()){
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
@@ -89,7 +86,7 @@ public class Coordinator extends User{
 
     private void sortByCategory(Scanner sc) {
         // TO BE CHANGED; STRATEGY NEEDED
-        if(pets.isEmpty()){
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
@@ -97,7 +94,7 @@ public class Coordinator extends User{
     }
 
     private void addPet(Scanner sc) {
-        if(pets.isEmpty()){
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
@@ -114,7 +111,8 @@ public class Coordinator extends User{
                     String petBreed = DataValidation.validateString("Enter Breed: ");
                     char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
                     double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
-                    char choicev1 = DataValidation.charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
+                    char choicev1 = DataValidation
+                            .charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
                     if (choicev1 == 'Y') {
                         String petMedHis = DataValidation.validateString("Enter medical history of pet: ");
                     }
@@ -127,7 +125,8 @@ public class Coordinator extends User{
                     String petBreed = DataValidation.validateString("Enter Breed: ");
                     char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
                     double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
-                    char choicev1 = DataValidation.charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
+                    char choicev1 = DataValidation
+                            .charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
                     if (choicev1 == 'Y') {
                         String petMedHis = DataValidation.validateString("Enter medical history of pet: ");
                     }
@@ -141,7 +140,8 @@ public class Coordinator extends User{
                     String petBreed = DataValidation.validateString("Enter Breed: ");
                     char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
                     double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
-                    char choicev1 = DataValidation.charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
+                    char choicev1 = DataValidation
+                            .charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
                     if (choicev1 == 'Y') {
                         String petMedHis = DataValidation.validateString("Enter medical history of pet: ");
                     }
@@ -158,7 +158,7 @@ public class Coordinator extends User{
     }
 
     private void updatePetStatus(Scanner sc) {
-        if(pets.isEmpty()){
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }

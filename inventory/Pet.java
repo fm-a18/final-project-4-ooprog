@@ -103,4 +103,5 @@ public abstract class Pet {
     public String getMedicalHistory() {
         return formatHistory(medicalHistory, "No medical history");
     }
+
 }

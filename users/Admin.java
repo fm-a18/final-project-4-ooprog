@@ -13,10 +13,10 @@ import java.util.Scanner;
 public class Admin extends User {
     public static final Scanner sc = new Scanner(System.in);
 
-    public Admin(String firstName, String lastName, String emailAddress,
-            String address, String birthDay, String phoneNumber, String password) {
-        super(firstName, lastName, emailAddress,
-                address, birthDay, phoneNumber, password);
+    public Admin(String firstName, String lastName, int age, String emailAddress,
+            String address, String phoneNumber, String password) {
+        super(firstName, lastName, age, emailAddress,
+                address, phoneNumber, password);
     }
 
     @Override

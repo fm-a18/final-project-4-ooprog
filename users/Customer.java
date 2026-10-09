@@ -57,6 +57,7 @@ public class Customer extends User {
                 case 8 -> isDone = true;
             }
         }
+        System.out.println("Logging out...");
     }
 
     ArrayList<Pet> pets = PetManager.getInstance().getAllPets();
