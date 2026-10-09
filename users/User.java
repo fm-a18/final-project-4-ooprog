@@ -3,16 +3,18 @@ package users;
 import java.util.Scanner;
 
 public abstract class User {
+    private final String userID;
     private final String firstName;
     private final String lastName;
     private final int age;
-    private String emailAddress;
-    private String address;
-    private String phoneNumber;
-    private String password;
+    private final String emailAddress;
+    private final String address;
+    private final String phoneNumber;
+    private final String password;
 
-    public User(String firstName, String lastName, int age, String emailAddress,
-            String address, String phoneNumber, String password) {
+    public User(String userID, String firstName, String lastName, int age, String emailAddress,
+                String address, String phoneNumber, String password){
+        this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
@@ -22,7 +24,11 @@ public abstract class User {
         this.password = password;
     }
 
-    public String getFirstName() {
+    public String getUserID(){
+        return userID;
+    }
+
+    public String getFirstName(){
         return firstName;
     }
 
@@ -36,10 +42,6 @@ public abstract class User {
 
     public String getEmailAddress() {
         return emailAddress;
-    }
-
-    public String getAddress() {
-        return address;
     }
 
     public String getPhoneNumber() {
