@@ -57,7 +57,7 @@ public class DataValidation {
                 System.out.println("Invalid Input. Number is too large. Try Again.");
                 continue;
             }
-            if (number < 18 && number > 90) {
+            if (number < 18 || number > 90) {
                 System.out.println("Invalid Input. The age of the pet can only be from 18 - 90 years. Try again.");
                 continue;
             }
@@ -83,7 +83,7 @@ public class DataValidation {
                 System.out.println("Invalid Input. Number is too large. Try Again.");
                 continue;
             }
-            if (number < 1 && number > 15) {
+            if (number < 1 ||number > 15) {
                 System.out.println("Invalid Input. The age of the pet can only be from 1 - 15 years. Try again.");
                 continue;
             }
@@ -124,16 +124,19 @@ public class DataValidation {
         String input = "";
 
         while (!isValidated) {
+            System.out.println("Email Address: ");
             try {
                 input = sc.nextLine().trim();
             } catch (NoSuchElementException e) {
-                System.out.println("Error: Address cannot be empty. Please try again.");
+                System.out.println("Error: Email Address cannot be empty. Please try again.");
                 continue;
             }
             if (input.isEmpty()) {
-                System.out.println("Error: Address cannot be empty.");
-            } else if (!input.matches("^(?=.*[A-Za-z])[A-Za-z0-9.,#\\-/\\s]{10,150}$")) {
-                System.out.println("Invalid address. Please enter a valid address (10-150 characters).");
+                System.out.println("Error: Email Address cannot be empty.");
+            } else if (!emailExists(input)){
+                System.out.println("Error: Email already exists.");
+            }else if (!input.matches("^(?=.*[A-Za-z])[A-Za-z0-9.,#\\-/\\s]{10,150}$")) {
+                System.out.println("Invalid Email Address. Please enter a valid Email Address.");
             } else {
                 isValidated = true;
             }
@@ -218,7 +221,7 @@ public class DataValidation {
             System.out.print(prompt + "(" + getValidIntChoices(choices) + "): ");
             String input = sc.nextLine().trim();
 
-            if (!input.matches("[1-9][0-9]*")) {
+            if (!input.matches("0|[1-9][0-9]*")) {
                 printIntChoiceError(choices);
                 continue;
             }
@@ -381,23 +384,25 @@ public class DataValidation {
         return input;
     }
 
-    public static String validatePetID(String prompt, String regex){
+    public static String validatePetID(String prompt, String regex) {
         String id = "";
         boolean isValid = false;
-        while(!isValid){
+        while (!isValid) {
             System.out.println("PET ID FORMAT: First letter of pet type (D, C, B) followed by 4 digits (e.g., D0001, C0002, B0003)");
             System.out.print(prompt);
             id = sc.nextLine().trim().toUpperCase();
 
-            if(id.isEmpty()){
+            if (id.isEmpty()) {
                 System.out.println("Error: Pet ID cannot be empty.");
-            } else if(!id.matches(regex)){
+            } else if (!id.matches(regex)) {
                 System.out.println("Invalid Pet ID. Try another ID.");
-            } else{
+            } else {
                 isValid = true;
             }
         }
         return id;
+    }
+
     public static String categoryValidation(Scanner sc) {
         boolean isValidated = false;
         String input = "";
@@ -483,9 +488,6 @@ public class DataValidation {
                 isValid = true;
             }
         }
-
-
-
         return transactionNum;
     }
 }

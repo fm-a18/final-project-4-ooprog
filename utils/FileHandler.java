@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.function.Function;
 
+import static inventory.AdoptionStatus.PENDING_REVIEW;
+
 public class FileHandler {
     public static String findRecord(String fileName, String searchFor, int colIndex) {
         try (Scanner read = new Scanner(new File(fileName))) {
@@ -101,7 +103,8 @@ public class FileHandler {
                 default -> pet = null;
             }
 
-            pet.setAdoptionStatus(adoptionStatus);
+            assert pet != null;
+            pet.setAdoptionStatus(PENDING_REVIEW);
             return pet;
         }catch (IllegalArgumentException e){
             return null;
@@ -214,10 +217,12 @@ public class FileHandler {
                 if(pet != null){
                     pets.add(pet);
                 }
+                return pets;
             }
         } catch (IOException e){
             System.out.println("Error in reading file.");
         }
+        return null;
     }
 
     private static Pet getPet(int choice, String[] parts) {
