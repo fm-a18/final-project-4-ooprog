@@ -29,7 +29,7 @@ public class RecordManager {
 
 
   //reader
-  private static<T> ArrayList<T> readRecords(String fileName, int expectedFields, Function<String[], T> parser){
+  public static<T> ArrayList<T> readRecords(String fileName, int expectedFields, Function<String[], T> parser){
     ArrayList<T> records = new ArrayList<>();
     File file = new File(fileName);
 
@@ -64,7 +64,7 @@ public class RecordManager {
     return records;
   }
 
-  private static Pet parsePet(String[] pet){
+  public static Pet parsePet(String[] pet){
     String id    = pet[PET_ID].trim();
     String name  = pet[PET_NAME].trim();
     String type  = pet[PET_TYPE].trim();
@@ -81,7 +81,7 @@ public class RecordManager {
     };
   }
 
-  private static Reservation parseReservation(String[] pet){
+  public static Reservation parseReservation(String[] pet){
     return new Reservation(
       pet[AS_TRANSACTION_NUM].trim(), 
       pet[AS_FIRST_NAME].trim(), 
@@ -92,6 +92,10 @@ public class RecordManager {
       Double.parseDouble(pet[AS_DOWN_PAYMENT].trim().replace(",", "")), 
       Double.parseDouble(pet[AS_BALANCE_LEFT].trim().replace(",", "")), 
       LocalDate.parse(pet[AS_DATE_REQUESTED].trim()));
+  }
+
+  public static ArrayList<Reservation> viewAllReserveRecords() {
+    return readRecords("RESERVE.txt", AS_FIELD_COUNT, RecordManager::parseReservation);
   }
 
 }
