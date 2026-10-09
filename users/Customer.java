@@ -437,6 +437,10 @@ public class Customer extends User {
     }
 
     private void cancelAdoption() {
+        
+        String transactionNum = DataValidation.transactionNumberValidation("Enter Transaction Number from your Request of Adoption Confirmation Message: ");
+
+        if(transactionNum.equalsIgnoreCase()){}
     }
 
     private void requestReturn() {
