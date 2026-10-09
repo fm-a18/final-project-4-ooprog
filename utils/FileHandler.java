@@ -27,16 +27,16 @@ public class FileHandler {
         return null;
     }
 
-    public static ArrayList<Pet> viewAllRecords(String fileName){
+    public static ArrayList<Pet> viewAllPetRecords(){
         ArrayList<Pet> pets = new ArrayList<>();
-        File file = new File(fileName);
+        File file = new File("PET_LIST.txt");
 
         if(!file.exists() || file.length() == 0){
             System.out.println("File not found or empty.");
             return pets;
         }
 
-        try(BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+        try(BufferedReader reader = new BufferedReader(new FileReader("PET_LIST.txt"))) {
             String line;
             while((line = reader.readLine()) != null){
                 String[] parts = line.split("\\s*\\|\\s*");
@@ -76,7 +76,6 @@ public class FileHandler {
 
         return pets;
     }
-
 
     private static Pet parse(String line){
         String[] parts = line.split("\\s*\\|\\s*");
