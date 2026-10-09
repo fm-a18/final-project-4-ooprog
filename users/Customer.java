@@ -3,7 +3,6 @@ package users;
 import inventory.AdoptionStatus;
 import inventory.Pet;
 import utils.FileHandler;
-import utils.PetManager;
 import utils.DataValidation;
 import utils.DisplayUtils;
 
@@ -60,10 +59,12 @@ public class Customer extends User {
         }
     }
 
-    ArrayList<Pet> pets = PetManager.getInstance().getAllPets();
+    private final ArrayList<Pet> pets = FileHandler.viewAllRecords("PETS_LIST.txt");
 
     private void viewAllPets() {
-        if (pets.isEmpty()) {
+        ArrayList<Pet> pets = FileHandler.viewAllRecords("PETS_LIST.txt");
+
+        if(pets.isEmpty()){
             System.out.println("No pets found.");
             return;
         }

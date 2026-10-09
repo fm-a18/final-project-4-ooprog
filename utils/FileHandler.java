@@ -27,6 +27,56 @@ public class FileHandler {
         return null;
     }
 
+    public static ArrayList<Pet> viewAllRecords(String fileName){
+        ArrayList<Pet> pets = new ArrayList<>();
+        File file = new File(fileName);
+
+        if(!file.exists() || file.length() == 0){
+            System.out.println("File not found or empty.");
+            return pets;
+        }
+
+        try(BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while((line = reader.readLine()) != null){
+                String[] parts = line.split("\\s*\\|\\s*");
+                if(parts.length == 7) {
+                    try{
+                        String petID = parts[0].trim();
+                        String petName = parts[1].trim();
+                        String petType = parts[2].trim();
+                        String petBreed = parts[3].trim();
+                        char petGender = parts[4].trim().charAt(0);
+                        int petAge = Integer.parseInt(parts[5].trim());
+                        double petPrice = Double.parseDouble(parts[6].trim());
+
+                        Pet pet = switch (petType.toLowerCase()) {
+                            case "dog" -> new Dog(petID, petName, petBreed, petGender, petAge, petPrice);
+                            case "cat" -> new Cat(petID, petName, petBreed, petGender, petAge, petPrice);
+                            case "bird" -> new Bird(petID, petName, petBreed, petGender, petAge, petPrice);
+                            default -> null;
+                        };
+
+                        if (pet != null) {
+                            pets.add(pet);
+                        }
+                    } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+                        System.out.println("Invalid number format in record: " + line);
+                    }
+                    
+                }else{
+                    System.out.println("Invalid record format: " + line);
+                }
+            }
+        } catch(FileNotFoundException e){
+            System.out.println("File not found.");
+        } catch (IOException e) {
+            System.out.println("Error in reading file.");
+        }
+
+        return pets;
+    }
+
 
     private static Pet parse(String line){
         String[] parts = line.split("\\s*\\|\\s*");
