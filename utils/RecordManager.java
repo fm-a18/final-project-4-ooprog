@@ -5,6 +5,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.function.Function;
 
+import inventory.Bird;
+import inventory.Cat;
+import inventory.Dog;
+import inventory.Pet;
+
 public class RecordManager {
 
   //FOR PET_LIST.txt
@@ -58,4 +63,22 @@ public class RecordManager {
     }
     return records;
   }
+
+  private static Pet parsePet(String[] pet){
+    String id    = pet[PET_ID].trim();
+    String name  = pet[PET_NAME].trim();
+    String type  = pet[PET_TYPE].trim();
+    String breed = pet[PET_BREED].trim();
+    char gender  = pet[PET_GENDER].trim().charAt(0);
+    int age      = Integer.parseInt(pet[PET_AGE].trim());
+    double price = Double.parseDouble(pet[PET_PRICE].trim());
+
+    return switch(type.toLowerCase()){
+      case "dog" -> new Dog(id, name, breed, gender, age, price);
+      case "cat" -> new Cat(id, name, breed, gender, age, price);
+      case "bird" -> new Bird(id, name, breed, gender, age, price);
+      default -> null;
+    };
+  }
+
 }
