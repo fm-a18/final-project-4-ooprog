@@ -375,7 +375,7 @@ public class Customer extends User {
         //APPEND INFORMATION FROM USER_LIST.TXT AND PET_LIST.TXT TO RESERVE.TXT
         String reservationRecord = buildAdoptionStatusRecord(selectedPet, paymentPlan, downPaymentAmount, balanceLeft, transactionNum);
         
-        FileHandler.appendRecord("RESERVE.txt", reservationRecord);
+        FileHandler.appendRecord("RESERVED.txt", reservationRecord);
     }
 
     private static String paymentPlanSelection(){

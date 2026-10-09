@@ -95,7 +95,7 @@ public class RecordManager {
   }
 
   public static ArrayList<Reservation> viewAllReserveRecords() {
-    return readRecords("RESERVE.txt", AS_FIELD_COUNT, RecordManager::parseReservation);
+    return readRecords("RESERVED.txt", AS_FIELD_COUNT, RecordManager::parseReservation);
   }
 
 }
