@@ -50,7 +50,7 @@ public class Main {
             return;
         }
         String email = DataValidation.validateEmailAddress();
-        String userData = FileHandler.findRecord("USER_LIST.txt", email, 3);
+        String userData = FileHandler.findRecord("USER_LIST.txt", email, 4);
         if (userData == null) {
             System.out.println("Account not found");
             return;
@@ -58,13 +58,13 @@ public class Main {
         String[] parts = userData.split("\\s*\\|\\s*");
 
         String password = DataValidation.validatePassword();
-        if (!parts[6].equals(password)) {
+        if (!parts[7].equals(password)) {
             System.out.println("Incorrect password.");
             return;
         }
         System.out.println("Login successful.");
-        Customer loggedInCustomer = new Customer(parts[0], parts[1], Integer.parseInt(parts[2]), parts[3], parts[4],
-                parts[5], parts[6]);
+        Customer loggedInCustomer = new Customer(parts[0], parts[1], parts[2], Integer.parseInt(parts[3]), parts[4],
+                parts[5], parts[6], parts[7]);
         adopterIn(loggedInCustomer);
     }
 

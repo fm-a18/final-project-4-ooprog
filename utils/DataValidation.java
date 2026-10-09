@@ -58,11 +58,7 @@ public class DataValidation {
                 continue;
             }
             if (number < 18 || number > 90) {
-<<<<<<< HEAD
                 System.out.println("Invalid Input. The age can only be from 18 - 90 years. Try again.");
-=======
-                System.out.println("Invalid Input. The age of the pet can only be from 18 - 90 years. Try again.");
->>>>>>> master
                 continue;
             }
             isRunning = false;
@@ -87,7 +83,7 @@ public class DataValidation {
                 System.out.println("Invalid Input. Number is too large. Try Again.");
                 continue;
             }
-            if (number < 1 ||number > 15) {
+            if (number < 1 || number > 15) {
                 System.out.println("Invalid Input. The age of the pet can only be from 1 - 15 years. Try again.");
                 continue;
             }
@@ -138,9 +134,9 @@ public class DataValidation {
             }
             if (input.isEmpty()) {
                 System.out.println("Error: Email Address cannot be empty.");
-            } else if (!emailExists(input)){
+            } else if (!emailExists(input)) {
                 System.out.println("Error: Email already exists.");
-            }else if (!input.matches("^(?=.*[A-Za-z])[A-Za-z0-9.,#\\-/\\s]{10,150}$")) {
+            } else if (!input.matches("^(?=.*[A-Za-z])[A-Za-z0-9.,#\\-/\\s]{10,150}$")) {
                 System.out.println("Invalid Email Address. Please enter a valid Email Address.");
             } else {
                 isValidated = true;
@@ -393,7 +389,8 @@ public class DataValidation {
         String id = "";
         boolean isValid = false;
         while (!isValid) {
-            System.out.println("PET ID FORMAT: First letter of pet type (D, C, B) followed by 4 digits (e.g., D0001, C0002, B0003)");
+            System.out.println(
+                    "PET ID FORMAT: First letter of pet type (D, C, B) followed by 4 digits (e.g., D0001, C0002, B0003)");
             System.out.print(prompt);
             id = sc.nextLine().trim().toUpperCase();
 
@@ -466,30 +463,32 @@ public class DataValidation {
         }
     }
 
-    //TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS
+    // TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS
     private static int transactionCtr = 0;
-    public static String transactionNumGenerator(){
+
+    public static String transactionNumGenerator() {
         transactionCtr++;
         return "T" + String.format("%07d", transactionCtr);
     }
 
-    public static String transactionNumberValidation(String prompt){
+    public static String transactionNumberValidation(String prompt) {
         String transactionNum = "";
         boolean isValid = false;
-        while(!isValid){
+        while (!isValid) {
             System.out.print(prompt);
-            try{
+            try {
                 transactionNum = sc.nextLine().trim().toUpperCase();
-            }catch(NoSuchElementException e){
+            } catch (NoSuchElementException e) {
                 System.out.println("Error: Transaction Number cannot be empty. Please try again.");
                 continue;
             }
 
-            if(transactionNum.isEmpty()){
+            if (transactionNum.isEmpty()) {
                 System.out.println("Error: Transaction Number cannot be empty.");
-            }else if(!transactionNum.matches("^T\\d{7}$")){
-                System.out.println("Invalid Transaction Number. Please input the transaction number given after the request for adoption is granted.");
-            }else{
+            } else if (!transactionNum.matches("^T\\d{7}$")) {
+                System.out.println(
+                        "Invalid Transaction Number. Please input the transaction number given after the request for adoption is granted.");
+            } else {
                 isValid = true;
             }
         }

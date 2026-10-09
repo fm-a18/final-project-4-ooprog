@@ -14,17 +14,10 @@ import java.time.format.DateTimeFormatter;
 
 import static users.Admin.pets;
 
-<<<<<<< HEAD
 public class Coordinator extends User {
-    public Coordinator(String firstName, String lastName, int age, String emailAddress,
-            String address, String phoneNumber, String password) {
-        super(firstName, lastName, age, emailAddress,
-=======
-public class Coordinator extends User{
     public Coordinator(String userID, String firstName, String lastName, int age, String emailAddress,
-                       String address, String phoneNumber, String password){
+            String address, String phoneNumber, String password) {
         super(userID, firstName, lastName, age, emailAddress,
->>>>>>> master
                 address, phoneNumber, password);
     }
 
@@ -35,30 +28,11 @@ public class Coordinator extends User{
 
     public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
-<<<<<<< HEAD
     public void showMenu(Scanner sc) {
-        DisplayUtils.printMenu("Pet Management",
-                "View All Available Pets",
-                "Search by Category",
-                "Sort by Category",
-                "Add Pet",
-                "Update Pet Status");
-
-        DisplayUtils.printMenu("Customer Assistance",
-                "Request for Adoption",
-                "Request for Pet Return");
-
         boolean isDone = false;
 
         while (!isDone) {
-            DisplayUtils.printMenu("ADMIN MENU",
-=======
-    public void showMenu(Scanner sc){
-        boolean isDone = false;
-
-        while(!isDone){
             DisplayUtils.printMenu("COORDINATOR MENU",
->>>>>>> master
                     "#Pet Management",
                     "View All Available Pets",
                     "Search by Category",
@@ -68,13 +42,8 @@ public class Coordinator extends User{
 
                     "#Customer Assistance",
                     "Request Adoption",
-<<<<<<< HEAD
-                    "Request Pet Return");
-=======
                     "Cancel Adoption Request",
-                    "Request Pet Return"
-            );
->>>>>>> master
+                    "Request Pet Return");
             int choice = DataValidation.intChoiceValidation("Select Option",
                     1, 2, 3, 4, 5, 6, 7, 8, 0);
 
@@ -114,13 +83,8 @@ public class Coordinator extends User{
 
     }
 
-<<<<<<< HEAD
-    private void addPet(Scanner sc) {
-        if (pets.isEmpty()) {
-=======
     private void addPet() {
-        if(pets.isEmpty()){
->>>>>>> master
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
@@ -183,13 +147,8 @@ public class Coordinator extends User{
 
     }
 
-<<<<<<< HEAD
-    private void updatePetStatus(Scanner sc) {
-        if (pets.isEmpty()) {
-=======
     private void updatePetStatus() {
-        if(pets.isEmpty()){
->>>>>>> master
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
