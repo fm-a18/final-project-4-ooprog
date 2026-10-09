@@ -462,4 +462,8 @@ public class DataValidation {
         transactionCtr++;
         return "T" + String.format("%07d", transactionCtr);
     }
+
+    public static boolean validTransactionNumForRequestAdoption(String transactionNum){
+        return transactionNum.matches("^(?i)T\\d{7}$");
+    }
 }
