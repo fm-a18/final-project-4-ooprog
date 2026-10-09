@@ -14,9 +14,10 @@ import java.util.Scanner;
 //import java.util.function.Function;
 
 public class Customer extends User {
-    public Customer(String userID, String firstName, String lastName, int age, String emailAddress, String address, String phoneNumber, String password) {
-        super(userID, firstName, lastName, emailAddress,
-                address, age, phoneNumber, password);
+    public Customer(String userID, String firstName, String lastName, int age, String emailAddress,
+                    String address, String phoneNumber, String password){
+        super(userID, firstName, lastName, age, emailAddress,
+                address, phoneNumber, password);
     }
 
     @Override
@@ -33,7 +34,6 @@ public class Customer extends User {
                     "View All Available Pets",
                     "Search by Category",
                     "Search Specific Pets",
-                    "View Specific Pet Details",
                     "Filter by Price",
 
                     "#Adoption",
@@ -43,10 +43,9 @@ public class Customer extends User {
                     "#Return",
                     "Request Pet Return",
 
-                    "#Exit",
-                    "Log Out");
+                    "#Exit");
             int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 4, 5, 6, 7);
+                    1, 2, 3, 4, 5, 6, 7, 0);
 
             switch (choice) {
                 case 1 -> viewAllPets();
@@ -154,7 +153,7 @@ public class Customer extends User {
                 case 5: //SEARCH PET BY AGE
                     int age = DataValidation.validatePetAgeInput("Enter Pet Age: ");
 
-                    ArrayList<Pet> petAge = FileHandler.filterRecords("PETS_LIST.txt", String.valueOf(age), Pet::getAge);
+                    ArrayList<Pet> petAge = FileHandler.filterRecords("PET_LIST.txt", String.valueOf(age), Pet::getAge);
                     if(petAge.isEmpty()){
                         System.out.println("No pets found");
                         return;
@@ -207,11 +206,11 @@ public class Customer extends User {
 
         DisplayUtils.displayPetsForCustomer(petTypes);
 
-        char viewDetailsChoice = DataValidation.charChoiceValidation("Do you want to view specific pet details? (y/n): ", 'y', 'n');
+        char viewDetailsChoice = DataValidation.charChoiceValidation("Do you want to view specific pet details? (y/n): ", 'Y', 'N');
 
 
 
-        if(viewDetailsChoice == 'y'){
+        if(viewDetailsChoice == 'Y'){
             String type = petTypes.get(0).getType();
             specificPetDetails(type, petTypes);
         }else{

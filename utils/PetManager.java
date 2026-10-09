@@ -36,9 +36,9 @@ public class PetManager {
             System.out.println("No pets found.");
             return;
         }
-        boolean isDone = true;
+        boolean isDone = false;
 
-        while (isDone) {
+        while (!isDone) {
             DisplayUtils.printMenu("Search By Category",
                     "#Pet Details",
                     "Pet Name", "Type", "Breed", "Gender", "Age",
@@ -86,7 +86,7 @@ public class PetManager {
                     // to be filled
                 }
                 case 0: {
-                    isDone = false;
+                    isDone = true;
                     break;
                 }
             }
