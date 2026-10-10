@@ -29,6 +29,16 @@ public class FileHandler {
         return null;
     }
 
+    public static void printRecords(ArrayList<Pet> records) {
+        if (records.isEmpty()) {
+            System.out.println("No matching records.");
+            return;
+        }
+        for (String record : records) {
+            System.out.println(record);
+        }
+    }
+
     public static ArrayList<Pet> viewAllPetRecords(){
         ArrayList<Pet> pets = new ArrayList<>();
         File file = new File("PET_LIST.txt");
