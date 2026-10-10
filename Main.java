@@ -16,8 +16,10 @@ public class Main {
     public static final ArrayList<User> listOfUsers = new ArrayList<>();
     public static final ArrayList<Pet> listOfPets = new ArrayList<>();
 
-    //TODO MIGHT MERGE COORDINATOR + ADMIN LANDING PAGE SINCE CODE BLOCK IS LITERALLY CARBON COPY
-    //TODO MIGHT ALSO MERGE FOR LOGIN SINCE IT IS ALSO CARBON COPY(JUST MAKE THE LOGIN HAVE PARAMETERS)
+    // TODO MIGHT MERGE COORDINATOR + ADMIN LANDING PAGE SINCE CODE BLOCK IS
+    // LITERALLY CARBON COPY
+    // TODO MIGHT ALSO MERGE FOR LOGIN SINCE IT IS ALSO CARBON COPY(JUST MAKE THE
+    // LOGIN HAVE PARAMETERS)
     public static void customerLandingPage() {
         boolean isDone = false;
         while (!isDone) {
@@ -34,7 +36,7 @@ public class Main {
         }
     }
 
-    public static void coordinatorLandingPage(){
+    public static void coordinatorLandingPage() {
         boolean isDone = false;
         while (!isDone) {
             DisplayUtils.printMenu("COODINATOR",
@@ -143,12 +145,13 @@ public class Main {
             return;
         }
         System.out.println("Login successful.");
-        Coordinator loggedInCoordinator = new Coordinator(parts[0], parts[1], parts[2], Integer.parseInt(parts[3]), parts[4],
+        Coordinator loggedInCoordinator = new Coordinator(parts[0], parts[1], parts[2], Integer.parseInt(parts[3]),
+                parts[4],
                 parts[5], parts[6], parts[7]);
         coordinatorIn(loggedInCoordinator);
     }
 
-    public static void adminLogin(){
+    public static void adminLogin() {
         File file = new File("ADMIN_LIST.txt");
         if (!file.exists()) {
             System.out.println("No Admin Records found.");
@@ -177,9 +180,11 @@ public class Main {
         listOfUsers.add(loggedInCustomer);
         loggedInCustomer.showMenu(DataValidation.sc);
     }
+
     public static void coordinatorIn(Coordinator loggedInCoordinator) {
         loggedInCoordinator.showMenu(DataValidation.sc);
     }
+
     public static void adminIn(Admin loggedInAdmin) {
         loggedInAdmin.showMenu(DataValidation.sc);
     }
@@ -199,7 +204,7 @@ public class Main {
                 case 1 -> customerLandingPage();
                 case 2 -> coordinatorLandingPage();
                 case 3 -> adminLandingPage();
-                case 0 -> isDone = true;
+                case 4 -> isDone = true;
             }
         }
         System.out.println("Thank you for using the program!");
