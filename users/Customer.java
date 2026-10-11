@@ -98,34 +98,15 @@ public class Customer extends User {
                 case 1: //SEARCH PET BY NAME
                     String name = DataValidation.validateString("Enter Pet Name: ");
 
-                    ArrayList<Pet> petNames = FileHandler.filterRecords("PET_LIST.txt", name, Pet::getPetName);
-
-                    if(petNames.isEmpty()){
-                        System.out.println("No pets found.");
-                        return;
-                    }
-
-                    DisplayUtils.displayPetsForCustomer(petNames);
+                    showResults(FileHandler.filterRecords("PET_LIST.txt", name, Pet::getPetName));
                     break;
                 case 2: //VIEW PET BY PET TYPE
-                    ArrayList<Pet> petTypes = getSpecificPetDetailsPerType();
-                    if(petTypes.isEmpty()){
-                        System.out.println("No pets found.");
-                        return;
-                    }
-
-                    DisplayUtils.displayPetsForCustomer(petTypes);
+                    showResults(getSpecificPetDetailsPerType());
                     break;
                 case 3: //SEARCH PET BY PET BREED
                     String breed = DataValidation.validateString("Enter Pet Breed: ");
 
-                    ArrayList<Pet> petBreeds = FileHandler.filterRecords("PET_LIST.txt", breed, Pet::getBreed);
-                    if(petBreeds.isEmpty()){
-                        System.out.println("No pets found.");
-                        return;
-                    }
-
-                    DisplayUtils.displayPetsForCustomer(petBreeds);
+                    showResults(FileHandler.filterRecords("PET_LIST.txt", breed, Pet::getBreed));
                     break;
                 case 4: // SEARCH PET BY GENDER
                     DisplayUtils.printMenu("SEARCH BY PET GENDER",
@@ -136,31 +117,15 @@ public class Customer extends User {
                     int choiceGender = DataValidation.intChoiceValidation("Select Option",
                             1, 2, 0);
 
-                    char gender;
-                    if (choiceGender == 1) {
-                        gender = 'M';
-                    } else {
-                        gender = 'F';
-                    }
+                    if(choiceGender == 0){break;}
 
-                    ArrayList<Pet> petGender = FileHandler.filterRecords("PET_LIST.txt", String.valueOf(gender), Pet::getGender);
-                    if(petGender.isEmpty()){
-                        System.out.println("No pets found.");
-                        return;
-                    }
-
-                    DisplayUtils.displayPetsForCustomer(petGender);
+                    char gender = (choiceGender == 1) ? 'M' : 'F';
+                    showResults(FileHandler.filterRecords("PET_LIST.txt", String.valueOf(gender), Pet::getGender));
                     break;
                 case 5: //SEARCH PET BY AGE
                     int age = DataValidation.validatePetAgeInput("Enter Pet Age: ");
 
-                    ArrayList<Pet> petAge = FileHandler.filterRecords("PETS_LIST.txt", String.valueOf(age), Pet::getAge);
-                    if(petAge.isEmpty()){
-                        System.out.println("No pets found");
-                        return;
-                    }
-
-                    DisplayUtils.displayPetsForCustomer(petAge);
+                    showResults(FileHandler.filterRecords("PET_LIST.txt", age, Pet::getAge));
                     break;
                 case 0: isDone = true; break;
             }
