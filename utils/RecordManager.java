@@ -28,6 +28,11 @@ public class RecordManager {
   public static final int AS_DATE_REQUESTED  = 8;
   public static final int AS_FIELD_COUNT     = 9;
 
+  //ADOPTED_LIST.txt
+  public static final int AD_DATE_FINALIZED = 9;
+  public static final int AD_APPROVED_BY = 10;
+  public static final int AD_FIELD_COUNT = 11;
+
 
   //reader
   public static<T> ArrayList<T> readRecords(String fileName, int expectedFields, Function<String[], T> parser){
@@ -101,6 +106,14 @@ public class RecordManager {
 
   public static ArrayList<Reservation> viewAllReserveRecords() {
     return readRecords("RESERVED.txt", AS_FIELD_COUNT, RecordManager::parseReservation);
+  }
+
+  public static Reservation parseAdoption(String[] parts){
+    return parseReservation(parts);
+  }
+
+  public static ArrayList<Reservation> viewAllPetAdoptedRecords(){
+    return readRecords("ADOPTED_LIST.txt", AD_FIELD_COUNT, RecordManager::parseAdoption);
   }
 
 }

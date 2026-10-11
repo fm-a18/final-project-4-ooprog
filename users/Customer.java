@@ -61,9 +61,6 @@ public class Customer extends User {
         }
     }
 
-    private final ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
-    private final ArrayList<User> users = new ArrayList<>();
-
     private void viewAllPets() {
         ArrayList<Pet> pets = getAvailablePets();
 
@@ -75,8 +72,30 @@ public class Customer extends User {
         DisplayUtils.displayPetsForCustomer(pets);
     }
 
+    private ArrayList<Pet> getAvailablePets(){
+        ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
+        ArrayList<Reservation> reservations = RecordManager.viewAllReserveRecords();
+        ArrayList<Pet> available = new ArrayList<>();
+
+        for(Pet pet : pets){
+            if(!isReserved(pet.getPetID(), reservations)){
+                available.add(pet);
+            }
+        }
+        return available;
+    }
+
+    private boolean isReserved(String id, ArrayList<Reservation> reservations){
+        for(Reservation reserved : reservations){
+            if(reserved.getPetID().equalsIgnoreCase(id)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void searchByCategory() {
-        if(pets.isEmpty()){
+        if(FileHandler.viewAllPetRecords().isEmpty()){
             System.out.println("No pets found.");
             return;
         }
@@ -166,11 +185,6 @@ public class Customer extends User {
 
     
     private void findSpecificPets() {
-        if(pets.isEmpty()){
-            System.out.println("No pets found.");
-            return;
-        }
-
         ArrayList<Pet> petTypes = getSpecificPetDetailsPerType();
 
         if(petTypes.isEmpty()){
@@ -275,14 +289,7 @@ public class Customer extends User {
 
     private void requestAdoption() {  
         //FILTER TO SHOW ONLY AVAILABLE PETS viewAllPets();
-        ArrayList<Pet> availablePets = new ArrayList<>();
-        ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
-
-        for (Pet pet : pets) {
-            if (pet.getAdoptionStatus() == AdoptionStatus.AVAILABLE.toString()) {
-                availablePets.add(pet);
-            }
-        }
+        ArrayList<Pet> availablePets = getAvailablePets();
 
         if(availablePets.isEmpty()){
             System.out.println("No pets available for adoption.");
@@ -415,23 +422,24 @@ public class Customer extends User {
             }
         }
 
-        if(found != null){
-            System.out.println("Reservation found!");
-            DisplayUtils.printSummaryBox("PET DETAILS",
-                        new String[][] {
-                            { "Customer's Name", found.getFirstName() + " " + found.getLastName()},
-                            { "Customer's Email", found.getEmail()},
-                            { "Transaction Number", found.getTransactionNum()},
-                            { "Pet ID", found.getPetID()},
-                            { "Payment Plan", found.getPaymentPlan()},
-                            { "Down Payment", String.valueOf(found.getDownPayment())},
-                            { "Balance", String.valueOf(found.getBalanceLeft())},
-                            { "Date Requested", found.getDateRequested().toString()}
-                        }
-                );
-        }else {
+        if(found == null || !found.getEmail().equalsIgnoreCase(this.getEmailAddress())){
             System.out.println("No reservation found for transaction number: " + transactionNum);
+            return;
         }
+
+        System.out.println("Reservation found!");
+        DisplayUtils.printSummaryBox("PET DETAILS",
+                    new String[][] {
+                        { "Customer's Name", found.getFirstName() + " " + found.getLastName()},
+                        { "Customer's Email", found.getEmail()},
+                        { "Transaction Number", found.getTransactionNum()},
+                        { "Pet ID", found.getPetID()},
+                        { "Payment Plan", found.getPaymentPlan()},
+                        { "Down Payment", String.valueOf(found.getDownPayment())},
+                        { "Balance", String.valueOf(found.getBalanceLeft())},
+                        { "Date Requested", found.getDateRequested().toString()}
+                    }
+            );
 
         char cancelAdoptionConfirmation = DataValidation.charChoiceValidation("Are you sure you want to cancel your reservation? (y/n): ", 'y', 'n');
 
@@ -440,42 +448,56 @@ public class Customer extends User {
             return;
         }
 
-        ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
-        for(Pet pet : pets){
-            if(found.getPetID().equalsIgnoreCase(pet.getPetID())){
-                pet.setAdoptionStatus(AdoptionStatus.AVAILABLE);
+        String petRecord = FileHandler.findRecord("RESERVED.txt", transactionNum, AS_TRANSACTION_NUM);
+        FileHandler.appendRecord("CANCELLATION_REQUEST.txt", petRecord);
+        System.out.println("Your cancellation request of pet request of adoption is now being processed. Wait for the Admin or Coordinator to approve your request.");
+    }
+
+    private void requestReturn() {
+        String transactionNum = DataValidation.transactionNumberValidation("Enter Transaction Number from your Request of Adoption Confirmation Message: ");
+
+        Reservation found = null;
+
+        for(Reservation adopted : RecordManager.viewAllPetAdoptedRecords()){
+            if(adopted.getTransactionNum().equalsIgnoreCase(transactionNum)){
+                found = adopted;
                 break;
             }
         }
 
-        String petRecord = FileHandler.findRecord("RESERVED.txt", transactionNum, AS_TRANSACTION_NUM);
-        FileHandler.appendRecord("CANCELLATION_REQUEST", petRecord);
-        System.out.println("Cancellation Request of Pet Request Adoption is now being processed. Wait for the Admin or Coordinator to approve your request.");
-    }
-
-    private void requestReturn() {
-
-    }
-
-    private ArrayList<Pet> getAvailablePets(){
-        ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
-        ArrayList<Reservation> reservations = RecordManager.viewAllReserveRecords();
-        ArrayList<Pet> available = new ArrayList<>();
-
-        for(Pet pet : pets){
-            if(!isReserved(pet.getPetID(), reservations)){
-                available.add(pet);
-            }
+        if(found == null || !found.getEmail().equalsIgnoreCase(this.getEmailAddress())){
+            System.out.println("No adoption found for transaction number: " + transactionNum);
+            return;
         }
-        return available;
+
+        if(FileHandler.findRecord("RETURN_REQUEST", transactionNum, AS_TRANSACTION_NUM) != null){
+            System.out.println("A return request for " + found.getTransactionNum() + " is already being processed.");
+            return;
+        }
+
+        String adoptedPet = FileHandler.findRecord("ADOPTION_LIST.txt", transactionNum, RecordManager.AS_TRANSACTION_NUM);
+        String dateAdopted = adoptedPet.split("\\s*\\|\\s*")[RecordManager.AD_DATE_FINALIZED];
+
+        System.out.println("Adoption found!");
+        DisplayUtils.printSummaryBox("PET DETAILS",
+                new String[][] {
+                    { "Customer's Name", found.getFirstName() + " " + found.getLastName()},
+                    { "Transaction Number", found.getTransactionNum()},
+                    { "Pet ID", found.getPetID()},
+                    { "Date Adopted", dateAdopted}
+                }
+        );
+
+        char returnAdoptionConfirmation = DataValidation.charChoiceValidation("Are you sure you want to return your pet? (y/n): ", 'y', 'n');
+
+        if(returnAdoptionConfirmation == 'n'){
+            System.out.println("Return Adoption Request Cancelled.");
+            return;
+        }
+
+        FileHandler.appendRecord("RETURN_REQUEST.txt", adoptedPet);
+        System.out.println("Your return request is now being processed. Wait for the Admin or Coordinator to approve your request.");
     }
 
-    private boolean isReserved(String id, ArrayList<Reservation> reservations){
-        for(Reservation reserved : reservations){
-            if(reserved.getPetID().equalsIgnoreCase(id)){
-                return true;
-            }
-        }
-        return false;
-    }
+    
 }
