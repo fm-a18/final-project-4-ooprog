@@ -160,6 +160,11 @@ public class DataValidation {
         return date;
     }
 
+    public static boolean dateForClaimingPet(LocalDate date){
+        LocalDate today = LocalDate.now();
+        return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
+    }
+
     public static String validatePhoneNumber() {
         boolean isValidated = false;
         String input = "";
@@ -471,27 +476,29 @@ public class DataValidation {
         return "T" + String.format("%07d", transactionCtr);
     }
 
-    public static String transactionNumberValidation(String prompt) {
+    public static String transactionNumberValidation(String prompt){
         String transactionNum = "";
         boolean isValid = false;
-        while (!isValid) {
+        while(!isValid){
             System.out.print(prompt);
-            try {
+            try{
                 transactionNum = sc.nextLine().trim().toUpperCase();
-            } catch (NoSuchElementException e) {
+            }catch(NoSuchElementException e){
                 System.out.println("Error: Transaction Number cannot be empty. Please try again.");
                 continue;
             }
 
-            if (transactionNum.isEmpty()) {
+            if(transactionNum.isEmpty()){
                 System.out.println("Error: Transaction Number cannot be empty.");
-            } else if (!transactionNum.matches("^T\\d{7}$")) {
-                System.out.println(
-                        "Invalid Transaction Number. Please input the transaction number given after the request for adoption is granted.");
-            } else {
+            }else if(!transactionNum.matches("^T\\d{7}$")){
+                System.out.println("Invalid Transaction Number. Please input the transaction number given after the request for adoption is granted.");
+            }else{
                 isValid = true;
             }
         }
+
+
+
         return transactionNum;
     }
 }

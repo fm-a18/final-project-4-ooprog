@@ -95,7 +95,7 @@ public class Admin extends User {
 
     private void approveAdoptionRequest() {
         System.out.println("Adoption Requests");
-        String reservationRecord = findAndConfirmTransaction("RESERVE.txt", "Adoption Request");
+        String reservationRecord = findAndConfirmTransaction("RESERVED.txt", "Adoption Request");
         if (reservationRecord == null)
             return;
 
@@ -106,7 +106,7 @@ public class Admin extends User {
         String adoptedRecord = buildAdoptedRecord(reservationRecord, this.getEmailAddress());
 
         FileHandler.appendRecord("ADOPTED_LIST.txt", adoptedRecord);
-        FileHandler.removeRecord("RESERVE.txt", transactionNum, 0);
+        FileHandler.removeRecord("RESERVED.txt", transactionNum, 0);
         PetManager.getInstance().findPetID(petID).setAdoptionStatus(AdoptionStatus.ADOPTED);
 
     }
@@ -120,6 +120,7 @@ public class Admin extends User {
     private static final int RES_DOWN_PAYMENT = 6;
     private static final int RES_BALANCE_LEFT = 7;
     private static final int RES_DATE_REQUESTED = 8;
+    private static final int RES_DATE_CLAIMING = 9;
 
     private String buildAdoptedRecord(String reservationRecord, String approvedByEmail) {
         String[] parts = reservationRecord.split("\\s*\\|\\s*");
@@ -129,7 +130,7 @@ public class Admin extends User {
                 parts[RES_TRANSACTION_ID], parts[RES_FIRST_NAME], parts[RES_LAST_NAME],
                 parts[RES_EMAIL], parts[RES_PET_ID], parts[RES_PAYMENT_TYPE],
                 parts[RES_DOWN_PAYMENT], parts[RES_BALANCE_LEFT],
-                parts[RES_DATE_REQUESTED], dateFinalized, approvedByEmail);
+                parts[RES_DATE_REQUESTED], parts[RES_DATE_CLAIMING], dateFinalized, approvedByEmail);
     }
 
     private void cancelAdoptionRequest() {
@@ -164,16 +165,15 @@ public class Admin extends User {
 
     private void manageIncomingPets() {
         System.out.println("Adoption Requests");
-        String record = findAndConfirmTransaction("RESERVE.txt", "Adoption Request");
-        if (record == null)
-            return;
+        String record = findAndConfirmTransaction("RESERVED.txt", "Adoption Request");
+        if (record == null) return;
 
         String[] parts = record.split("\\s*\\|\\s*");
         String petID = parts[RES_PET_ID];
         String transactionNum = parts[RES_TRANSACTION_ID];
 
-        FileHandler.appendRecord("ADOPTED_LIST.txt", record); // Documentation
-        FileHandler.removeRecord("RESERVE.txt", transactionNum, 0);
+        FileHandler.appendRecord("ADOPTED_LIST.txt", record); //Documentation
+        FileHandler.removeRecord("RESERVED.txt", transactionNum, 0);
         PetManager.getInstance().findPetID(petID).setAdoptionStatus(AdoptionStatus.ADOPTED);
     }
 }
