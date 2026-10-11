@@ -312,7 +312,7 @@ public class Customer extends User {
 
         Pet selectedPet = null;
     
-        for(Pet pet : pets){
+        for(Pet pet : availablePets){
            if(pet.idExists(petID)){
             System.out.println("Pet ID: " + petID + " found and is available for adoption.");
             selectedPet = pet;
