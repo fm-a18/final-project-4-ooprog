@@ -132,6 +132,14 @@ public class Customer extends User {
         }
     }
 
+    private void showResults(ArrayList<Pet> pets){
+        if(pets == null || pets.isEmpty()){
+            System.out.println("No pets found.");
+            return;
+        }
+        DisplayUtils.displayPetsForCustomer(pets);
+    }
+
     private ArrayList<Pet> getSpecificPetDetailsPerType(){
         String type = "";
         boolean isDone = false;
@@ -207,6 +215,7 @@ public class Customer extends User {
     }
 
     private void filterByPrice() {
+        ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
         if(pets.isEmpty()){
             System.out.println("No pets found.");
             return;
@@ -225,29 +234,13 @@ public class Customer extends User {
 
             switch (choice) {
                 case 1:
-                    ArrayList<Pet> sortedPetsAscending = sortByPrice(1, pets);
-                    if (sortedPetsAscending.isEmpty()) {
-                        System.out.println("No pets found.");
-                        return;
-                    }
-                    DisplayUtils.displayPetsForCustomer(sortedPetsAscending);
+                    showResults(sortByPrice(choice, pets));
                     break;
                 case 2:
-                    ArrayList<Pet> sortedPetsDescending = sortByPrice(2, pets);
-                    if (sortedPetsDescending.isEmpty()) {
-                        System.out.println("No pets found.");
-                        return;
-                    }
-                    DisplayUtils.displayPetsForCustomer(sortedPetsDescending);
+                    showResults(sortByPrice(choice, pets));
                     break;
                 case 3:
-                    ArrayList<Pet> filteredPets = filterByPriceRange();
-
-                    if (filteredPets.isEmpty()) {
-                        System.out.println("No pets found.");
-                        return;
-                    }
-                    DisplayUtils.displayPetsForCustomer(filteredPets);
+                    showResults(filterByPriceRange(pets));
                     break;
                 case 0: isDone = true; break;
             }
@@ -267,7 +260,7 @@ public class Customer extends User {
         return sortPrice;
     }
 
-    private ArrayList<Pet> filterByPriceRange() {
+    private ArrayList<Pet> filterByPriceRange(ArrayList<Pet> pets) {
         ArrayList<Pet> filteredPets = new ArrayList<>();
         double startingPrice = DataValidation.validatePriceInput("Enter Starting Price: ");
         double endingPrice = DataValidation.validatePriceInput("Enter Ending Price: ");
@@ -484,13 +477,5 @@ public class Customer extends User {
             }
         }
         return false;
-    }
-
-    private void showResults(ArrayList<Pet> pets){
-        if(pets == null || pets.isEmpty()){
-            System.out.println("No pets found.");
-            return;
-        }
-        DisplayUtils.displayPetsForCustomer(pets);
     }
 }
