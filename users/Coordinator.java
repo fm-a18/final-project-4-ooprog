@@ -10,43 +10,29 @@ import utils.FileHandler;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
-import static users.Admin.pets;
 import java.time.format.DateTimeFormatter;
 
 import static users.Admin.pets;
 
-public class Coordinator extends User{
-    public Coordinator(String userID, String firstName, String lastName, String emailAddress,
-                       String address, int age, String phoneNumber, String password){
-        super(userID, firstName, lastName, emailAddress,
-                address, age, phoneNumber, password);
+public class Coordinator extends User {
+    public Coordinator(String userID, String firstName, String lastName, int age, String emailAddress,
+            String address, String phoneNumber, String password) {
+        super(userID, firstName, lastName, age, emailAddress,
+                address, phoneNumber, password);
     }
 
     @Override
-    public String getRole(){
+    public String getRole() {
         return "Coordinator";
     }
 
     public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
-    public void showMenu(Scanner sc){
-        DisplayUtils.printMenu("Pet Management",
-                "View All Available Pets",
-                "Search by Category",
-                "Sort by Category",
-                "Add Pet",
-                "Update Pet Status"
-        );
-
-        DisplayUtils.printMenu("Customer Assistance",
-                "Request for Adoption",
-                "Request for Pet Return"
-        );
-
+    public void showMenu(Scanner sc) {
         boolean isDone = false;
 
-        while(!isDone){
-            DisplayUtils.printMenu("ADMIN MENU",
+        while (!isDone) {
+            DisplayUtils.printMenu("COORDINATOR MENU",
                     "#Pet Management",
                     "View All Available Pets",
                     "Search by Category",
@@ -56,26 +42,27 @@ public class Coordinator extends User{
 
                     "#Customer Assistance",
                     "Request Adoption",
-                    "Request Pet Return"
-            );
+                    "Cancel Adoption Request",
+                    "Request Pet Return");
             int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 4, 5, 6, 7, 0);
+                    1, 2, 3, 4, 5, 6, 7, 8, 0);
 
-            switch(choice) {
+            switch (choice) {
                 case 1 -> viewAllPets();
-                case 2 -> searchByCategory(sc);
-                case 3 -> sortByCategory(sc);
-                case 4 -> addPet(sc);
-                case 5 -> updatePetStatus(sc);
-                case 6 -> requestAdoption(sc);
-                case 7 -> requestPetReturn(sc);
+                case 2 -> searchByCategory();
+                case 3 -> sortByCategory();
+                case 4 -> addPet();
+                case 5 -> updatePetStatus();
+                case 6 -> requestAdoption();
+                case 7 -> cancelAdoptionRequest();
+                case 8 -> requestPetReturn();
                 case 0 -> isDone = true;
             }
         }
     }
 
     private void viewAllPets() {
-        if(pets.isEmpty()){
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
@@ -83,27 +70,27 @@ public class Coordinator extends User{
         DisplayUtils.displayPetsForStaff(pets);
     }
 
-    private void searchByCategory(Scanner sc) {
+    private void searchByCategory() {
         PetManager.getInstance().searchByCategory();
     }
 
-    private void sortByCategory(Scanner sc) {
+    private void sortByCategory() {
         // TO BE CHANGED; STRATEGY NEEDED
-        if(pets.isEmpty()){
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
 
     }
 
-    private void addPet(Scanner sc) {
-        if(pets.isEmpty()){
+    private void addPet() {
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
-        boolean isDone = true;
+        boolean isDone = false;
 
-        while (isDone) {
+        while (!isDone) {
             DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird");
             int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3, 0);
             switch (choice) {
@@ -114,7 +101,8 @@ public class Coordinator extends User{
                     String petBreed = DataValidation.validateString("Enter Breed: ");
                     char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
                     double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
-                    char choicev1 = DataValidation.charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
+                    char choicev1 = DataValidation
+                            .charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
                     if (choicev1 == 'Y') {
                         String petMedHis = DataValidation.validateString("Enter medical history of pet: ");
                     }
@@ -127,7 +115,8 @@ public class Coordinator extends User{
                     String petBreed = DataValidation.validateString("Enter Breed: ");
                     char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
                     double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
-                    char choicev1 = DataValidation.charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
+                    char choicev1 = DataValidation
+                            .charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
                     if (choicev1 == 'Y') {
                         String petMedHis = DataValidation.validateString("Enter medical history of pet: ");
                     }
@@ -141,7 +130,8 @@ public class Coordinator extends User{
                     String petBreed = DataValidation.validateString("Enter Breed: ");
                     char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
                     double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
-                    char choicev1 = DataValidation.charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
+                    char choicev1 = DataValidation
+                            .charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
                     if (choicev1 == 'Y') {
                         String petMedHis = DataValidation.validateString("Enter medical history of pet: ");
                     }
@@ -149,7 +139,7 @@ public class Coordinator extends User{
                     break;
                 }
                 case 0: {
-                    isDone = false;
+                    isDone = true;
                     break;
                 }
             }
@@ -157,14 +147,14 @@ public class Coordinator extends User{
 
     }
 
-    private void updatePetStatus(Scanner sc) {
-        if(pets.isEmpty()){
+    private void updatePetStatus() {
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
-        boolean isDone = true;
+        boolean isDone = false;
 
-        while (isDone) {
+        while (!isDone) {
             DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird");
             int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3, 0);
             switch (choice) {
@@ -176,11 +166,11 @@ public class Coordinator extends User{
         }
     }
 
-    private void requestAdoption(Scanner sc) {
+    private void requestAdoption() {
         // to be filled
     }
 
-    private void requestPetReturn(Scanner sc) {
+    private void requestPetReturn() {
         // to be filled
     }
 }
