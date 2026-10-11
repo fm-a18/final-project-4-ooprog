@@ -5,9 +5,9 @@ import java.time.LocalDate;
 public class Reservation {
   private final String transactionNum, firstName, lastName, email, petID, paymentPlan;
   private final double downPayment, balanceLeft;
-  private final LocalDate dateRequested;
+  private final LocalDate dateRequested, dateClaiming;
 
-  public Reservation(String transactionNum, String firstName, String lastName, String email, String petID, String paymentPlan, double downPayment, double balanceLeft, LocalDate dateRequested){
+  public Reservation(String transactionNum, String firstName, String lastName, String email, String petID, String paymentPlan, double downPayment, double balanceLeft, LocalDate dateRequested, LocalDate dateClaiming){
     this.transactionNum = transactionNum;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -17,6 +17,7 @@ public class Reservation {
         this.downPayment = downPayment;
         this.balanceLeft = balanceLeft;
         this.dateRequested = dateRequested;
+        this.dateClaiming = dateClaiming;
   }
 
   public String getTransactionNum(){return this.transactionNum;}
@@ -28,12 +29,13 @@ public class Reservation {
   public double getDownPayment(){return this.downPayment;}
   public double getBalanceLeft(){return this.balanceLeft;}
   public LocalDate getDateRequested(){return this.dateRequested;}
+  public LocalDate getDateClaiming(){return this.dateClaiming;}
 
   @Override public String toString(){
     return transactionNum + " | " + firstName + " " + lastName + " | " + email
              + " | " + petID + " | " + paymentPlan
              + " | " + String.format("%,.2f", downPayment)
              + " | " + String.format("%,.2f", balanceLeft)
-             + " | " + dateRequested;
+             + " | " + dateRequested + " | " + dateClaiming;
   }
 }

@@ -13,9 +13,10 @@ import inventory.Pet;
 public class RecordManager {
 
   //FOR PET_LIST.txt
-  private static final int PET_ID = 0, PET_NAME = 1, PET_TYPE = 2, PET_BREED = 3, PET_GENDER = 4, PET_AGE = 5, PET_PRICE = 6, PET_FIELD_COUNT = 7;
+  private static final int PET_ID = 0, PET_NAME = 1, PET_TYPE = 2, PET_BREED = 3, PET_GENDER = 4, PET_AGE = 5, PET_PRICE = 6;
+  public static final int PET_FIELD_COUNT = 7;
 
-  //FOR RESERVE.txt
+  //FOR RESERVED.txt
   public static final int AS_TRANSACTION_NUM = 0;
   public static final int AS_FIRST_NAME      = 1;
   public static final int AS_LAST_NAME       = 2;
@@ -25,7 +26,13 @@ public class RecordManager {
   public static final int AS_DOWN_PAYMENT    = 6;
   public static final int AS_BALANCE_LEFT    = 7;
   public static final int AS_DATE_REQUESTED  = 8;
-  public static final int AS_FIELD_COUNT     = 9;
+  public static final int AS_DATE_CLAIMING   = 9;
+  public static final int AS_FIELD_COUNT     = 10;
+
+  //ADOPTED_LIST.txt
+  public static final int AD_DATE_FINALIZED = 10;
+  public static final int AD_APPROVED_BY = 11;
+  public static final int AD_FIELD_COUNT = 12;
 
 
   //reader
@@ -34,7 +41,7 @@ public class RecordManager {
     File file = new File(fileName);
 
     if(!file.exists() || file.length() == 0){
-      System.out.println(fileName + "not found or empty.");
+      System.out.println(fileName + " not found or empty.");
       return records;
     }
 
@@ -43,7 +50,7 @@ public class RecordManager {
       while((line = reader.readLine()) != null){
         if(line.isBlank()) continue;
 
-        String[] parts = line.split("\\s*\\|\\s*");
+        String[] parts = line.split("\\s*\\|\\s*", -1);
         if(parts.length != expectedFields){
           System.out.println("Invalid record format: " + line);
           continue;
@@ -91,11 +98,24 @@ public class RecordManager {
       pet[AS_PAYMENT_PLAN].trim(), 
       Double.parseDouble(pet[AS_DOWN_PAYMENT].trim().replace(",", "")), 
       Double.parseDouble(pet[AS_BALANCE_LEFT].trim().replace(",", "")), 
-      LocalDate.parse(pet[AS_DATE_REQUESTED].trim()));
+      LocalDate.parse(pet[AS_DATE_REQUESTED].trim()),
+      LocalDate.parse(pet[AS_DATE_CLAIMING].trim()));
+  }
+
+  public static ArrayList<Pet> viewAllPetRecords(){
+    return readRecords("PET_LIST.txt", PET_FIELD_COUNT, RecordManager::parsePet);
   }
 
   public static ArrayList<Reservation> viewAllReserveRecords() {
     return readRecords("RESERVED.txt", AS_FIELD_COUNT, RecordManager::parseReservation);
+  }
+
+  public static Reservation parseAdoption(String[] parts){
+    return parseReservation(parts);
+  }
+
+  public static ArrayList<Reservation> viewAllPetAdoptedRecords(){
+    return readRecords("ADOPTED_LIST.txt", AD_FIELD_COUNT, RecordManager::parseAdoption);
   }
 
 }
