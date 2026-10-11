@@ -8,11 +8,12 @@ import java.util.Scanner;
 
 import static utils.DisplayUtils.printMenu;
 
-public abstract class Admin extends User{
-    public Admin(String userID, String firstName, String lastName, String emailAddress,
-                 String address, int age, String phoneNumber, String password){
-        super(userID, firstName, lastName, emailAddress,
-                address, age, phoneNumber, password);
+public class Admin extends User {
+
+    public Admin(String userID, String firstName, String lastName, int age, String emailAddress,
+            String address, String phoneNumber, String password) {
+        super(userID, firstName, lastName, age, emailAddress,
+                address, phoneNumber, password);
     }
 
     @Override
@@ -20,10 +21,10 @@ public abstract class Admin extends User{
         return "Admin";
     }
 
-    public void showMenu() {
+    public void showMenu(Scanner sc) {
         boolean isDone = false;
 
-        while(!isDone){
+        while (!isDone) {
             printMenu("ADMIN MENU",
                     "#Pet Management",
                     "View All Available Pets",
@@ -39,8 +40,7 @@ public abstract class Admin extends User{
                     "#Shelter Management",
                     "Manage Incoming Pets",
 
-                    "#Return"
-            );
+                    "#Exit");
             int choice = DataValidation.intChoiceValidation("Select Option",
                     1, 2, 3, 4, 5, 6, 7, 8, 0);
 
@@ -58,7 +58,7 @@ public abstract class Admin extends User{
         }
     }
 
-    private void viewAllPets(){
+    private void viewAllPets() {
         PetManager.getInstance().getAllPets();
     }
 
@@ -74,8 +74,8 @@ public abstract class Admin extends User{
         PetManager.getInstance().addPet(pet);
     }
 
-    public String findAndConfirmTransaction(String fileName, String action){
-        String findTransactionNum = DataValidation.transactionNumValidation();
+    public String findAndConfirmTransaction(String fileName, String action) {
+        String findTransactionNum = DataValidation.transactionNumberValidation("Transaction Number: ");
         String record = FileHandler.findRecord(fileName, findTransactionNum, 0);
 
         if (record == null) {
@@ -85,8 +85,8 @@ public abstract class Admin extends User{
 
         System.out.println("Transaction number found.");
 
-        char approve = DataValidation.charChoiceValidation( "Approve " + action + "?", 'Y', 'N');
-        if(approve != 'Y'){
+        char approve = DataValidation.charChoiceValidation("Approve " + action + "?", 'Y', 'N');
+        if (approve != 'Y') {
             System.out.println(action + " not approved.");
             return null;
         }

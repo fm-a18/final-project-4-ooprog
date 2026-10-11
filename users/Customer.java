@@ -26,9 +26,10 @@ import static utils.RecordManager.AS_TRANSACTION_NUM;
 import static utils.RecordManager.AS_DATE_CLAIMING;
 
 public class Customer extends User {
-    public Customer(String userID, String firstName, String lastName, int age, String emailAddress, String address, String phoneNumber, String password) {
-        super(userID, firstName, lastName, emailAddress,
-                address, age, phoneNumber, password);
+    public Customer(String userID, String firstName, String lastName, int age, String emailAddress,
+            String address, String phoneNumber, String password) {
+        super(userID, firstName, lastName, age, emailAddress,
+                address, phoneNumber, password);
     }
 
     @Override
@@ -45,7 +46,6 @@ public class Customer extends User {
                     "View All Available Pets",
                     "Search by Category",
                     "Search Specific Pets",
-                    "View Specific Pet Details",
                     "Filter by Price",
 
                     "#Adoption",
@@ -55,10 +55,9 @@ public class Customer extends User {
                     "#Return",
                     "Request Pet Return",
 
-                    "#Exit",
-                    "Log Out");
+                    "#Exit");
             int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 4, 5, 6, 7);
+                    1, 2, 3, 4, 5, 6, 7, 8);
 
             switch (choice) {
                 case 1 -> viewAllPets();
@@ -68,15 +67,16 @@ public class Customer extends User {
                 case 5 -> requestAdoption();
                 case 6 -> cancelAdoption();
                 case 7 -> requestReturn();
-                case 0 -> isDone = true;
+                case 8 -> isDone = true;
             }
         }
+        System.out.println("Logging out...");
     }
 
     private void viewAllPets() {
         ArrayList<Pet> pets = getAvailablePets();
 
-        if(pets.isEmpty()){
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
@@ -120,13 +120,12 @@ public class Customer extends User {
                     "Type",
                     "Breed",
                     "Gender",
-                    "Age"
-            );
+                    "Age");
             int choice = DataValidation.intChoiceValidation("Select Option",
                     1, 2, 3, 4, 5, 0);
 
-            switch(choice){
-                case 1: //SEARCH PET BY NAME
+            switch (choice) {
+                case 1: // SEARCH PET BY NAME
                     String name = DataValidation.validateString("Enter Pet Name: ");
 
                     showResults(FileHandler.filterRecords("PET_LIST.txt", name, Pet::getPetName));
@@ -134,7 +133,7 @@ public class Customer extends User {
                 case 2: //VIEW PET BY PET TYPE
                     showResults(getSpecificPetDetailsPerType());
                     break;
-                case 3: //SEARCH PET BY PET BREED
+                case 3: // SEARCH PET BY PET BREED
                     String breed = DataValidation.validateString("Enter Pet Breed: ");
 
                     showResults(FileHandler.filterRecords("PET_LIST.txt", breed, Pet::getBreed));
@@ -143,8 +142,7 @@ public class Customer extends User {
                     DisplayUtils.printMenu("SEARCH BY PET GENDER",
                             "#Select Gender",
                             "Male",
-                            "Female"
-                    );
+                            "Female");
                     int choiceGender = DataValidation.intChoiceValidation("Select Option",
                             1, 2, 0);
 
@@ -153,12 +151,14 @@ public class Customer extends User {
                     char gender = (choiceGender == 1) ? 'M' : 'F';
                     showResults(FileHandler.filterRecords("PET_LIST.txt", String.valueOf(gender), Pet::getGender));
                     break;
-                case 5: //SEARCH PET BY AGE
+                case 5: // SEARCH PET BY AGE
                     int age = DataValidation.validatePetAgeInput("Enter Pet Age: ");
 
                     showResults(FileHandler.filterRecords("PET_LIST.txt", age, Pet::getAge));
                     break;
-                case 0: isDone = true; break;
+                case 0:
+                    isDone = true;
+                    break;
             }
         }
     }
@@ -174,17 +174,16 @@ public class Customer extends User {
     private ArrayList<Pet> getSpecificPetDetailsPerType(){
         String type = "";
         boolean isDone = false;
-        while(!isDone){
+        while (!isDone) {
             DisplayUtils.printMenu("SEARCH BY PET TYPE",
-                "#Select Pet Type",
-                "Dog",
-                "Cat",
-                "Bird"
-            );
+                    "#Select Pet Type",
+                    "Dog",
+                    "Cat",
+                    "Bird");
             int choiceType = DataValidation.intChoiceValidation("Select Option",
                     1, 2, 3, 0);
 
-            switch(choiceType){
+            switch (choiceType) {
                 case 1 -> type = "dog";
                 case 2 -> type = "cat";
                 case 3 -> type = "bird";
@@ -195,25 +194,23 @@ public class Customer extends User {
         return FileHandler.filterRecords("PET_LIST.txt", type, Pet::getType);
     }
 
-    
     private void findSpecificPets() {
         ArrayList<Pet> petTypes = getSpecificPetDetailsPerType();
 
-        if(petTypes.isEmpty()){
+        if (petTypes.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
 
         DisplayUtils.displayPetsForCustomer(petTypes);
 
-        char viewDetailsChoice = DataValidation.charChoiceValidation("Do you want to view specific pet details? (y/n): ", 'y', 'n');
+        char viewDetailsChoice = DataValidation
+                .charChoiceValidation("Do you want to view specific pet details? (y/n): ", 'Y', 'N');
 
-
-
-        if(viewDetailsChoice == 'y'){
+        if (viewDetailsChoice == 'Y') {
             String type = petTypes.get(0).getType();
             specificPetDetails(type, petTypes);
-        }else{
+        } else {
             return;
         }
     }
@@ -221,8 +218,8 @@ public class Customer extends User {
     private void specificPetDetails(String type, ArrayList<Pet> petTypes) { // EDIT THIS
         String petID = DataValidation.validatePetIdInput("Enter Pet ID: ", type);
 
-        for(Pet pet : petTypes){
-            if(pet.getPetID().equalsIgnoreCase(petID)){
+        for (Pet pet : petTypes) {
+            if (pet.getPetID().equalsIgnoreCase(petID)) {
                 DisplayUtils.printSummaryBox("PET DETAILS",
                         new String[][] {
                                 { "Name", pet.getPetName() },
@@ -232,8 +229,7 @@ public class Customer extends User {
                                 { "Age", String.valueOf(pet.getAge()) },
                                 { "Adoption History", pet.getAdoptionHistory() },
                                 { "Medical History", pet.getMedicalHistory() }
-                        }
-                );
+                        });
                 return;
             }
         }
@@ -253,8 +249,7 @@ public class Customer extends User {
                     "#Select Option",
                     "Ascending Price",
                     "Descending Price",
-                    "Price Range"
-            );
+                    "Price Range");
             int choice = DataValidation.intChoiceValidation("Select Option",
                     1, 2, 3, 0);
 
@@ -268,7 +263,9 @@ public class Customer extends User {
                 case 3:
                     showResults(filterByPriceRange(pets));
                     break;
-                case 0: isDone = true; break;
+                case 0:
+                    isDone = true;
+                    break;
             }
         }
     }
@@ -322,14 +319,13 @@ public class Customer extends User {
            }
         }
 
-        if(selectedPet == null) {
+        if (selectedPet == null) {
             System.out.println("Pet ID: " + petID + " not found.");
             return;
         }
 
-
-
-        char requestAdoption = DataValidation.charChoiceValidation("Do you want to request adoption for Pet ID: " + petID + "? (y/n): ", 'y', 'n');
+        char requestAdoption = DataValidation
+                .charChoiceValidation("Do you want to request adoption for Pet ID: " + petID + "? (y/n): ", 'y', 'n');
 
         if (requestAdoption == 'n') {
             System.out.println("Adoption request cancelled.");
@@ -355,7 +351,7 @@ public class Customer extends User {
         System.out.println("\nConfirm adoption request by entering your email address.");
         String confirmByEmail = DataValidation.validateEmailAddress();
 
-        while(!DataValidation.emailExists(confirmByEmail)){
+        while (!DataValidation.emailExists(confirmByEmail)) {
             System.out.println("Email is not found. Please enter another email.");
             confirmByEmail = DataValidation.validateEmailAddress();
         }
@@ -367,22 +363,30 @@ public class Customer extends User {
         System.out.println("Adoption request for Pet ID: " + petID + " with transaction number " + transactionNum + " has been submitted for review.");        
     }
 
-    private static String paymentPlanSelection(){
+    private static String paymentPlanSelection() {
         boolean isDone = false;
-        while(!isDone){
+        while (!isDone) {
             DisplayUtils.printMenu("SELECT PAYMENT PLAN",
-                "#Available Payment Plans",
-                "Full Payment",
-                "50% Down Payment",
-                "75% Down Payment"
-            );
+                    "#Available Payment Plans",
+                    "Full Payment",
+                    "50% Down Payment",
+                    "75% Down Payment");
 
-            int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request: ",1, 2, 3, 0);
-            
-            switch(choice){
-                case 1 -> {System.out.println("You have selected Full Payment."); return "Full Payment";}
-                case 2 -> {System.out.println("You have selected 50% Down Payment."); return "50% Down Payment";}
-                case 3 -> {System.out.println("You have selected 75% Down Payment."); return "75% Down Payment";}
+            int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request: ", 1, 2, 3, 0);
+
+            switch (choice) {
+                case 1 -> {
+                    System.out.println("You have selected Full Payment.");
+                    return "Full Payment";
+                }
+                case 2 -> {
+                    System.out.println("You have selected 50% Down Payment.");
+                    return "50% Down Payment";
+                }
+                case 3 -> {
+                    System.out.println("You have selected 75% Down Payment.");
+                    return "75% Down Payment";
+                }
                 case 0 -> isDone = true;
             }
         }
@@ -392,7 +396,7 @@ public class Customer extends User {
     private static double downPayment(String paymentPlan, double petPrice) {
         double amount = 0;
 
-        switch(paymentPlan) {
+        switch (paymentPlan) {
             case "Full Payment" -> amount = 0;
             case "50% Down Payment" -> amount = petPrice * 0.5;
             case "75% Down Payment" -> amount = petPrice * 0.75;

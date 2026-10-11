@@ -23,22 +23,22 @@ public class PetManager {
     }
 
     public ArrayList<Pet> getAllPets() {
-        if(pets.isEmpty()){
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
-            return null;
+            return pets;
         }
 
         return pets;
     }
 
-    public void searchByCategory(){
-        if(pets.isEmpty()){
+    public void searchByCategory() {
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
-        boolean isDone = true;
+        boolean isDone = false;
 
-        while (isDone) {
+        while (!isDone) {
             DisplayUtils.printMenu("Search By Category",
                     "#Pet Details",
                     "Pet Name", "Type", "Breed", "Gender", "Age",
@@ -86,7 +86,7 @@ public class PetManager {
                     // to be filled
                 }
                 case 0: {
-                    isDone = false;
+                    isDone = true;
                     break;
                 }
             }
