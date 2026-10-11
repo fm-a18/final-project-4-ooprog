@@ -2,8 +2,9 @@ package inventory;
 
 public enum AdoptionStatus {
     AVAILABLE("Available"),
-    PENDING_REVIEW("Pending Review"),
+    ADOPTION_REVIEW("Pending Adoption"),
     RESERVED("Reserved"),
+    CANCELLATION_REVIEW("Pending Cancellation"),
     ADOPTED("Adopted"),
     RETURN_PENDING("Pending Return"),
     RETURNED("Returned");

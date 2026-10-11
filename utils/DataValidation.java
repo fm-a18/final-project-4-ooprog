@@ -156,6 +156,11 @@ public class DataValidation {
         return date;
     }
 
+    public boolean dateForClaimingPet(LocalDate date){
+        LocalDate today = LocalDate.now();
+        return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
+    }
+
     public static String validatePhoneNumber() {
         boolean isValidated = false;
         String input = "";

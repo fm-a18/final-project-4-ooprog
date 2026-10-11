@@ -353,9 +353,9 @@ public class Customer extends User {
         }
 
         String transactionNum = DataValidation.transactionNumGenerator();
-        String reservationRecord = buildAdoptionStatusRecord(selectedPet, paymentPlan, downPaymentAmount, balanceLeft, transactionNum);
+        String reservationRecord = buildAdoptionRequestRecord(selectedPet, paymentPlan, downPaymentAmount, balanceLeft, transactionNum);
         FileHandler.appendRecord("RESERVED.txt", reservationRecord);
-        selectedPet.setAdoptionStatus(AdoptionStatus.PENDING_REVIEW);
+        selectedPet.setAdoptionStatus(AdoptionStatus.ADOPTION_REVIEW);
         System.out.println("Adoption request for Pet ID: " + petID + " with transaction number " + transactionNum + " has been submitted for review.");        
     }
 
@@ -393,7 +393,7 @@ public class Customer extends User {
     }
 
 
-    private String buildAdoptionStatusRecord(Pet selectedPet, String paymentPlan, double downPayment, double balanceLeft, String transactionNum) {
+    private String buildAdoptionRequestRecord(Pet selectedPet, String paymentPlan, double downPayment, double balanceLeft, String transactionNum) {
         String parts[] = new String[AS_FIELD_COUNT];
 
         parts[AS_TRANSACTION_NUM] = transactionNum;
@@ -448,6 +448,14 @@ public class Customer extends User {
             return;
         }
 
+        ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
+        for(Pet pet : pets){
+            if(pet.getPetID().equalsIgnoreCase(found.getPetID())){
+                pet.setAdoptionStatus(AdoptionStatus.CANCELLATION_REVIEW);
+                break;
+            }
+        }
+
         String petRecord = FileHandler.findRecord("RESERVED.txt", transactionNum, AS_TRANSACTION_NUM);
         FileHandler.appendRecord("CANCELLATION_REQUEST.txt", petRecord);
         System.out.println("Your cancellation request of pet request of adoption is now being processed. Wait for the Admin or Coordinator to approve your request.");
@@ -495,9 +503,15 @@ public class Customer extends User {
             return;
         }
 
+        ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
+        for(Pet pet : pets){
+            if(pet.getPetID().equalsIgnoreCase(found.getPetID())){
+                pet.setAdoptionStatus(AdoptionStatus.RETURN_PENDING);
+                break;
+            }
+        }
+
         FileHandler.appendRecord("RETURN_REQUEST.txt", adoptedPet);
         System.out.println("Your return request is now being processed. Wait for the Admin or Coordinator to approve your request.");
     }
-
-    
 }
