@@ -336,8 +336,8 @@ public class DataValidation {
                 continue;
             }
             number = Double.parseDouble(inputNumber);
-            if (number < 500 || number > 1000) {
-                System.out.println("Invalid Price Input. Price must be between P500.00 - P1000.00. Try Again.");
+            if (number < 100 || number > 10000) {
+                System.out.println("Invalid Price Input. Price must be between P100.00 - P10000.00. Try Again.");
                 continue;
             }
             isRunning = false;
