@@ -326,9 +326,14 @@ public class Customer extends User {
             }
         }
 
+        if(availablePets.isEmpty()){
+            System.out.println("No pets available for adoption.");
+            return;
+        }
+
         DisplayUtils.displayPetsForCustomer(availablePets);
 
-        String petID = DataValidation.validatePetID("\nEnter Pet ID to request adoption: ", "^(?i)D|C|B\\d{4}$");
+        String petID = DataValidation.validatePetID("\nEnter Pet ID to request adoption: ", "^(?i)[DCB]\\d{4}$");
 
         Pet selectedPet = null;
     
@@ -356,6 +361,10 @@ public class Customer extends User {
 
         System.out.println("Fill out the following information for the adoption request:");
         String paymentPlan = paymentPlanSelection();
+        if(paymentPlan == null){
+            System.out.println("Adoption request cancelled.");
+        }
+
         double downPaymentAmount = downPayment(paymentPlan, selectedPet.getPrice());
         double balanceLeft = selectedPet.getPrice() - downPaymentAmount;
         
@@ -369,13 +378,10 @@ public class Customer extends User {
         }
 
         String transactionNum = DataValidation.transactionNumGenerator();
-        selectedPet.setAdoptionStatus(AdoptionStatus.PENDING_REVIEW);
-        System.out.println("Adoption request for Pet ID: " + petID + " with transaction number " + transactionNum + " has been submitted for review.");
-
-        //APPEND INFORMATION FROM USER_LIST.TXT AND PET_LIST.TXT TO RESERVE.TXT
         String reservationRecord = buildAdoptionStatusRecord(selectedPet, paymentPlan, downPaymentAmount, balanceLeft, transactionNum);
-        
         FileHandler.appendRecord("RESERVED.txt", reservationRecord);
+        selectedPet.setAdoptionStatus(AdoptionStatus.PENDING_REVIEW);
+        System.out.println("Adoption request for Pet ID: " + petID + " with transaction number " + transactionNum + " has been submitted for review.");        
     }
 
     private static String paymentPlanSelection(){

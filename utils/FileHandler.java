@@ -28,104 +28,21 @@ public class FileHandler {
     }
 
     public static ArrayList<Pet> viewAllPetRecords(){
-        ArrayList<Pet> pets = new ArrayList<>();
-        File file = new File("PET_LIST.txt");
-
-        if(!file.exists() || file.length() == 0){
-            System.out.println("File not found or empty.");
-            return pets;
-        }
-
-        try(BufferedReader reader = new BufferedReader(new FileReader("PET_LIST.txt"))) {
-            String line;
-            while((line = reader.readLine()) != null){
-                String[] parts = line.split("\\s*\\|\\s*");
-                if(parts.length == 7) {
-                    try{
-                        String petID = parts[0].trim();
-                        String petName = parts[1].trim();
-                        String petType = parts[2].trim();
-                        String petBreed = parts[3].trim();
-                        char petGender = parts[4].trim().charAt(0);
-                        int petAge = Integer.parseInt(parts[5].trim());
-                        double petPrice = Double.parseDouble(parts[6].trim());
-
-                        Pet pet = switch (petType.toLowerCase()) {
-                            case "dog" -> new Dog(petID, petName, petBreed, petGender, petAge, petPrice);
-                            case "cat" -> new Cat(petID, petName, petBreed, petGender, petAge, petPrice);
-                            case "bird" -> new Bird(petID, petName, petBreed, petGender, petAge, petPrice);
-                            default -> null;
-                        };
-
-                        if (pet != null) {
-                            pets.add(pet);
-                        }
-                    } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
-                        System.out.println("Invalid number format in record: " + line);
-                    }
-                    
-                }else{
-                    System.out.println("Invalid record format: " + line);
-                }
-            }
-        } catch(FileNotFoundException e){
-            System.out.println("File not found.");
-        } catch (IOException e) {
-            System.out.println("Error in reading file.");
-        }
-
-        return pets;
-    }
-
-    private static Pet parse(String line){
-        String[] parts = line.split("\\s*\\|\\s*");
-        if(parts.length < 8) {
-            return null;
-        }
-
-        try{
-            String petID = parts[0];
-            String petName = parts[1];
-            String petType = parts[2];
-            String petBreed = parts[3];
-            char petGender = parts[4].charAt(0);
-            int petAge = Integer.parseInt(parts[5]);
-            double petPrice = Double.parseDouble(parts[6]);
-            AdoptionStatus adoptionStatus = AdoptionStatus.valueOf(parts[7].toUpperCase());
-
-            Pet pet;
-            switch(petType.toLowerCase()){
-                case "dog" -> pet = new Dog(petID, petName, petBreed, petGender, petAge, petPrice);
-                case "cat" -> pet = new Cat(petID, petName, petBreed, petGender, petAge, petPrice);
-                case "bird" -> pet = new Bird(petID, petName, petBreed, petGender, petAge, petPrice);
-                default -> pet = null;
-            }
-
-            pet.setAdoptionStatus(adoptionStatus);
-            return pet;
-        }catch (IllegalArgumentException e){
-            return null;
-        }
+        return RecordManager.viewAllPetRecords();
     }
 
     public static ArrayList<Pet> filterRecords(String fileName, Object value, Function <Pet, ?> getters) {
         ArrayList<Pet> results = new ArrayList<>();
         String target = String.valueOf(value);
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                Pet pet = parse(line);
-                if (pet != null) continue;
+        ArrayList<Pet> pets = RecordManager.readRecords(fileName, RecordManager.PET_FIELD_COUNT, RecordManager::parsePet);
 
-                String field = String.valueOf(getters.apply(pet));
-                if (field.equalsIgnoreCase(target)) {
-                    results.add(pet);
-                }
+        for(Pet pet: pets){
+            if(String.valueOf(getters.apply(pet)).equalsIgnoreCase(target)){
+                results.add(pet);
             }
-        } catch (IOException e) {
-            System.out.println("Error in reading file.");
         }
+
         return results;
     }
 
