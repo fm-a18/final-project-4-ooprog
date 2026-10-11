@@ -58,7 +58,7 @@ public class DataValidation {
                 continue;
             }
             if (number < 18 || number > 90) {
-                System.out.println("Invalid Input. The age of the pet can only be from 18 - 90 years. Try again.");
+                System.out.println("Invalid Input. The age can only be from 18 - 90 years. Try again.");
                 continue;
             }
             isRunning = false;
@@ -83,7 +83,7 @@ public class DataValidation {
                 System.out.println("Invalid Input. Number is too large. Try Again.");
                 continue;
             }
-            if (number < 1 ||number > 15) {
+            if (number < 1 || number > 15) {
                 System.out.println("Invalid Input. The age of the pet can only be from 1 - 15 years. Try again.");
                 continue;
             }
@@ -97,7 +97,7 @@ public class DataValidation {
         String input = "";
 
         while (!isValidated) {
-            System.out.print("Email Address: ");
+            System.out.print("Enter your Email Address: ");
             try {
                 input = sc.nextLine().trim();
             } catch (NoSuchElementException e) {
@@ -126,6 +126,7 @@ public class DataValidation {
         while (!isValidated) {
             System.out.println("Email Address: ");
             try {
+                System.out.print("Enter your Address: ");
                 input = sc.nextLine().trim();
             } catch (NoSuchElementException e) {
                 System.out.println("Error: Email Address cannot be empty. Please try again.");
@@ -133,9 +134,9 @@ public class DataValidation {
             }
             if (input.isEmpty()) {
                 System.out.println("Error: Email Address cannot be empty.");
-            } else if (!emailExists(input)){
+            } else if (!emailExists(input)) {
                 System.out.println("Error: Email already exists.");
-            }else if (!input.matches("^(?=.*[A-Za-z])[A-Za-z0-9.,#\\-/\\s]{10,150}$")) {
+            } else if (!input.matches("^(?=.*[A-Za-z])[A-Za-z0-9.,#\\-/\\s]{10,150}$")) {
                 System.out.println("Invalid Email Address. Please enter a valid Email Address.");
             } else {
                 isValidated = true;
@@ -144,7 +145,7 @@ public class DataValidation {
         return input;
     }
 
-    public static LocalDate validateDate(String prompt) { //coordinator
+    public static LocalDate validateDate(String prompt) { // coordinator
         LocalDate date = null;
         while (date == null) {
             System.out.print(prompt + ": ");
@@ -164,7 +165,7 @@ public class DataValidation {
         String input = "";
 
         while (!isValidated) {
-            System.out.print("Phone Number: ");
+            System.out.print("Enter your Phone Number: ");
             try {
                 input = sc.nextLine().trim();
             } catch (NoSuchElementException e) {
@@ -195,7 +196,7 @@ public class DataValidation {
         boolean isValidated = false;
         String input = "";
         while (!isValidated) {
-            System.out.print("Password: ");
+            System.out.print("Enter your Password: ");
             try {
                 input = sc.nextLine().trim();
             } catch (NoSuchElementException e) {
@@ -388,7 +389,8 @@ public class DataValidation {
         String id = "";
         boolean isValid = false;
         while (!isValid) {
-            System.out.println("PET ID FORMAT: First letter of pet type (D, C, B) followed by 4 digits (e.g., D0001, C0002, B0003)");
+            System.out.println(
+                    "PET ID FORMAT: First letter of pet type (D, C, B) followed by 4 digits (e.g., D0001, C0002, B0003)");
             System.out.print(prompt);
             id = sc.nextLine().trim().toUpperCase();
 
@@ -461,30 +463,32 @@ public class DataValidation {
         }
     }
 
-    //TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS
+    // TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS
     private static int transactionCtr = 0;
-    public static String transactionNumGenerator(){
+
+    public static String transactionNumGenerator() {
         transactionCtr++;
         return "T" + String.format("%07d", transactionCtr);
     }
 
-    public static String transactionNumberValidation(String prompt){
+    public static String transactionNumberValidation(String prompt) {
         String transactionNum = "";
         boolean isValid = false;
-        while(!isValid){
+        while (!isValid) {
             System.out.print(prompt);
-            try{
+            try {
                 transactionNum = sc.nextLine().trim().toUpperCase();
-            }catch(NoSuchElementException e){
+            } catch (NoSuchElementException e) {
                 System.out.println("Error: Transaction Number cannot be empty. Please try again.");
                 continue;
             }
 
-            if(transactionNum.isEmpty()){
+            if (transactionNum.isEmpty()) {
                 System.out.println("Error: Transaction Number cannot be empty.");
-            }else if(!transactionNum.matches("^T\\d{7}$")){
-                System.out.println("Invalid Transaction Number. Please input the transaction number given after the request for adoption is granted.");
-            }else{
+            } else if (!transactionNum.matches("^T\\d{7}$")) {
+                System.out.println(
+                        "Invalid Transaction Number. Please input the transaction number given after the request for adoption is granted.");
+            } else {
                 isValid = true;
             }
         }

@@ -1,7 +1,7 @@
 package inventory;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public abstract class Pet {
     private final String petID;
@@ -11,8 +11,8 @@ public abstract class Pet {
     private int age;
     private double price;
     private AdoptionStatus adoptionStatus;
-    private HashMap<String, String> adoptionHistory;
-    private HashMap<String, String> medicalHistory;
+    private final TreeMap<String, String> adoptionHistory;
+    private final TreeMap<String, String> medicalHistory;
 
     public Pet(String petID, String name, String breed, char gender, int age, double price) {
         this.petID = petID;
@@ -23,8 +23,8 @@ public abstract class Pet {
         this.price = price;
 
         this.adoptionStatus = AdoptionStatus.AVAILABLE;
-        this.adoptionHistory = new HashMap<>();
-        this.medicalHistory = new HashMap<>();
+        this.adoptionHistory = new TreeMap<>();
+        this.medicalHistory = new TreeMap<>();
     }
 
     public abstract String getPetIDPrefix();
@@ -86,7 +86,7 @@ public abstract class Pet {
         medicalHistory.put(date, details);
     }
 
-    private static String formatHistory(HashMap<String, String> history, String emptyMessage) {
+    private static String formatHistory(Map<String, String> history, String emptyMessage) {
         if (history == null || history.isEmpty()) {
             return emptyMessage;
         }
@@ -107,4 +107,16 @@ public abstract class Pet {
     public String getMedicalHistory() {
         return formatHistory(medicalHistory, "No medical history");
     }
+
+    public String toFileString() {
+        return String.join("|",
+                petID,
+                name,
+                getType(),
+                breed,
+                String.valueOf(gender),
+                String.valueOf(age),
+                String.valueOf(price));
+    }
+
 }
