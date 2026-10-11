@@ -65,7 +65,7 @@ public class Customer extends User {
     private final ArrayList<User> users = new ArrayList<>();
 
     private void viewAllPets() {
-        ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
+        ArrayList<Pet> pets = getAvailablePets();
 
         if(pets.isEmpty()){
             System.out.println("No pets found.");
@@ -497,5 +497,27 @@ public class Customer extends User {
 
     private void requestReturn() {
 
+    }
+
+    private ArrayList<Pet> getAvailablePets(){
+        ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
+        ArrayList<Reservation> reservations = RecordManager.viewAllReserveRecords();
+        ArrayList<Pet> available = new ArrayList<>();
+
+        for(Pet pet : pets){
+            if(!isReserved(pet.getPetID(), reservations)){
+                available.add(pet);
+            }
+        }
+        return available;
+    }
+
+    private boolean isReserved(String id, ArrayList<Reservation> reservations){
+        for(Reservation reserved : reservations){
+            if(reserved.getPetID().equalsIgnoreCase(id)){
+                return true;
+            }
+        }
+        return false;
     }
 }
