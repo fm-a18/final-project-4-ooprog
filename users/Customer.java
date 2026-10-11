@@ -520,4 +520,12 @@ public class Customer extends User {
         }
         return false;
     }
+
+    private void showResults(ArrayList<Pet> pets){
+        if(pets == null || pets.isEmpty()){
+            System.out.println("No pets found.");
+            return;
+        }
+        DisplayUtils.displayPetsForCustomer(pets);
+    }
 }
