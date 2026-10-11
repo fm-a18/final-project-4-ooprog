@@ -484,10 +484,12 @@ public class Customer extends User {
             }
         }
 
-        FileHandler.removeRecord("RESERVED.txt", found.getPetID(), AS_PET_ID);
-        System.out.println("Cancellation of Pet Request Adoption Successful.");
+        String petRecord = FileHandler.findRecord("RESERVED.txt", transactionNum, AS_TRANSACTION_NUM);
+        FileHandler.appendRecord("CANCELLATION_REQUEST", petRecord);
+        System.out.println("Cancellation Request of Pet Request Adoption is now being processed. Wait for the Admin or Coordinator to approve your request.");
     }
 
     private void requestReturn() {
+
     }
 }
