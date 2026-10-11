@@ -220,16 +220,7 @@ public class Customer extends User {
 
         for (Pet pet : petTypes) {
             if (pet.getPetID().equalsIgnoreCase(petID)) {
-                DisplayUtils.printSummaryBox("PET DETAILS",
-                        new String[][] {
-                                { "Name", pet.getPetName() },
-                                { "Type", pet.getType() },
-                                { "Breed", pet.getBreed() },
-                                { "Gender", String.valueOf(pet.getGender()) },
-                                { "Age", String.valueOf(pet.getAge()) },
-                                { "Adoption History", pet.getAdoptionHistory() },
-                                { "Medical History", pet.getMedicalHistory() }
-                        });
+                DisplayUtils.displayPetDetails(pet);
                 return;
             }
         }
