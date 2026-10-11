@@ -156,7 +156,7 @@ public class DataValidation {
         return date;
     }
 
-    public boolean dateForClaimingPet(LocalDate date){
+    public static boolean dateForClaimingPet(LocalDate date){
         LocalDate today = LocalDate.now();
         return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
     }

@@ -26,12 +26,13 @@ public class RecordManager {
   public static final int AS_DOWN_PAYMENT    = 6;
   public static final int AS_BALANCE_LEFT    = 7;
   public static final int AS_DATE_REQUESTED  = 8;
-  public static final int AS_FIELD_COUNT     = 9;
+  public static final int AS_DATE_CLAIMING   = 9;
+  public static final int AS_FIELD_COUNT     = 10;
 
   //ADOPTED_LIST.txt
-  public static final int AD_DATE_FINALIZED = 9;
-  public static final int AD_APPROVED_BY = 10;
-  public static final int AD_FIELD_COUNT = 11;
+  public static final int AD_DATE_FINALIZED = 10;
+  public static final int AD_APPROVED_BY = 11;
+  public static final int AD_FIELD_COUNT = 12;
 
 
   //reader
@@ -97,7 +98,8 @@ public class RecordManager {
       pet[AS_PAYMENT_PLAN].trim(), 
       Double.parseDouble(pet[AS_DOWN_PAYMENT].trim().replace(",", "")), 
       Double.parseDouble(pet[AS_BALANCE_LEFT].trim().replace(",", "")), 
-      LocalDate.parse(pet[AS_DATE_REQUESTED].trim()));
+      LocalDate.parse(pet[AS_DATE_REQUESTED].trim()),
+      LocalDate.parse(pet[AS_DATE_CLAIMING].trim()));
   }
 
   public static ArrayList<Pet> viewAllPetRecords(){
