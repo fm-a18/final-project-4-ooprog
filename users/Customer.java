@@ -11,7 +11,17 @@ import utils.RecordManager;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
-//import java.util.function.Function;
+
+import static utils.RecordManager.AS_BALANCE_LEFT;
+import static utils.RecordManager.AS_DATE_REQUESTED;
+import static utils.RecordManager.AS_DOWN_PAYMENT;
+import static utils.RecordManager.AS_EMAIL;
+import static utils.RecordManager.AS_FIELD_COUNT;
+import static utils.RecordManager.AS_FIRST_NAME;
+import static utils.RecordManager.AS_LAST_NAME;
+import static utils.RecordManager.AS_PAYMENT_PLAN;
+import static utils.RecordManager.AS_PET_ID;
+import static utils.RecordManager.AS_TRANSACTION_NUM;
 
 public class Customer extends User {
     public Customer(String userID, String firstName, String lastName, int age, String emailAddress, String address, String phoneNumber, String password) {
@@ -382,16 +392,6 @@ public class Customer extends User {
         return amount;
     }
 
-    private static final int AS_TRANSACTION_NUM   = 0;
-    private static final int AS_FIRST_NAME       = 1;
-    private static final int AS_LAST_NAME        = 2;
-    private static final int AS_EMAIL            = 3;
-    private static final int AS_PET_ID           = 4;
-    private static final int AS_PAYMENT_PLAN     = 5;
-    private static final int AS_DOWN_PAYMENT     = 6;
-    private static final int AS_BALANCE_LEFT     = 7;
-    private static final int AS_DATE_REQUESTED   = 8;
-    private static final int AS_FIELD_COUNT      = 9;
 
     private String buildAdoptionStatusRecord(Pet selectedPet, String paymentPlan, double downPayment, double balanceLeft, String transactionNum) {
         String parts[] = new String[AS_FIELD_COUNT];
