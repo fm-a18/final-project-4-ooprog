@@ -79,13 +79,20 @@ public class Main {
         String address = DataValidation.validateAddress();
         String phoneNumber = DataValidation.validatePhoneNumber();
         String password = DataValidation.validatePassword();
+        String customerId;
+        try {
+            customerId = generateCustomerId();
+        } catch (IOException e) {
+            System.out.println("Error in reading user records. Registration was not completed.");
+            return;
+        }
 
         boolean isFileSaved = false;
 
         while (!isFileSaved) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("USER_LIST.txt", true))) {
-                writer.write(String.format("%s|%s|%s|%s|%s|%s|%s%n", firstName, lastName, age, emailAddress,
-                        address, phoneNumber, password));
+                writer.write(String.format("%s|%s|%s|%s|%s|%s|%s|%s%n", customerId, firstName, lastName, age,
+                        emailAddress, address, phoneNumber, password));
                 System.out.println("User successfully registered!");
                 isFileSaved = true;
             } catch (IOException e) {
@@ -96,6 +103,24 @@ public class Main {
                 }
             }
         }
+    }
+
+    private static String generateCustomerId() throws IOException {
+        int nextId = 1;
+        File userFile = new File("USER_LIST.txt");
+        if (userFile.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(userFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] fields = line.split("\\s*\\|\\s*", -1);
+                    if (fields.length > 0 && fields[0].matches("CU\\d+")) {
+                        int id = Integer.parseInt(fields[0].substring(2));
+                        nextId = Math.max(nextId, id + 1);
+                    }
+                }
+            }
+        }
+        return String.format("CU%04d", nextId);
     }
 
     public static void customerLogin() {
