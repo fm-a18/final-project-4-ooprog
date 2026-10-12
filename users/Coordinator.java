@@ -1,5 +1,6 @@
 package users;
 
+import inventory.AdoptionStatus;
 import inventory.Dog;
 import utils.DataValidation;
 import utils.DisplayUtils;
@@ -88,92 +89,15 @@ public class Coordinator extends User{
     }
 
     private void sortByCategory(Scanner sc) {
-        // TO BE CHANGED; STRATEGY NEEDED
-        if(pets.isEmpty()){
-            System.out.println("No pets found.");
-            return;
-        }
-
+        PetManager.getInstance().sortByCategory(sc);
     }
 
     private void addPet(Scanner sc) {
-        if(pets.isEmpty()){
-            System.out.println("No pets found.");
-            return;
-        }
-        boolean isDone = true;
-
-        while (isDone) {
-            DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird");
-            int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3, 0);
-            switch (choice) {
-                case 1: {
-                    String petID = DataValidation.validatePetIdInput("Enter Pet ID: ", "Dog");
-                    String petFirstName = DataValidation.validateString("Enter First Name: ");
-                    String petLastName = DataValidation.validateString("Enter Last Name: ");
-                    String petBreed = DataValidation.validateString("Enter Breed: ");
-                    char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
-                    double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
-                    char choicev1 = DataValidation.charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
-                    if (choicev1 == 'Y') {
-                        String petMedHis = DataValidation.validateString("Enter medical history of pet: ");
-                    }
-                    System.out.println("Pet Added on " + LocalDate.now().format(dateFormat));
-                    break;
-                }
-                case 2: {
-                    String petID = DataValidation.validatePetIdInput("Enter Pet ID: ", "Cat");
-                    String petName = DataValidation.validateString("Enter Name: ");
-                    String petBreed = DataValidation.validateString("Enter Breed: ");
-                    char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
-                    double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
-                    char choicev1 = DataValidation.charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
-                    if (choicev1 == 'Y') {
-                        String petMedHis = DataValidation.validateString("Enter medical history of pet: ");
-                    }
-                    System.out.println("Pet Added on " + LocalDate.now().format(dateFormat));
-                    break;
-                }
-                case 3: {
-                    String petID = DataValidation.validatePetIdInput("Enter Pet ID: ", "Bird");
-                    String petFirstName = DataValidation.validateString("Enter First Name: ");
-                    String petLastName = DataValidation.validateString("Enter Last Name: ");
-                    String petBreed = DataValidation.validateString("Enter Breed: ");
-                    char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
-                    double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
-                    char choicev1 = DataValidation.charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
-                    if (choicev1 == 'Y') {
-                        String petMedHis = DataValidation.validateString("Enter medical history of pet: ");
-                    }
-                    System.out.println("Pet Added on " + LocalDate.now().format(dateFormat));
-                    break;
-                }
-                case 0: {
-                    isDone = false;
-                    break;
-                }
-            }
-        }
-
+        PetManager.getInstance().addPet();
     }
 
     private void updatePetStatus(Scanner sc) {
-        if(pets.isEmpty()){
-            System.out.println("No pets found.");
-            return;
-        }
-        boolean isDone = true;
-
-        while (isDone) {
-            DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird");
-            int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3, 0);
-            switch (choice) {
-                case 1: {
-                    String petID = DataValidation.validatePetIdInput("Enter existing pet ID: ", "Dog");
-                    // to be filled;
-                }
-            }
-        }
+        PetManager.getInstance().updatePetStatus(sc);
     }
 
     private void requestAdoption(Scanner sc) {

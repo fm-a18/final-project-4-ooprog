@@ -8,6 +8,7 @@ import inventory.AdoptionStatus;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 import java.util.function.Function;
 
@@ -193,4 +194,67 @@ public class FileHandler {
         append("PET_LIST.txt", pet.toFileString());
     }
 
+    public static void sortCategory(String fileName, int category, int sortBy, boolean ascending) {
+        final int ID = 0, NAME = 1, BREED = 2, GENDER = 3, AGE = 4, PRICE = 5;
+        String[] idPrefix = {"DO", "CA", "BI"};
+
+        ArrayList<Pet> sorted = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.trim().split("\\s*\\|\\s*");
+                if (parts.length <= PRICE) {
+                    continue;
+                }
+                if (!parts[ID].toUpperCase().startsWith(idPrefix[category - 1])) {
+                    continue;
+                }
+
+                try {
+                    String petID = parts[ID];
+                    String petName = parts[NAME];
+                    String petBreed = parts[BREED];
+                    char petGender = Character.toUpperCase(parts[GENDER].charAt(0));
+                    int petAge = Integer.parseInt(parts[AGE]);
+                    double petPrice = Double.parseDouble(parts[PRICE]);
+
+                    Pet pet = switch (category) {
+                        case 1 -> new Dog(petID, petName, petBreed, petGender, petAge, petPrice);
+                        case 2 -> new Cat(petID, petName, petBreed, petGender, petAge, petPrice);
+                        default -> new Bird(petID, petName, petBreed, petGender, petAge, petPrice);
+                    };
+                    sorted.add(pet);
+                } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error in reading file.");
+            return;
+        }
+
+        Comparator<Pet> comparator;
+        if (sortBy == 1) {
+            comparator = Comparator.comparingDouble(Pet::getAge);
+        } else if (sortBy == 2) {
+            comparator = Comparator.comparingDouble(Pet::getPrice);
+        } else if (sortBy == 3) {
+            comparator = Comparator.comparingInt(Pet::getGender);
+        } else {
+            System.out.printf("Category %d not found!%n", sortBy);
+            return;
+        }
+
+        if (!ascending) {
+            comparator = comparator.reversed();
+        }
+
+        sorted.sort(comparator);
+
+        if (sorted.isEmpty()) {
+            System.out.println("No pets found.");
+            return;
+        }
+        DisplayUtils.displayPetsForStaff(sorted);
+    }
 }
