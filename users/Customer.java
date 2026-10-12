@@ -13,21 +13,21 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
 
-import static utils.RecordManager.AS_BALANCE_LEFT;
-import static utils.RecordManager.AS_DATE_REQUESTED;
-import static utils.RecordManager.AS_DOWN_PAYMENT;
-import static utils.RecordManager.AS_EMAIL;
-import static utils.RecordManager.AS_FIELD_COUNT;
-import static utils.RecordManager.AS_FIRST_NAME;
-import static utils.RecordManager.AS_LAST_NAME;
-import static utils.RecordManager.AS_PAYMENT_PLAN;
-import static utils.RecordManager.AS_PET_ID;
-import static utils.RecordManager.AS_TRANSACTION_NUM;
-import static utils.RecordManager.AS_DATE_CLAIMING;
+import static utils.RecordManager.RES_BALANCE_LEFT;
+import static utils.RecordManager.RES_DATE_REQUESTED;
+import static utils.RecordManager.RES_DOWN_PAYMENT;
+import static utils.RecordManager.RES_EMAIL;
+import static utils.RecordManager.RES_FIELD_COUNT;
+import static utils.RecordManager.RES_FIRST_NAME;
+import static utils.RecordManager.RES_LAST_NAME;
+import static utils.RecordManager.RES_PAYMENT_PLAN;
+import static utils.RecordManager.RES_PET_ID;
+import static utils.RecordManager.RES_TRANSACTION_NUM;
+import static utils.RecordManager.RES_DATE_CLAIMING;
 
 public class Customer extends User {
     public Customer(String userID, String firstName, String lastName, int age, String emailAddress,
-            String address, String phoneNumber, String password) {
+                    String address, String phoneNumber, String password) {
         super(userID, firstName, lastName, age, emailAddress,
                 address, phoneNumber, password);
     }
@@ -355,13 +355,11 @@ public class Customer extends User {
             confirmByEmail = DataValidation.validateEmailAddress();
         }
 
-        String transactionNum = DataValidation.transactionNumGenerator();
-        String reservationRecord = buildAdoptionRequestRecord(selectedPet, paymentPlan, downPaymentAmount, balanceLeft,
-                transactionNum, date);
+        String transactionNum = utils.generators.TransactionNumGenerator.transactionNumGenerator();
+        String reservationRecord = buildAdoptionRequestRecord(selectedPet, paymentPlan, downPaymentAmount, balanceLeft, transactionNum, date);
         FileHandler.appendRecord("RESERVED.txt", reservationRecord);
         selectedPet.setAdoptionStatus(AdoptionStatus.ADOPTION_REVIEW);
-        System.out.println("Adoption request for Pet ID: " + petID + " with transaction number " + transactionNum
-                + " has been submitted for review.");
+        System.out.println("Adoption request for Pet ID: " + petID + " with transaction number " + transactionNum + " has been submitted for review.");
     }
 
     private static String paymentPlanSelection() {
@@ -405,20 +403,20 @@ public class Customer extends User {
         return amount;
     }
 
-    private String buildAdoptionRequestRecord(Pet selectedPet, String paymentPlan, double downPayment,
-            double balanceLeft, String transactionNum, LocalDate date) {
-        String parts[] = new String[AS_FIELD_COUNT];
 
-        parts[AS_TRANSACTION_NUM] = transactionNum;
-        parts[AS_FIRST_NAME] = this.getFirstName();
-        parts[AS_LAST_NAME] = this.getLastName();
-        parts[AS_EMAIL] = this.getEmailAddress();
-        parts[AS_PET_ID] = selectedPet.getPetID();
-        parts[AS_PAYMENT_PLAN] = paymentPlan;
-        parts[AS_DOWN_PAYMENT] = String.format("%,.2f", downPayment);
-        parts[AS_BALANCE_LEFT] = String.format("%,.2f", balanceLeft);
-        parts[AS_DATE_REQUESTED] = java.time.LocalDate.now().toString();
-        parts[AS_DATE_CLAIMING] = date.toString();
+    private String buildAdoptionRequestRecord(Pet selectedPet, String paymentPlan, double downPayment, double balanceLeft, String transactionNum, LocalDate date) {
+        String parts[] = new String[RES_FIELD_COUNT];
+
+        parts[RES_TRANSACTION_NUM] = transactionNum;
+        parts[RES_FIRST_NAME] = this.getFirstName();
+        parts[RES_LAST_NAME] = this.getLastName();
+        parts[RES_EMAIL] = this.getEmailAddress();
+        parts[RES_PET_ID] = selectedPet.getPetID();
+        parts[RES_PAYMENT_PLAN] = paymentPlan;
+        parts[RES_DOWN_PAYMENT] = String.format("%,.2f", downPayment);
+        parts[RES_BALANCE_LEFT] = String.format("%,.2f", balanceLeft);
+        parts[RES_DATE_REQUESTED] = java.time.LocalDate.now().toString();
+        parts[RES_DATE_CLAIMING] = date.toString();
 
         return String.join("|", parts);
     }
@@ -445,21 +443,21 @@ public class Customer extends User {
         System.out.println("Reservation found!");
         DisplayUtils.printSummaryBox("PET DETAILS",
                 new String[][] {
-                        { "Customer's Name", found.getFirstName() + " " + found.getLastName() },
-                        { "Customer's Email", found.getEmail() },
-                        { "Transaction Number", found.getTransactionNum() },
-                        { "Pet ID", found.getPetID() },
-                        { "Payment Plan", found.getPaymentPlan() },
-                        { "Down Payment", String.valueOf(found.getDownPayment()) },
-                        { "Balance", String.valueOf(found.getBalanceLeft()) },
-                        { "Date Requested", found.getDateRequested().toString() },
-                        { "Date Claiming", found.getDateClaiming().toString() }
-                });
+                        { "Customer's Name", found.getFirstName() + " " + found.getLastName()},
+                        { "Customer's Email", found.getEmail()},
+                        { "Transaction Number", found.getTransactionNum()},
+                        { "Pet ID", found.getPetID()},
+                        { "Payment Plan", found.getPaymentPlan()},
+                        { "Down Payment", String.valueOf(found.getDownPayment())},
+                        { "Balance", String.valueOf(found.getBalanceLeft())},
+                        { "Date Requested", found.getDateRequested().toString()},
+                        { "Date Claiming", found.getDateClaiming().toString()}
+                }
+        );
 
-        char cancelAdoptionConfirmation = DataValidation
-                .charChoiceValidation("Are you sure you want to cancel your reservation? (y/n): ", 'y', 'n');
+        char cancelAdoptionConfirmation = DataValidation.charChoiceValidation("Are you sure you want to cancel your reservation? (y/n): ", 'y', 'n');
 
-        if (cancelAdoptionConfirmation == 'n') {
+        if(cancelAdoptionConfirmation == 'n'){
             System.out.println("Adoption Cancellation Cancelled.");
             return;
         }
@@ -472,7 +470,7 @@ public class Customer extends User {
             }
         }
 
-        String petRecord = FileHandler.findRecord("RESERVED.txt", transactionNum, AS_TRANSACTION_NUM);
+        String petRecord = FileHandler.findRecord("RESERVED.txt", transactionNum, RES_TRANSACTION_NUM);
         FileHandler.appendRecord("CANCELLATION_REQUEST.txt", petRecord);
         System.out.println(
                 "Your cancellation request of pet request of adoption is now being processed. Wait for the Admin or Coordinator to approve your request.");
@@ -496,23 +494,23 @@ public class Customer extends User {
             return;
         }
 
-        if (FileHandler.findRecord("RETURN_REQUEST", transactionNum, AS_TRANSACTION_NUM) != null) {
+        if(FileHandler.findRecord("RETURN_REQUEST", transactionNum, RES_TRANSACTION_NUM) != null){
             System.out.println("A return request for " + found.getTransactionNum() + " is already being processed.");
             return;
         }
 
-        String adoptedPet = FileHandler.findRecord("ADOPTION_LIST.txt", transactionNum,
-                RecordManager.AS_TRANSACTION_NUM);
+        String adoptedPet = FileHandler.findRecord("ADOPTION_LIST.txt", transactionNum, RecordManager.RES_TRANSACTION_NUM);
         String dateAdopted = adoptedPet.split("\\s*\\|\\s*")[RecordManager.AD_DATE_FINALIZED];
 
         System.out.println("Adoption found!");
         DisplayUtils.printSummaryBox("PET DETAILS",
                 new String[][] {
-                        { "Customer's Name", found.getFirstName() + " " + found.getLastName() },
-                        { "Transaction Number", found.getTransactionNum() },
-                        { "Pet ID", found.getPetID() },
-                        { "Date Adopted", dateAdopted },
-                });
+                        { "Customer's Name", found.getFirstName() + " " + found.getLastName()},
+                        { "Transaction Number", found.getTransactionNum()},
+                        { "Pet ID", found.getPetID()},
+                        { "Date Adopted", dateAdopted},
+                }
+        );
 
         char returnAdoptionConfirmation = DataValidation
                 .charChoiceValidation("Are you sure you want to return your pet? (y/n): ", 'y', 'n');

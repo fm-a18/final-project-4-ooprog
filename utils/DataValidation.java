@@ -142,7 +142,7 @@ public class DataValidation {
         return input;
     }
 
-    public static LocalDate validateDate(String prompt) { // coordinator
+    public static LocalDate validateDate(String prompt) { //coordinator
         LocalDate date = null;
         while (date == null) {
             System.out.print(prompt + ": ");
