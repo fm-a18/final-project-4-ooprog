@@ -13,17 +13,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
 
-import static utils.RecordManager.RES_BALANCE_LEFT;
-import static utils.RecordManager.RES_DATE_REQUESTED;
-import static utils.RecordManager.RES_DOWN_PAYMENT;
-import static utils.RecordManager.RES_EMAIL;
-import static utils.RecordManager.RES_FIELD_COUNT;
-import static utils.RecordManager.RES_FIRST_NAME;
-import static utils.RecordManager.RES_LAST_NAME;
-import static utils.RecordManager.RES_PAYMENT_PLAN;
-import static utils.RecordManager.RES_PET_ID;
 import static utils.RecordManager.RES_TRANSACTION_NUM;
-import static utils.RecordManager.RES_DATE_CLAIMING;
+import static utils.RecordManager.RES_DATE_FINALIZED;
 
 public class Customer extends User {
     public Customer(String userID, String firstName, String lastName, int age, String emailAddress,
@@ -220,16 +211,7 @@ public class Customer extends User {
 
         for (Pet pet : petTypes) {
             if (pet.getPetID().equalsIgnoreCase(petID)) {
-                DisplayUtils.printSummaryBox("PET DETAILS",
-                        new String[][] {
-                                { "Name", pet.getPetName() },
-                                { "Type", pet.getType() },
-                                { "Breed", pet.getBreed() },
-                                { "Gender", String.valueOf(pet.getGender()) },
-                                { "Age", String.valueOf(pet.getAge()) },
-                                { "Adoption History", pet.getAdoptionHistory() },
-                                { "Medical History", pet.getMedicalHistory() }
-                        });
+                DisplayUtils.displayPetDetails(pet);
                 return;
             }
         }
@@ -355,8 +337,9 @@ public class Customer extends User {
             confirmByEmail = DataValidation.validateEmailAddress();
         }
 
-        String transactionNum = utils.generators.TransactionNumGenerator.transactionNumGenerator();
-        String reservationRecord = buildAdoptionRequestRecord(selectedPet, paymentPlan, downPaymentAmount, balanceLeft, transactionNum, date);
+        String transactionNum = DataValidation.transactionNumGenerator();
+        RecordManager rm = new RecordManager();
+        String reservationRecord = rm.buildAdoptionRequestRecord(this.getFirstName(), this.getLastName(), this.getEmailAddress(), selectedPet, paymentPlan, downPaymentAmount, balanceLeft, transactionNum, date);
         FileHandler.appendRecord("RESERVED.txt", reservationRecord);
         selectedPet.setAdoptionStatus(AdoptionStatus.ADOPTION_REVIEW);
         System.out.println("Adoption request for Pet ID: " + petID + " with transaction number " + transactionNum + " has been submitted for review.");
@@ -401,24 +384,6 @@ public class Customer extends User {
             case "75% Down Payment" -> amount = petPrice * 0.75;
         }
         return amount;
-    }
-
-
-    private String buildAdoptionRequestRecord(Pet selectedPet, String paymentPlan, double downPayment, double balanceLeft, String transactionNum, LocalDate date) {
-        String parts[] = new String[RES_FIELD_COUNT];
-
-        parts[RES_TRANSACTION_NUM] = transactionNum;
-        parts[RES_FIRST_NAME] = this.getFirstName();
-        parts[RES_LAST_NAME] = this.getLastName();
-        parts[RES_EMAIL] = this.getEmailAddress();
-        parts[RES_PET_ID] = selectedPet.getPetID();
-        parts[RES_PAYMENT_PLAN] = paymentPlan;
-        parts[RES_DOWN_PAYMENT] = String.format("%,.2f", downPayment);
-        parts[RES_BALANCE_LEFT] = String.format("%,.2f", balanceLeft);
-        parts[RES_DATE_REQUESTED] = java.time.LocalDate.now().toString();
-        parts[RES_DATE_CLAIMING] = date.toString();
-
-        return String.join("|", parts);
     }
 
     private void cancelAdoption() {
@@ -499,8 +464,8 @@ public class Customer extends User {
             return;
         }
 
-        String adoptedPet = FileHandler.findRecord("ADOPTION_LIST.txt", transactionNum, RecordManager.RES_TRANSACTION_NUM);
-        String dateAdopted = adoptedPet.split("\\s*\\|\\s*")[RecordManager.AD_DATE_FINALIZED];
+        String adoptedPet = FileHandler.findRecord("ADOPTION_LIST.txt", transactionNum, RES_TRANSACTION_NUM);
+        String dateAdopted = adoptedPet.split("\\s*\\|\\s*")[RecordManager.RES_DATE_FINALIZED];
 
         System.out.println("Adoption found!");
         DisplayUtils.printSummaryBox("PET DETAILS",
