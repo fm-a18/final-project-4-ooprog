@@ -84,22 +84,22 @@ public class Customer extends User {
         DisplayUtils.displayPetsForCustomer(pets);
     }
 
-    private ArrayList<Pet> getAvailablePets(){
+    private ArrayList<Pet> getAvailablePets() {
         ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
         ArrayList<Reservation> reservations = RecordManager.viewAllReserveRecords();
         ArrayList<Pet> available = new ArrayList<>();
 
-        for(Pet pet : pets){
-            if(!isReserved(pet.getPetID(), reservations)){
+        for (Pet pet : pets) {
+            if (!isReserved(pet.getPetID(), reservations)) {
                 available.add(pet);
             }
         }
         return available;
     }
 
-    private boolean isReserved(String id, ArrayList<Reservation> reservations){
-        for(Reservation reserved : reservations){
-            if(reserved.getPetID().equalsIgnoreCase(id)){
+    private boolean isReserved(String id, ArrayList<Reservation> reservations) {
+        for (Reservation reserved : reservations) {
+            if (reserved.getPetID().equalsIgnoreCase(id)) {
                 return true;
             }
         }
@@ -107,7 +107,7 @@ public class Customer extends User {
     }
 
     private void searchByCategory() {
-        if(FileHandler.viewAllPetRecords().isEmpty()){
+        if (FileHandler.viewAllPetRecords().isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
@@ -130,7 +130,7 @@ public class Customer extends User {
 
                     showResults(FileHandler.filterRecords("PET_LIST.txt", name, Pet::getPetName));
                     break;
-                case 2: //VIEW PET BY PET TYPE
+                case 2: // VIEW PET BY PET TYPE
                     showResults(getSpecificPetDetailsPerType());
                     break;
                 case 3: // SEARCH PET BY PET BREED
@@ -146,9 +146,11 @@ public class Customer extends User {
                     int choiceGender = DataValidation.intChoiceValidation("Select Option",
                             1, 2, 0);
 
-                    if(choiceGender == 0){break;}
+                    if (choiceGender == 0) {
+                        break;
+                    }
 
-                    char gender = (choiceGender == 1) ? 'M' : 'F';
+                    String gender = (choiceGender == 1) ? "Male" : "Female";
                     showResults(FileHandler.filterRecords("PET_LIST.txt", String.valueOf(gender), Pet::getGender));
                     break;
                 case 5: // SEARCH PET BY AGE
@@ -163,32 +165,30 @@ public class Customer extends User {
         }
     }
 
-    private void showResults(ArrayList<Pet> pets){
-        if(pets == null || pets.isEmpty()){
+    private void showResults(ArrayList<Pet> pets) {
+        if (pets == null || pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
         DisplayUtils.displayPetsForCustomer(pets);
     }
 
-    private ArrayList<Pet> getSpecificPetDetailsPerType(){
+    private ArrayList<Pet> getSpecificPetDetailsPerType() {
         String type = "";
-        boolean isDone = false;
-        while (!isDone) {
-            DisplayUtils.printMenu("SEARCH BY PET TYPE",
-                    "#Select Pet Type",
-                    "Dog",
-                    "Cat",
-                    "Bird");
-            int choiceType = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 0);
 
-            switch (choiceType) {
-                case 1 -> type = "dog";
-                case 2 -> type = "cat";
-                case 3 -> type = "bird";
-                case 0 -> isDone = true;
-            }
+        DisplayUtils.printMenu("SEARCH BY PET TYPE",
+                "#Select Pet Type",
+                "Dog",
+                "Cat",
+                "Bird");
+        int choiceType = DataValidation.intChoiceValidation("Select Option",
+                1, 2, 3, 0);
+
+        switch (choiceType) {
+            case 1 -> type = "dog";
+            case 2 -> type = "cat";
+            case 3 -> type = "bird";
+            case 0 -> type = "";
         }
 
         return FileHandler.filterRecords("PET_LIST.txt", type, Pet::getType);
@@ -238,7 +238,7 @@ public class Customer extends User {
 
     private void filterByPrice() {
         ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
-        if(pets.isEmpty()){
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
@@ -297,10 +297,10 @@ public class Customer extends User {
     }
 
     private void requestAdoption() {
-        //FILTER TO SHOW ONLY AVAILABLE PETS viewAllPets();
+        // FILTER TO SHOW ONLY AVAILABLE PETS viewAllPets();
         ArrayList<Pet> availablePets = getAvailablePets();
 
-        if(availablePets.isEmpty()){
+        if (availablePets.isEmpty()) {
             System.out.println("No pets available for adoption.");
             return;
         }
@@ -311,8 +311,8 @@ public class Customer extends User {
 
         Pet selectedPet = null;
 
-        for(Pet pet : availablePets){
-            if(pet.idExists(petID)){
+        for (Pet pet : availablePets) {
+            if (pet.idExists(petID)) {
                 System.out.println("Pet ID: " + petID + " found and is available for adoption.");
                 selectedPet = pet;
                 break;
@@ -334,7 +334,7 @@ public class Customer extends User {
 
         System.out.println("Fill out the following information for the adoption request:");
         String paymentPlan = paymentPlanSelection();
-        if(paymentPlan == null){
+        if (paymentPlan == null) {
             System.out.println("Adoption request cancelled.");
         }
 
@@ -342,11 +342,10 @@ public class Customer extends User {
         double balanceLeft = selectedPet.getPrice() - downPaymentAmount;
 
         LocalDate date = DataValidation.validateDate("Enter date for claiming of pet: ");
-        while(!DataValidation.dateForClaimingPet(date)){
+        while (!DataValidation.dateForClaimingPet(date)) {
             System.out.println("Date should be on or within 7 days after the adoption request.");
             date = DataValidation.validateDate("Enter date for claiming of pet: ");
         }
-
 
         System.out.println("\nConfirm adoption request by entering your email address.");
         String confirmByEmail = DataValidation.validateEmailAddress();
@@ -424,18 +423,19 @@ public class Customer extends User {
 
     private void cancelAdoption() {
         ArrayList<Reservation> reserveDetails = RecordManager.viewAllReserveRecords();
-        String transactionNum = DataValidation.transactionNumberValidation("Enter Transaction Number from your Request of Adoption Confirmation Message: ");
+        String transactionNum = DataValidation.transactionNumberValidation(
+                "Enter Transaction Number from your Request of Adoption Confirmation Message: ");
 
         Reservation found = null;
 
-        for(Reservation reserve : reserveDetails){
-            if(reserve.getTransactionNum().equalsIgnoreCase(transactionNum)){
+        for (Reservation reserve : reserveDetails) {
+            if (reserve.getTransactionNum().equalsIgnoreCase(transactionNum)) {
                 found = reserve;
                 break;
             }
         }
 
-        if(found == null || !found.getEmail().equalsIgnoreCase(this.getEmailAddress())){
+        if (found == null || !found.getEmail().equalsIgnoreCase(this.getEmailAddress())) {
             System.out.println("No reservation found for transaction number: " + transactionNum);
             return;
         }
@@ -463,8 +463,8 @@ public class Customer extends User {
         }
 
         ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
-        for(Pet pet : pets){
-            if(pet.getPetID().equalsIgnoreCase(found.getPetID())){
+        for (Pet pet : pets) {
+            if (pet.getPetID().equalsIgnoreCase(found.getPetID())) {
                 pet.setAdoptionStatus(AdoptionStatus.CANCELLATION_REVIEW);
                 break;
             }
@@ -472,22 +472,24 @@ public class Customer extends User {
 
         String petRecord = FileHandler.findRecord("RESERVED.txt", transactionNum, RES_TRANSACTION_NUM);
         FileHandler.appendRecord("CANCELLATION_REQUEST.txt", petRecord);
-        System.out.println("Your cancellation request of pet request of adoption is now being processed. Wait for the Admin or Coordinator to approve your request.");
+        System.out.println(
+                "Your cancellation request of pet request of adoption is now being processed. Wait for the Admin or Coordinator to approve your request.");
     }
 
     private void requestReturn() {
-        String transactionNum = DataValidation.transactionNumberValidation("Enter Transaction Number from your Request of Adoption Confirmation Message: ");
+        String transactionNum = DataValidation.transactionNumberValidation(
+                "Enter Transaction Number from your Request of Adoption Confirmation Message: ");
 
         Reservation found = null;
 
-        for(Reservation adopted : RecordManager.viewAllPetAdoptedRecords()){
-            if(adopted.getTransactionNum().equalsIgnoreCase(transactionNum)){
+        for (Reservation adopted : RecordManager.viewAllPetAdoptedRecords()) {
+            if (adopted.getTransactionNum().equalsIgnoreCase(transactionNum)) {
                 found = adopted;
                 break;
             }
         }
 
-        if(found == null || !found.getEmail().equalsIgnoreCase(this.getEmailAddress())){
+        if (found == null || !found.getEmail().equalsIgnoreCase(this.getEmailAddress())) {
             System.out.println("No adoption found for transaction number: " + transactionNum);
             return;
         }
@@ -510,22 +512,24 @@ public class Customer extends User {
                 }
         );
 
-        char returnAdoptionConfirmation = DataValidation.charChoiceValidation("Are you sure you want to return your pet? (y/n): ", 'y', 'n');
+        char returnAdoptionConfirmation = DataValidation
+                .charChoiceValidation("Are you sure you want to return your pet? (y/n): ", 'y', 'n');
 
-        if(returnAdoptionConfirmation == 'n'){
+        if (returnAdoptionConfirmation == 'n') {
             System.out.println("Return Adoption Request Cancelled.");
             return;
         }
 
         ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
-        for(Pet pet : pets){
-            if(pet.getPetID().equalsIgnoreCase(found.getPetID())){
+        for (Pet pet : pets) {
+            if (pet.getPetID().equalsIgnoreCase(found.getPetID())) {
                 pet.setAdoptionStatus(AdoptionStatus.RETURN_PENDING);
                 break;
             }
         }
 
         FileHandler.appendRecord("RETURN_REQUEST.txt", adoptedPet);
-        System.out.println("Your return request is now being processed. Wait for the Admin or Coordinator to approve your request.");
+        System.out.println(
+                "Your return request is now being processed. Wait for the Admin or Coordinator to approve your request.");
     }
 }
