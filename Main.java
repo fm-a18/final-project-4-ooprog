@@ -79,13 +79,13 @@ public class Main {
         String address = DataValidation.validateAddress();
         String phoneNumber = DataValidation.validatePhoneNumber();
         String password = DataValidation.validatePassword();
-
+        String userID = utils.generators.UserIdGenerator.userIdGenerator();
         boolean isFileSaved = false;
 
         while (!isFileSaved) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("USER_LIST.txt", true))) {
-                writer.write(String.format("%s|%s|%s|%s|%s|%s|%s%n", firstName, lastName, age, emailAddress,
-                        address, phoneNumber, password));
+                writer.write(String.format("%s, %s|%s|%s|%s|%s|%s|%s%S%n", userID, firstName, lastName, age, emailAddress,
+                        address, phoneNumber, password, role));
                 System.out.println("User successfully registered!");
                 isFileSaved = true;
             } catch (IOException e) {
@@ -104,6 +104,7 @@ public class Main {
             System.out.println("No User Records found.");
             return;
         }
+
         String email = DataValidation.validateEmailAddress();
         String userData = FileHandler.findRecord("USER_LIST.txt", email, 4);
         if (userData == null) {

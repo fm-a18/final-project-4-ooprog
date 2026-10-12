@@ -4,6 +4,8 @@ import inventory.AdoptionStatus;
 import utils.PetManager;
 import utils.DataValidation;
 import utils.FileHandler;
+import utils.RecordManager;
+
 import java.util.Scanner;
 
 import static utils.DisplayUtils.printMenu;
@@ -11,7 +13,7 @@ import static utils.DisplayUtils.printMenu;
 public class Admin extends User {
 
     public Admin(String userID, String firstName, String lastName, int age, String emailAddress,
-            String address, String phoneNumber, String password) {
+                 String address, String phoneNumber, String password) {
         super(userID, firstName, lastName, age, emailAddress,
                 address, phoneNumber, password);
     }
@@ -103,7 +105,7 @@ public class Admin extends User {
         String petID = parts[RES_PET_ID];
         String transactionNum = parts[RES_TRANSACTION_ID];
 
-        String adoptedRecord = buildAdoptedRecord(reservationRecord, this.getEmailAddress());
+        String adoptedRecord = RecordManager.buildAdoptedRecord(reservationRecord, this.getEmailAddress());
 
         FileHandler.appendRecord("ADOPTED_LIST.txt", adoptedRecord);
         FileHandler.removeRecord("RESERVED.txt", transactionNum, 0);
@@ -112,26 +114,7 @@ public class Admin extends User {
     }
 
     private static final int RES_TRANSACTION_ID = 0;
-    private static final int RES_FIRST_NAME = 1;
-    private static final int RES_LAST_NAME = 2;
-    private static final int RES_EMAIL = 3;
     private static final int RES_PET_ID = 4;
-    private static final int RES_PAYMENT_TYPE = 5;
-    private static final int RES_DOWN_PAYMENT = 6;
-    private static final int RES_BALANCE_LEFT = 7;
-    private static final int RES_DATE_REQUESTED = 8;
-    private static final int RES_DATE_CLAIMING = 9;
-
-    private String buildAdoptedRecord(String reservationRecord, String approvedByEmail) {
-        String[] parts = reservationRecord.split("\\s*\\|\\s*");
-        String dateFinalized = java.time.LocalDate.now().toString();
-
-        return String.join("|",
-                parts[RES_TRANSACTION_ID], parts[RES_FIRST_NAME], parts[RES_LAST_NAME],
-                parts[RES_EMAIL], parts[RES_PET_ID], parts[RES_PAYMENT_TYPE],
-                parts[RES_DOWN_PAYMENT], parts[RES_BALANCE_LEFT],
-                parts[RES_DATE_REQUESTED], parts[RES_DATE_CLAIMING], dateFinalized, approvedByEmail);
-    }
 
     private void cancelAdoptionRequest() {
         System.out.println("Cancellation Requests");
