@@ -175,22 +175,20 @@ public class Customer extends User {
 
     private ArrayList<Pet> getSpecificPetDetailsPerType() {
         String type = "";
-        boolean isDone = false;
-        while (!isDone) {
-            DisplayUtils.printMenu("SEARCH BY PET TYPE",
-                    "#Select Pet Type",
-                    "Dog",
-                    "Cat",
-                    "Bird");
-            int choiceType = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 0);
 
-            switch (choiceType) {
-                case 1 -> type = "dog";
-                case 2 -> type = "cat";
-                case 3 -> type = "bird";
-                case 0 -> isDone = true;
-            }
+        DisplayUtils.printMenu("SEARCH BY PET TYPE",
+                "#Select Pet Type",
+                "Dog",
+                "Cat",
+                "Bird");
+        int choiceType = DataValidation.intChoiceValidation("Select Option",
+                1, 2, 3, 0);
+
+        switch (choiceType) {
+            case 1 -> type = "dog";
+            case 2 -> type = "cat";
+            case 3 -> type = "bird";
+            case 0 -> type = "";
         }
 
         return FileHandler.filterRecords("PET_LIST.txt", type, Pet::getType);
