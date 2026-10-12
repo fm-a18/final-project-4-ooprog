@@ -15,12 +15,12 @@ public class PetManager {
     private ArrayList<Pet> pets;
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-uuuu").withResolverStyle(ResolverStyle.STRICT);
 
-    private PetManager(){
+    private PetManager() {
         pets = new ArrayList<>();
     }
 
-    public static PetManager getInstance(){
-        if(instance == null){
+    public static PetManager getInstance() {
+        if (instance == null) {
             instance = new PetManager();
         }
         return instance;
@@ -136,9 +136,9 @@ public class PetManager {
         }
     }
 
-    public Pet findPetID(String petID){
-        for(Pet pet : pets){
-            if(pet.getPetID().equalsIgnoreCase(petID)){
+    public Pet findPetID(String petID) {
+        for (Pet pet : pets) {
+            if (pet.getPetID().equalsIgnoreCase(petID)) {
                 return pet;
             }
         }

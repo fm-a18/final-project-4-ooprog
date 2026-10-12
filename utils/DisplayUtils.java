@@ -44,7 +44,7 @@ public class DisplayUtils {
         System.out.println("-".repeat(TABLE_WIDTH));
     }
 
-    public static void displayPetsForStaff(ArrayList<Pet> pets) { // ID, Name, Type, Adoption Status, Medical History, Adoption History
+    public static void displayPetsForStaff(ArrayList<Pet> pets) { // ID, Name, Type, Adoption Status, Price
 
         staffPetHeader("LIST OF PETS");
 
@@ -64,18 +64,17 @@ public class DisplayUtils {
         System.out.println("-".repeat(TABLE_WIDTH));
     }
 
-    public static void displayPetsForCustomer(ArrayList<Pet> pets) { // Name, Type, Breed, Age, Adoption Status, Price
+    public static void displayPetsForCustomer(ArrayList<Pet> pets) { // Name, Type, Breed, Age, Price
 
         customerPetHeader("AVAILABLE PETS");
 
         for (Pet pet : pets) {
             System.out.printf(
-                    "%-20s | %-15s | %-15s | %-5d | %-15s%n | %,10.2f%n",
+                    "%-20s | %-15s | %-15s | %-5d | %-15s%n",
                     pet.getPetName(),
                     pet.getType(),
                     pet.getBreed(),
                     pet.getAge(),
-                    pet.getAdoptionStatus(),
                     pet.getPrice());
         }
 
@@ -106,7 +105,6 @@ public class DisplayUtils {
                         { "Gender", String.valueOf(pet.getGender()) },
                         { "Age", String.valueOf(pet.getAge()) },
                         { "Price", String.format("Php %,.2f", pet.getPrice()) },
-                        { "Status", pet.getAdoptionStatus() },
                         { "Adoption History", pet.getAdoptionHistory() },
                         { "Medical History", pet.getMedicalHistory() }
                 });
@@ -135,7 +133,6 @@ public class DisplayUtils {
             }
             System.out.printf(" [%d] %s%n", ctr++, option);
         }
-        System.out.println(" [0] Back");
         System.out.println("=".repeat(MENU_WIDTH));
     }
 }
