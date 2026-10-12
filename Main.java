@@ -83,11 +83,12 @@ public class Main {
         String password = DataValidation.validatePassword();
         String userID = utils.generators.UserIdGenerator.userIdGenerator();
         boolean isFileSaved = false;
-
+        String role = "Customer";
         while (!isFileSaved) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("USER_LIST.txt", true))) {
-                writer.write(String.format("%s, %s|%s|%s|%s|%s|%s|%s%S%n", userID, firstName, lastName, age, emailAddress,
-                        address, phoneNumber, password, role));
+                writer.write(
+                        String.format("%s|%s|%s|%s|%s|%s|%s|%s|%S%n", userID, firstName, lastName, age, emailAddress,
+                                address, phoneNumber, password, role));
                 System.out.println("User successfully registered!");
                 isFileSaved = true;
             } catch (IOException e) {
@@ -145,13 +146,13 @@ public class Main {
     }
 
     public static void coordinatorLogin() {
-        File file = new File("COORDINATOR_LIST.txt");
+        File file = new File("USER_LIST.txt");
         if (!file.exists()) {
             System.out.println("No Coordinator Records found.");
             return;
         }
         String email = DataValidation.validateEmailAddress();
-        String coordinatorData = FileHandler.findRecord("COORDINATOR_LIST.txt", email, 4);
+        String coordinatorData = FileHandler.findRecord("USER_LIST.txt", email, 4);
         if (coordinatorData == null) {
             System.out.println("Coordinator account not found");
             return;
@@ -171,13 +172,13 @@ public class Main {
     }
 
     public static void adminLogin() {
-        File file = new File("ADMIN_LIST.txt");
+        File file = new File("USER_LIST.txt");
         if (!file.exists()) {
             System.out.println("No Admin Records found.");
             return;
         }
         String email = DataValidation.validateEmailAddress();
-        String adminData = FileHandler.findRecord("ADMIN_LIST.txt", email, 4);
+        String adminData = FileHandler.findRecord("USER_LIST.txt", email, 4);
         if (adminData == null) {
             System.out.println("Admin account not found");
             return;
