@@ -16,8 +16,10 @@ public class Main {
     public static final ArrayList<User> listOfUsers = new ArrayList<>();
     public static final ArrayList<Pet> listOfPets = new ArrayList<>();
 
-    //TODO MIGHT MERGE COORDINATOR + ADMIN LANDING PAGE SINCE CODE BLOCK IS LITERALLY CARBON COPY
-    //TODO MIGHT ALSO MERGE FOR LOGIN SINCE IT IS ALSO CARBON COPY(JUST MAKE THE LOGIN HAVE PARAMETERS)
+    // TODO MIGHT MERGE COORDINATOR + ADMIN LANDING PAGE SINCE CODE BLOCK IS
+    // LITERALLY CARBON COPY
+    // TODO MIGHT ALSO MERGE FOR LOGIN SINCE IT IS ALSO CARBON COPY(JUST MAKE THE
+    // LOGIN HAVE PARAMETERS)
     public static void customerLandingPage() {
         boolean isDone = false;
         while (!isDone) {
@@ -34,7 +36,7 @@ public class Main {
         }
     }
 
-    public static void coordinatorLandingPage(){
+    public static void coordinatorLandingPage() {
         boolean isDone = false;
         while (!isDone) {
             DisplayUtils.printMenu("COODINATOR",
@@ -79,13 +81,13 @@ public class Main {
         String address = DataValidation.validateAddress();
         String phoneNumber = DataValidation.validatePhoneNumber();
         String password = DataValidation.validatePassword();
-
+        String userID = utils.generators.UserIdGenerator.userIdGenerator();
         boolean isFileSaved = false;
 
         while (!isFileSaved) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("USER_LIST.txt", true))) {
-                writer.write(String.format("%s|%s|%s|%s|%s|%s|%s%n", firstName, lastName, age, emailAddress,
-                        address, phoneNumber, password));
+                writer.write(String.format("%s, %s|%s|%s|%s|%s|%s|%s%S%n", userID, firstName, lastName, age, emailAddress,
+                        address, phoneNumber, password, role));
                 System.out.println("User successfully registered!");
                 isFileSaved = true;
             } catch (IOException e) {
@@ -98,12 +100,31 @@ public class Main {
         }
     }
 
+    private static String generateCustomerId() throws IOException {
+        int nextId = 1;
+        File userFile = new File("USER_LIST.txt");
+        if (userFile.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(userFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] fields = line.split("\\s*\\|\\s*", -1);
+                    if (fields.length > 0 && fields[0].matches("CU\\d+")) {
+                        int id = Integer.parseInt(fields[0].substring(2));
+                        nextId = Math.max(nextId, id + 1);
+                    }
+                }
+            }
+        }
+        return String.format("CU%04d", nextId);
+    }
+
     public static void customerLogin() {
         File file = new File("USER_LIST.txt");
         if (!file.exists()) {
             System.out.println("No User Records found.");
             return;
         }
+
         String email = DataValidation.validateEmailAddress();
         String userData = FileHandler.findRecord("USER_LIST.txt", email, 4);
         if (userData == null) {
@@ -143,12 +164,13 @@ public class Main {
             return;
         }
         System.out.println("Login successful.");
-        Coordinator loggedInCoordinator = new Coordinator(parts[0], parts[1], parts[2], Integer.parseInt(parts[3]), parts[4],
+        Coordinator loggedInCoordinator = new Coordinator(parts[0], parts[1], parts[2], Integer.parseInt(parts[3]),
+                parts[4],
                 parts[5], parts[6], parts[7]);
         coordinatorIn(loggedInCoordinator);
     }
 
-    public static void adminLogin(){
+    public static void adminLogin() {
         File file = new File("ADMIN_LIST.txt");
         if (!file.exists()) {
             System.out.println("No Admin Records found.");
@@ -177,9 +199,11 @@ public class Main {
         listOfUsers.add(loggedInCustomer);
         loggedInCustomer.showMenu(DataValidation.sc);
     }
+
     public static void coordinatorIn(Coordinator loggedInCoordinator) {
         loggedInCoordinator.showMenu(DataValidation.sc);
     }
+
     public static void adminIn(Admin loggedInAdmin) {
         loggedInAdmin.showMenu(DataValidation.sc);
     }
@@ -199,7 +223,7 @@ public class Main {
                 case 1 -> customerLandingPage();
                 case 2 -> coordinatorLandingPage();
                 case 3 -> adminLandingPage();
-                case 0 -> isDone = true;
+                case 4 -> isDone = true;
             }
         }
         System.out.println("Thank you for using the program!");
