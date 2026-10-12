@@ -116,7 +116,7 @@ public class DataValidation {
     }
 
     public static boolean emailExists(String emailAddress) {
-        return FileHandler.findRecord("USER_LIST.txt", emailAddress, 2) != null;
+        return FileHandler.findRecord("USER_LIST.txt", emailAddress, 4) != null;
     }
 
     public static String validateAddress() {
@@ -124,20 +124,17 @@ public class DataValidation {
         String input = "";
 
         while (!isValidated) {
-            System.out.println("Email Address: ");
             try {
                 System.out.print("Enter your Address: ");
                 input = sc.nextLine().trim();
             } catch (NoSuchElementException e) {
-                System.out.println("Error: Email Address cannot be empty. Please try again.");
+                System.out.println("Error: Address cannot be empty. Please try again.");
                 continue;
             }
             if (input.isEmpty()) {
-                System.out.println("Error: Email Address cannot be empty.");
-            } else if (!emailExists(input)) {
-                System.out.println("Error: Email already exists.");
+                System.out.println("Error: Address cannot be empty.");
             } else if (!input.matches("^(?=.*[A-Za-z])[A-Za-z0-9.,#\\-/\\s]{10,150}$")) {
-                System.out.println("Invalid Email Address. Please enter a valid Email Address.");
+                System.out.println("Invalid Address. Please enter a valid address.");
             } else {
                 isValidated = true;
             }
@@ -145,7 +142,7 @@ public class DataValidation {
         return input;
     }
 
-    public static LocalDate validateDate(String prompt) { // coordinator
+    public static LocalDate validateDate(String prompt) { //coordinator
         LocalDate date = null;
         while (date == null) {
             System.out.print(prompt + ": ");
@@ -160,7 +157,7 @@ public class DataValidation {
         return date;
     }
 
-    public static boolean dateForClaimingPet(LocalDate date){
+    public static boolean dateForClaimingPet(LocalDate date) {
         LocalDate today = LocalDate.now();
         return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
     }
@@ -339,8 +336,8 @@ public class DataValidation {
                 continue;
             }
             number = Double.parseDouble(inputNumber);
-            if (number < 500 || number > 1000) {
-                System.out.println("Invalid Price Input. Price must be between P500.00 - P1000.00. Try Again.");
+            if (number < 100 || number > 10000) {
+                System.out.println("Invalid Price Input. Price must be between P100.00 - P10000.00. Try Again.");
                 continue;
             }
             isRunning = false;
@@ -476,28 +473,27 @@ public class DataValidation {
         return "T" + String.format("%07d", transactionCtr);
     }
 
-    public static String transactionNumberValidation(String prompt){
+    public static String transactionNumberValidation(String prompt) {
         String transactionNum = "";
         boolean isValid = false;
-        while(!isValid){
+        while (!isValid) {
             System.out.print(prompt);
-            try{
+            try {
                 transactionNum = sc.nextLine().trim().toUpperCase();
-            }catch(NoSuchElementException e){
+            } catch (NoSuchElementException e) {
                 System.out.println("Error: Transaction Number cannot be empty. Please try again.");
                 continue;
             }
 
-            if(transactionNum.isEmpty()){
+            if (transactionNum.isEmpty()) {
                 System.out.println("Error: Transaction Number cannot be empty.");
-            }else if(!transactionNum.matches("^T\\d{7}$")){
-                System.out.println("Invalid Transaction Number. Please input the transaction number given after the request for adoption is granted.");
-            }else{
+            } else if (!transactionNum.matches("^T\\d{7}$")) {
+                System.out.println(
+                        "Invalid Transaction Number. Please input the transaction number given after the request for adoption is granted.");
+            } else {
                 isValid = true;
             }
         }
-
-
 
         return transactionNum;
     }
