@@ -145,7 +145,7 @@ public class DataValidation {
         return input;
     }
 
-    public static LocalDate validateDate(String prompt) { // coordinator
+    public static LocalDate validateDate(String prompt) { //coordinator
         LocalDate date = null;
         while (date == null) {
             System.out.print(prompt + ": ");
@@ -158,11 +158,6 @@ public class DataValidation {
             }
         }
         return date;
-    }
-
-    public static boolean dateForClaimingPet(LocalDate date){
-        LocalDate today = LocalDate.now();
-        return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
     }
 
     public static String validatePhoneNumber() {
