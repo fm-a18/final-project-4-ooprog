@@ -48,7 +48,9 @@ public class PetManager {
             double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
             char hasRecords = DataValidation.charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
             if (hasRecords == 'Y') {
-                String petMedHis = DataValidation.validateString("Enter medical history of pet: ");
+                String petMedCon = DataValidation.validateString("Enter medical condition/treatment name: ");
+                String petMedHis = DataValidation.validateDate("Enter date of the condition/treatment: ");
+                findPetID(petID).addAdoptionHistory(petMedHis, petMedCon);
             }
 
             System.out.println("Pet Added on " + LocalDate.now().format(dateFormat));
@@ -65,14 +67,16 @@ public class PetManager {
 
     public ArrayList<Pet> getAllPets() {
         if(pets.isEmpty()){
-            System.out.println("No pets found.");
-            return null;
+            ArrayList<Pet> all = PetManager.getInstance().getAllPets();
+            if (all == null) {
+                return null;
+            }
         }
 
         return pets;
     }
 
-    public void searchByCategory(){
+    public void searchByCategory(Scanner sc){
         if(pets.isEmpty()){
             System.out.println("No pets found.");
             return;
@@ -193,5 +197,7 @@ public class PetManager {
 
             FileHandler.sortCategory("PET_LIST.txt", choice, choicev1, choicev2 == 1);
         }
+
+
     }
 }
