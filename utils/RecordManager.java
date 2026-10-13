@@ -11,6 +11,8 @@ import inventory.Cat;
 import inventory.Dog;
 import inventory.Pet;
 
+import users.Customer;
+
 public class RecordManager {
     //FOR USER_LIST.txt
     public static final int US_USER_ID = 0, US_FIRST_NAME = 1, US_LAST_NAME = 2, US_AGE = 3,
@@ -143,6 +145,23 @@ public class RecordManager {
         parts[US_PHONE_NUMBER] = phone;
         parts[US_PASSWORD] = password;
         parts[US_ROLE] = role;
+        return String.join("|", parts);
+    }
+
+  public String buildAdoptionRequestRecord(String firstName, String lastName, String emailAddress, Pet selectedPet, String paymentPlan, double downPayment, double balanceLeft, String transactionNum, LocalDate date) {
+        String parts[] = new String[RES_FIELD_COUNT - 2];
+
+        parts[AS_TRANSACTION_NUM] = transactionNum;
+        parts[AS_FIRST_NAME] = firstName;
+        parts[AS_LAST_NAME] = lastName;
+        parts[AS_EMAIL] = emailAddress;
+        parts[AS_PET_ID] = selectedPet.getPetID();
+        parts[AS_PAYMENT_PLAN] = paymentPlan;
+        parts[AS_DOWN_PAYMENT] = String.format("%,.2f", downPayment);
+        parts[AS_BALANCE_LEFT] = String.format("%,.2f", balanceLeft);
+        parts[AS_DATE_REQUESTED] = java.time.LocalDate.now().toString();
+        parts[AS_DATE_CLAIMING] = date.toString();
+
         return String.join("|", parts);
     }
 

@@ -43,8 +43,12 @@ public abstract class Pet {
         return breed;
     }
 
-    public char getGender() {
-        return gender;
+    public String getGender() {
+        if (gender == 'm' || gender == 'M') {
+            return "Male";
+        } else {
+            return "Female";
+        }
     }
 
     public int getAge() {
@@ -67,7 +71,7 @@ public abstract class Pet {
         return adoptionStatus.toString();
     }
 
-    public boolean idExists(String petID){
+    public boolean idExists(String petID) {
         return this.petID.equalsIgnoreCase(petID);
     }
 
