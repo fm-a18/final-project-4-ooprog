@@ -36,35 +36,23 @@ public class Main {
         }
     }
 
-    public static void coordinatorLandingPage() {
+    public static void employeeLandingPage() {
         boolean isDone = false;
         while (!isDone) {
-            DisplayUtils.printMenu("COODINATOR",
-                    "Log In",
+            DisplayUtils.printMenu("EMPLOYEE",
+                    "Log In As Coordinator", "Log In As Admin",
                     "Exit");
-            int getChoice = DataValidation.intChoiceValidation("Selection Option", 1, 2);
+            int getChoice = DataValidation.intChoiceValidation("Selection Option", 1, 2, 3);
             switch (getChoice) {
                 case 1 -> coordinatorLogin();
-                case 2 -> isDone = true;
-            }
-        }
-    }
-
-    public static void adminLandingPage() {
-        boolean isDone = false;
-        while (!isDone) {
-            DisplayUtils.printMenu("ADMIN",
-                    "Log In",
-                    "Exit");
-            int getChoice = DataValidation.intChoiceValidation("Selection Option", 1, 2);
-            switch (getChoice) {
-                case 1 -> adminLogin();
-                case 2 -> isDone = true;
+                case 2 -> adminLogin();
+                case 3 -> isDone = true;
             }
         }
     }
 
     public static void customerSignUp() {
+        System.out.println("===================== CUSTOMER SIGNUP ======================");
         String firstName = DataValidation.validateString("Enter your First Name: ");
         String lastName = DataValidation.validateString("Enter your Last Name: ");
         int age = DataValidation.validateCustomerAgeInput("Enter your Age: ");
@@ -83,11 +71,12 @@ public class Main {
         String password = DataValidation.validatePassword();
         String userID = utils.generators.UserIdGenerator.userIdGenerator();
         boolean isFileSaved = false;
-
+        String role = "Customer";
         while (!isFileSaved) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("USER_LIST.txt", true))) {
-                writer.write(String.format("%s, %s|%s|%s|%s|%s|%s|%s%S%n", userID, firstName, lastName, age, emailAddress,
-                        address, phoneNumber, password, role));
+                writer.write(
+                        String.format("%s|%s|%s|%s|%s|%s|%s|%s|%S%n", userID, firstName, lastName, age, emailAddress,
+                                address, phoneNumber, password, role));
                 System.out.println("User successfully registered!");
                 isFileSaved = true;
             } catch (IOException e) {
@@ -124,7 +113,7 @@ public class Main {
             System.out.println("No User Records found.");
             return;
         }
-
+        System.out.println("====================== CUSTOMER LOGIN ======================");
         String email = DataValidation.validateEmailAddress();
         String userData = FileHandler.findRecord("USER_LIST.txt", email, 4);
         if (userData == null) {
@@ -145,13 +134,14 @@ public class Main {
     }
 
     public static void coordinatorLogin() {
-        File file = new File("COORDINATOR_LIST.txt");
+        File file = new File("USER_LIST.txt");
         if (!file.exists()) {
             System.out.println("No Coordinator Records found.");
             return;
         }
+        System.out.println("==================== COORDINATOR LOGIN =====================");
         String email = DataValidation.validateEmailAddress();
-        String coordinatorData = FileHandler.findRecord("COORDINATOR_LIST.txt", email, 4);
+        String coordinatorData = FileHandler.findRecord("USER_LIST.txt", email, 4);
         if (coordinatorData == null) {
             System.out.println("Coordinator account not found");
             return;
@@ -171,13 +161,14 @@ public class Main {
     }
 
     public static void adminLogin() {
-        File file = new File("ADMIN_LIST.txt");
+        File file = new File("USER_LIST.txt");
         if (!file.exists()) {
             System.out.println("No Admin Records found.");
             return;
         }
+        System.out.println("======================= ADMIN LOGIN ========================");
         String email = DataValidation.validateEmailAddress();
-        String adminData = FileHandler.findRecord("ADMIN_LIST.txt", email, 4);
+        String adminData = FileHandler.findRecord("USER_LIST.txt", email, 4);
         if (adminData == null) {
             System.out.println("Admin account not found");
             return;
@@ -215,15 +206,13 @@ public class Main {
         while (!isDone) {
             DisplayUtils.printMenu("PET ADOPTION SYSTEM",
                     "Customer",
-                    "Coordinator",
-                    "Admin",
+                    "Employee(Coordinator / Admin)",
                     "Exit Program");
-            int getRole = DataValidation.intChoiceValidation("Selection Option", 1, 2, 3, 4);
+            int getRole = DataValidation.intChoiceValidation("Selection Option", 1, 2, 3);
             switch (getRole) {
                 case 1 -> customerLandingPage();
-                case 2 -> coordinatorLandingPage();
-                case 3 -> adminLandingPage();
-                case 4 -> isDone = true;
+                case 2 -> employeeLandingPage();
+                case 3 -> isDone = true;
             }
         }
         System.out.println("Thank you for using the program!");
