@@ -1,22 +1,17 @@
 package users;
 
-import inventory.AdoptionStatus;
-import inventory.Dog;
 import utils.DataValidation;
 import utils.DisplayUtils;
 import inventory.Pet;
 import utils.PetManager;
-import utils.FileHandler;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
-import static users.Admin.pets;
-import java.time.format.DateTimeFormatter;
-
-import static users.Admin.pets;
+import inventory.*;
 
 public class Coordinator extends User {
+    private static PetManager instance;
+    private ArrayList<Pet> pets;
+
     public Coordinator(String userID, String firstName, String lastName, int age, String emailAddress,
             String address, String phoneNumber, String password) {
         super(userID, firstName, lastName, age, emailAddress,
@@ -27,8 +22,6 @@ public class Coordinator extends User {
     public String getRole() {
         return "Coordinator";
     }
-
-    public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
     public void showMenu(Scanner sc) {
         boolean isDone = false;
@@ -44,21 +37,20 @@ public class Coordinator extends User {
 
                     "#Customer Assistance",
                     "Request Adoption",
-                    "Cancel Adoption Request",
-                    "Request Pet Return");
+                    "Request Pet Return",
+                    "#Exit", "Log Out");
             int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 4, 5, 6, 7, 8, 0);
+                    1, 2, 3, 4, 5, 6, 7, 8);
 
             switch (choice) {
                 case 1 -> viewAllPets();
-                case 2 -> searchByCategory();
-                case 3 -> sortByCategory();
-                case 4 -> addPet();
-                case 5 -> updatePetStatus();
+                case 2 -> searchByCategory(sc);
+                case 3 -> sortByCategory(sc);
+                case 4 -> addPet(sc);
+                case 5 -> updatePetStatus(sc);
                 case 6 -> requestAdoption();
-                case 7 -> cancelAdoptionRequest();
-                case 8 -> requestPetReturn();
-                case 0 -> isDone = true;
+                case 7 -> requestPetReturn();
+                case 8 -> isDone = true;
             }
         }
     }
