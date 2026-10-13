@@ -4,15 +4,11 @@ import inventory.Bird;
 import inventory.Cat;
 import inventory.Dog;
 import inventory.Pet;
-import inventory.AdoptionStatus;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
 import java.util.function.Function;
-
-import static inventory.AdoptionStatus.PENDING_REVIEW;
 
 public class FileHandler {
     public static String findRecord(String fileName, String searchFor, int colIndex) {
@@ -161,7 +157,7 @@ public class FileHandler {
     }
 
     public static void savePet(Pet pet){
-        append("PET_LIST.txt", pet.toFileString());
+        appendRecord("PET_LIST.txt", pet.toFileString());
     }
 
     public static void sortCategory(String fileName, int category, int sortBy, boolean ascending) {
@@ -209,7 +205,7 @@ public class FileHandler {
         } else if (sortBy == 2) {
             comparator = Comparator.comparingDouble(Pet::getPrice);
         } else if (sortBy == 3) {
-            comparator = Comparator.comparingInt(Pet::getGender);
+            comparator = Comparator.comparing(Pet::getGender);
         } else {
             System.out.printf("Category %d not found!%n", sortBy);
             return;

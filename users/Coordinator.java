@@ -65,7 +65,7 @@ public class Coordinator extends User {
     }
 
     private void searchByCategory(Scanner sc) {
-        PetManager.getInstance().searchByCategory();
+        PetManager.getInstance().searchByCategory(sc);
     }
 
     private void sortByCategory(Scanner sc) {
@@ -81,10 +81,10 @@ public class Coordinator extends User {
     }
 
     private void requestAdoption() {
-        // to be filled
+//        Customer.requestAdoption(); to fix
     }
 
     private void requestPetReturn() {
-        // to be filled
+//        Customer.requestReturn(); to fix
     }
 }

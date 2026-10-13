@@ -1,5 +1,6 @@
 package utils;
 
+import java.time.format.ResolverStyle;
 import java.util.Random;
 import java.util.Scanner;
 import inventory.Bird;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 public class DataValidation {
-    public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+    static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-uuuu").withResolverStyle(ResolverStyle.STRICT);
     public static final Scanner sc = new Scanner(System.in);
 
     public static String validateString(String prompt) { // TODO IMPROVE ERROR MESSAGE
@@ -142,19 +143,21 @@ public class DataValidation {
         return input;
     }
 
-    public static LocalDate validateDate(String prompt) { //coordinator
+    public static String validateDate(String prompt) { //coordinator
         LocalDate date = null;
+        String res = "";
         while (date == null) {
             System.out.print(prompt + ": ");
             String input = sc.nextLine().trim();
 
             try {
                 date = LocalDate.parse(input, dateFormat);
+                res = date.format(dateFormat);
             } catch (DateTimeParseException e) {
                 System.out.println("Invalid Date Format. Please use (MM-DD-YYYY).");
             }
         }
-        return date;
+        return res;
     }
 
     public static String validatePhoneNumber() {
