@@ -142,7 +142,7 @@ public class DataValidation {
         return input;
     }
 
-    public static LocalDate validateDate(String prompt) { //coordinator
+    public static LocalDate validateDate(String prompt) { // coordinator
         LocalDate date = null;
         while (date == null) {
             System.out.print(prompt + ": ");
@@ -361,8 +361,7 @@ public class DataValidation {
         }
     }
 
-    // Prompts until the user enters an ID matching the category prefix + 4 digits
-    // (e.g. DO0001).
+    // TODO ADJUST PET ID FORMAT
     public static String validatePetIdInput(String prompt, String category) {
         String prefix = getCategoryPrefix(category);
         if (prefix == null) {
