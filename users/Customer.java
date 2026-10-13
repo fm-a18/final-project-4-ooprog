@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 import static utils.RecordManager.RES_TRANSACTION_NUM;
-import static utils.RecordManager.RES_DATE_FINALIZED;
+import static utils.RecordManager.AD_DATE_FINALIZED;
 
 public class Customer extends User {
     public Customer(String userID, String firstName, String lastName, int age, String emailAddress,
@@ -465,7 +465,7 @@ public class Customer extends User {
         }
 
         String adoptedPet = FileHandler.findRecord("ADOPTION_LIST.txt", transactionNum, RES_TRANSACTION_NUM);
-        String dateAdopted = adoptedPet.split("\\s*\\|\\s*")[RecordManager.RES_DATE_FINALIZED];
+        String dateAdopted = adoptedPet.split("\\s*\\|\\s*")[RecordManager.AD_DATE_FINALIZED];
 
         System.out.println("Adoption found!");
         DisplayUtils.printSummaryBox("PET DETAILS",
