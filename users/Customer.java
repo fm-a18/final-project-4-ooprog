@@ -75,7 +75,7 @@ public class Customer extends User {
         DisplayUtils.displayPetsForCustomer(pets);
     }
 
-    private ArrayList<Pet> getAvailablePets() {
+    public ArrayList<Pet> getAvailablePets() {
         ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
         ArrayList<Reservation> reservations = RecordManager.viewAllReserveRecords();
         ArrayList<Pet> available = new ArrayList<>();
@@ -278,7 +278,7 @@ public class Customer extends User {
         return filteredPets;
     }
 
-    private void requestAdoption() {
+    private void requestAdoption(){
         // FILTER TO SHOW ONLY AVAILABLE PETS viewAllPets();
         ArrayList<Pet> availablePets = getAvailablePets();
 
@@ -289,6 +289,10 @@ public class Customer extends User {
 
         DisplayUtils.displayPetsForCustomer(availablePets);
 
+        requestAdoptionCustomer(availablePets);
+    }
+
+    public void requestAdoptionCustomer(ArrayList<Pet> availablePets) {
         String petID = DataValidation.validatePetID("\nEnter Pet ID to request adoption: ", "^(?i)[DCB]\\d{4}$");
 
         Pet selectedPet = null;
@@ -318,6 +322,7 @@ public class Customer extends User {
         String paymentPlan = paymentPlanSelection();
         if (paymentPlan == null) {
             System.out.println("Adoption request cancelled.");
+            return;
         }
 
         double downPaymentAmount = downPayment(paymentPlan, selectedPet.getPrice());

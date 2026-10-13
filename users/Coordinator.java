@@ -7,6 +7,10 @@ import utils.PetManager;
 import java.util.ArrayList;
 import java.util.Scanner;
 import inventory.*;
+import utils.FileHandler;
+import utils.RecordManager;
+
+import static utils.RecordManager.US_EMAIL_ADDRESS;
 
 public class Coordinator extends User {
     private static PetManager instance;
@@ -81,7 +85,28 @@ public class Coordinator extends User {
     }
 
     private void requestAdoption() {
-        // to be filled
+        String customerEmail = DataValidation.validateEmailAddress();
+        while(!DataValidation.emailExists(customerEmail)){
+            System.out.println("Email Address does not exist!");
+            customerEmail = DataValidation.validateEmailAddress();
+        }
+
+        String customerDetails = FileHandler.findRecord("USER_LIST.txt", customerEmail, US_EMAIL_ADDRESS);
+
+        String[] parts = customerDetails.split("\\s*\\|\\s*");
+        Customer customer = new Customer(parts[0], parts[1], parts[2], Integer.parseInt(parts[3]), parts[4], parts[5], parts[6], parts[7]);
+
+        // FILTER TO SHOW ONLY AVAILABLE PETS viewAllPets();
+        ArrayList<Pet> availablePets = customer.getAvailablePets();
+
+        if (availablePets.isEmpty()) {
+            System.out.println("No pets available for adoption.");
+            return;
+        }
+
+        DisplayUtils.displayPetsForStaff(availablePets);
+
+        customer.requestAdoptionCustomer(availablePets);
     }
 
     private void requestPetReturn() {
