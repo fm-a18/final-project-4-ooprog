@@ -65,7 +65,7 @@ public class Admin extends User {
     }
 
     private void searchByCategory() {
-        PetManager.getInstance().searchByCategory();
+        PetManager.getInstance().searchByCategory(sc);
     }
 
     private void filterByStatus() {
