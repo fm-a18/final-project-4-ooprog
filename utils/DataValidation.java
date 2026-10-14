@@ -41,7 +41,7 @@ public class DataValidation {
     }
 
     public static int validateCustomerAgeInput(String prompt) { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX
-                                                                // HUMAN AGE
+        // HUMAN AGE
         boolean isRunning = true;
         int number = 0;
         String inputNumber = "";
@@ -325,7 +325,7 @@ public class DataValidation {
     }
 
     public static double validatePriceInput(String prompt) { // TODO ADJUST ERROR MESSAGE(REFLECT ACTUAL
-                                                             // LIMIT)
+        // LIMIT)
         boolean isRunning = true;
         double number = 0;
         String inputNumber = "";
