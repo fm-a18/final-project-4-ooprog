@@ -41,7 +41,7 @@ public class DataValidation {
     }
 
     public static int validateCustomerAgeInput(String prompt) { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX
-                                                                // HUMAN AGE
+        // HUMAN AGE
         boolean isRunning = true;
         int number = 0;
         String inputNumber = "";
@@ -158,6 +158,11 @@ public class DataValidation {
             }
         }
         return date;
+    }
+
+    public static boolean dateForClaimingPet(LocalDate date) {
+        LocalDate today = LocalDate.now();
+        return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
     }
 
     public static String validatePhoneNumber() {
@@ -320,7 +325,7 @@ public class DataValidation {
     }
 
     public static double validatePriceInput(String prompt) { // TODO ADJUST ERROR MESSAGE(REFLECT ACTUAL
-                                                             // LIMIT)
+        // LIMIT)
         boolean isRunning = true;
         double number = 0;
         String inputNumber = "";

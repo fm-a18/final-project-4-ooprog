@@ -1,19 +1,21 @@
 package users;
 
-import utils.DataValidation;
-import utils.DisplayUtils;
+import utils.*;
 import inventory.Pet;
-import utils.PetManager;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 import inventory.*;
+
+import static utils.RecordManager.RES_TRANSACTION_NUM;
+import static utils.RecordManager.US_EMAIL_ADDRESS;
 
 public class Coordinator extends User {
     private static PetManager instance;
     private ArrayList<Pet> pets;
 
     public Coordinator(String userID, String firstName, String lastName, int age, String emailAddress,
-            String address, String phoneNumber, String password) {
+                       String address, String phoneNumber, String password) {
         super(userID, firstName, lastName, age, emailAddress,
                 address, phoneNumber, password);
     }
@@ -81,10 +83,84 @@ public class Coordinator extends User {
     }
 
     private void requestAdoption() {
-//        Customer.requestAdoption(); to fix
+        String customerEmail = DataValidation.validateEmailAddress();
+        while(!DataValidation.emailExists(customerEmail)){
+            System.out.println("Email Address does not exist!");
+            customerEmail = DataValidation.validateEmailAddress();
+        }
+
+        String customerDetails = FileHandler.findRecord("USER_LIST.txt", customerEmail, US_EMAIL_ADDRESS);
+
+        String[] parts = customerDetails.split("\\s*\\|\\s*");
+        Customer customer = new Customer(parts[0], parts[1], parts[2], Integer.parseInt(parts[3]), parts[4], parts[5], parts[6], parts[7]);
+
+        // FILTER TO SHOW ONLY AVAILABLE PETS viewAllPets();
+        ArrayList<Pet> availablePets = customer.getAvailablePets();
+
+        if (availablePets.isEmpty()) {
+            System.out.println("No pets available for adoption.");
+            return;
+        }
+
+        DisplayUtils.displayPetsForStaff(availablePets);
+
+        customer.requestAdoptionCustomer(availablePets);
     }
 
     private void requestPetReturn() {
-//        Customer.requestReturn(); to fix
+        String transactionNum = DataValidation.transactionNumberValidation(
+                "Enter Transaction Number from your Request of Adoption Confirmation Message: ");
+
+        Reservation found = null;
+
+        for (Reservation adopted : RecordManager.viewAllPetAdoptedRecords()) {
+            if (adopted.getTransactionNum().equalsIgnoreCase(transactionNum)) {
+                found = adopted;
+                break;
+            }
+        }
+
+        if (found == null || !found.getEmail().equalsIgnoreCase(this.getEmailAddress())) {
+            System.out.println("No adoption found for transaction number: " + transactionNum);
+            return;
+        }
+
+        if(FileHandler.findRecord("RETURN_REQUEST", transactionNum, RES_TRANSACTION_NUM) != null){
+            System.out.println("A return request for " + found.getTransactionNum() + " is already being processed.");
+            return;
+        }
+
+        String adoptedPet = FileHandler.findRecord("ADOPTION_LIST.txt", transactionNum, RES_TRANSACTION_NUM);
+        String dateAdopted = adoptedPet.split("\\s*\\|\\s*")[RecordManager.AD_DATE_FINALIZED];
+
+        System.out.println("Adoption found!");
+        DisplayUtils.printSummaryBox("PET DETAILS",
+                new String[][] {
+                        { "Customer's Name", found.getFirstName() + " " + found.getLastName()},
+                        { "Transaction Number", found.getTransactionNum()},
+                        { "Pet ID", found.getPetID()},
+                        { "Date Adopted", dateAdopted},
+                }
+        );
+
+        char returnAdoptionConfirmation = DataValidation
+                .charChoiceValidation("Are you sure you want to return your pet? (y/n): ", 'y', 'n');
+
+        if (returnAdoptionConfirmation == 'n') {
+            System.out.println("Return Adoption Request Cancelled.");
+            return;
+        }
+
+        ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
+        for (Pet pet : pets) {
+            if (pet.getPetID().equalsIgnoreCase(found.getPetID())) {
+                pet.setAdoptionStatus(AdoptionStatus.RETURN_PENDING);
+                break;
+            }
+        }
+
+        FileHandler.appendRecord("RETURN_REQUEST.txt", adoptedPet);
+        System.out.println(
+                "Your return request is now being processed. Wait for the Admin or Coordinator to approve your request.");
     }
 }
