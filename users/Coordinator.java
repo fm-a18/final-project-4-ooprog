@@ -6,6 +6,10 @@ import inventory.Pet;
 import java.util.ArrayList;
 import java.util.Scanner;
 import inventory.*;
+import utils.FileHandler;
+import utils.RecordManager;
+
+import static utils.RecordManager.US_EMAIL_ADDRESS;
 
 import static utils.RecordManager.RES_TRANSACTION_NUM;
 import static utils.RecordManager.US_EMAIL_ADDRESS;

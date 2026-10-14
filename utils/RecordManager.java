@@ -149,18 +149,18 @@ public class RecordManager {
     }
 
   public String buildAdoptionRequestRecord(String firstName, String lastName, String emailAddress, Pet selectedPet, String paymentPlan, double downPayment, double balanceLeft, String transactionNum, LocalDate date) {
-        String parts[] = new String[RES_FIELD_COUNT - 2];
+        String parts[] = new String[RES_FIELD_COUNT];
 
-        parts[AS_TRANSACTION_NUM] = transactionNum;
-        parts[AS_FIRST_NAME] = firstName;
-        parts[AS_LAST_NAME] = lastName;
-        parts[AS_EMAIL] = emailAddress;
-        parts[AS_PET_ID] = selectedPet.getPetID();
-        parts[AS_PAYMENT_PLAN] = paymentPlan;
-        parts[AS_DOWN_PAYMENT] = String.format("%,.2f", downPayment);
-        parts[AS_BALANCE_LEFT] = String.format("%,.2f", balanceLeft);
-        parts[AS_DATE_REQUESTED] = java.time.LocalDate.now().toString();
-        parts[AS_DATE_CLAIMING] = date.toString();
+        parts[RES_TRANSACTION_NUM] = transactionNum;
+        parts[RES_FIRST_NAME] = firstName;
+        parts[RES_LAST_NAME] = lastName;
+        parts[RES_EMAIL] = emailAddress;
+        parts[RES_PET_ID] = selectedPet.getPetID();
+        parts[RES_PAYMENT_PLAN] = paymentPlan;
+        parts[RES_DOWN_PAYMENT] = String.format("%,.2f", downPayment);
+        parts[RES_BALANCE_LEFT] = String.format("%,.2f", balanceLeft);
+        parts[RES_DATE_REQUESTED] = java.time.LocalDate.now().toString();
+        parts[RES_DATE_CLAIMING] = date.toString();
 
         return String.join("|", parts);
     }
