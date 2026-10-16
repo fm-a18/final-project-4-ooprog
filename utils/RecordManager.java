@@ -2,6 +2,7 @@ package utils;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Function;
@@ -14,6 +15,16 @@ import inventory.Pet;
 import users.Customer;
 
 public class RecordManager {
+    //ALL TXT FILES
+    public static final String FILE_RESERVED = "RESERVED.txt";
+    public static final String FILE_ADOPTED = "ADOPTED_LIST.txt";
+    public static final String FILE_CANCELLATION_REQUEST = "CANCELLATION_REQUEST.txt";
+    public static final String FILE_CANCELLED_LIST = "CANCELLED_LIST.txt";
+    public static final String FILE_RETURN_REQUEST = "RETURN_REQUEST.txt";
+    public static final String FILE_RETURNED_LIST = "RETURNED_LIST.txt";
+    public static final String FILE_PET_LIST = "PET_LIST.txt";
+    public static final String FILE_INCOMING_LIST = "INCOMING_PET_LIST.txt";
+
     //FOR USER_LIST.txt
     public static final int US_USER_ID = 0, US_FIRST_NAME = 1, US_LAST_NAME = 2, US_AGE = 3,
             US_EMAIL_ADDRESS = 4, US_ADDRESS = 5, US_PHONE_NUMBER = 6, US_PASSWORD = 7, US_ROLE = 8;
@@ -41,6 +52,7 @@ public class RecordManager {
     public static final int AD_APPROVED_BY = 11;
     public static final int AD_FIELD_COUNT = 12;
 
+    static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
     //reader
     public static <T> ArrayList<T> readRecords(String fileName, int expectedFields, Function<String[], T> parser) {
@@ -114,7 +126,7 @@ public class RecordManager {
     }
 
     public static ArrayList<Reservation> viewAllReserveRecords() {
-        return readRecords("RESERVED.txt", RES_FIELD_COUNT, RecordManager::parseReservation);
+        return readRecords(FILE_RESERVED, RES_FIELD_COUNT, RecordManager::parseReservation);
     }
 
     public static Reservation parseAdoption(String[] parts) {
@@ -122,12 +134,12 @@ public class RecordManager {
     }
 
     public static ArrayList<Reservation> viewAllPetAdoptedRecords() {
-        return readRecords("ADOPTED_LIST.txt", RES_FIELD_COUNT, RecordManager::parseAdoption);
+        return readRecords(FILE_ADOPTED, RES_FIELD_COUNT, RecordManager::parseAdoption);
     }
 
     public static String buildAdoptedRecord(String reservationRecord, String approvedByEmail) {
         String[] parts = Arrays.copyOf(reservationRecord.split("\\s*\\|\\s*", -1), AD_FIELD_COUNT);
-        parts[AD_DATE_FINALIZED] = LocalDate.now().toString();
+        parts[AD_DATE_FINALIZED] = LocalDate.now().format(dateFormat);
         parts[AD_APPROVED_BY] = approvedByEmail;
         return String.join("|", parts);
     }
@@ -149,7 +161,7 @@ public class RecordManager {
     }
 
   public String buildAdoptionRequestRecord(String firstName, String lastName, String emailAddress, Pet selectedPet, String paymentPlan, double downPayment, double balanceLeft, String transactionNum, LocalDate date) {
-        String parts[] = new String[RES_FIELD_COUNT];
+        String[] parts = new String[RES_FIELD_COUNT];
 
         parts[RES_TRANSACTION_NUM] = transactionNum;
         parts[RES_FIRST_NAME] = firstName;
@@ -159,7 +171,7 @@ public class RecordManager {
         parts[RES_PAYMENT_PLAN] = paymentPlan;
         parts[RES_DOWN_PAYMENT] = String.format("%,.2f", downPayment);
         parts[RES_BALANCE_LEFT] = String.format("%,.2f", balanceLeft);
-        parts[RES_DATE_REQUESTED] = java.time.LocalDate.now().toString();
+        parts[RES_DATE_REQUESTED] = LocalDate.now().format(dateFormat);
         parts[RES_DATE_CLAIMING] = date.toString();
 
         return String.join("|", parts);

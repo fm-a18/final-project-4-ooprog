@@ -14,7 +14,6 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 import static utils.RecordManager.RES_TRANSACTION_NUM;
-import static utils.RecordManager.AD_DATE_FINALIZED;
 
 public class Customer extends User {
     public Customer(String userID, String firstName, String lastName, int age, String emailAddress,
@@ -196,18 +195,16 @@ public class Customer extends User {
         DisplayUtils.displayPetsForCustomer(petTypes);
 
         char viewDetailsChoice = DataValidation
-                .charChoiceValidation("Do you want to view specific pet details? (y/n): ", 'Y', 'N');
+                .charChoiceValidation("Do you want to view specific pet details? (Y/N): ", 'Y', 'N');
 
         if (viewDetailsChoice == 'Y') {
-            String type = petTypes.get(0).getType();
+            String type = petTypes.getFirst().getType();
             specificPetDetails(type, petTypes);
-        } else {
-            return;
         }
     }
 
     private void specificPetDetails(String type, ArrayList<Pet> petTypes) { // EDIT THIS
-        String petID = DataValidation.validatePetIdInput("Enter Pet ID: ", type);
+        String petID = DataValidation.validatePetIdInput();
 
         for (Pet pet : petTypes) {
             if (pet.getPetID().equalsIgnoreCase(petID)) {
@@ -236,10 +233,7 @@ public class Customer extends User {
                     1, 2, 3, 0);
 
             switch (choice) {
-                case 1:
-                    showResults(sortByPrice(choice, pets));
-                    break;
-                case 2:
+                case 1, 2:
                     showResults(sortByPrice(choice, pets));
                     break;
                 case 3:
@@ -311,9 +305,9 @@ public class Customer extends User {
         }
 
         char requestAdoption = DataValidation
-                .charChoiceValidation("Do you want to request adoption for Pet ID: " + petID + "? (y/n): ", 'y', 'n');
+                .charChoiceValidation("Do you want to request adoption for Pet ID: " + petID + "? (Y/N): ", 'Y', 'N');
 
-        if (requestAdoption == 'n') {
+        if (requestAdoption == 'N') {
             System.out.println("Adoption request cancelled.");
             return;
         }
@@ -425,9 +419,9 @@ public class Customer extends User {
                 }
         );
 
-        char cancelAdoptionConfirmation = DataValidation.charChoiceValidation("Are you sure you want to cancel your reservation? (y/n): ", 'y', 'n');
+        char cancelAdoptionConfirmation = DataValidation.charChoiceValidation("Are you sure you want to cancel your reservation? (Y/N): ", 'Y', 'N');
 
-        if(cancelAdoptionConfirmation == 'n'){
+        if(cancelAdoptionConfirmation == 'N'){
             System.out.println("Adoption Cancellation Cancelled.");
             return;
         }
@@ -470,7 +464,10 @@ public class Customer extends User {
         }
 
         String adoptedPet = FileHandler.findRecord("ADOPTION_LIST.txt", transactionNum, RES_TRANSACTION_NUM);
-        String dateAdopted = adoptedPet.split("\\s*\\|\\s*")[RecordManager.AD_DATE_FINALIZED];
+        String dateAdopted = null;
+        if (adoptedPet != null) {
+            dateAdopted = adoptedPet.split("\\s*\\|\\s*")[RecordManager.AD_DATE_FINALIZED];
+        }
 
         System.out.println("Adoption found!");
         DisplayUtils.printSummaryBox("PET DETAILS",
@@ -483,9 +480,9 @@ public class Customer extends User {
         );
 
         char returnAdoptionConfirmation = DataValidation
-                .charChoiceValidation("Are you sure you want to return your pet? (y/n): ", 'y', 'n');
+                .charChoiceValidation("Are you sure you want to return your pet? (Y/N): ", 'Y', 'N');
 
-        if (returnAdoptionConfirmation == 'n') {
+        if (returnAdoptionConfirmation == 'N') {
             System.out.println("Return Adoption Request Cancelled.");
             return;
         }
