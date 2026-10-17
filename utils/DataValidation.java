@@ -468,11 +468,16 @@ public class DataValidation {
     }
 
     // TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS
-    private static int transactionCtr = 0;
-
     public static String transactionNumGenerator() {
-        transactionCtr++;
-        return "T" + String.format("%07d", transactionCtr);
+        int n = 6;
+        StringBuilder transactionNum = new StringBuilder();
+        String randomNum = "0123456789";
+        Random rand = new Random();
+
+        for (int i = 0; i < n; i++) {
+            transactionNum.append(randomNum.charAt(rand.nextInt(randomNum.length())));
+        }
+        return "TN" + transactionNum.toString();
     }
 
     public static String transactionNumberValidation(String prompt) {
