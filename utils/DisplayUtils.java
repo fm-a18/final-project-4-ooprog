@@ -67,8 +67,6 @@ public class DisplayUtils {
 
     public static void displayPetsForCustomer(ArrayList<Pet> pets) { // Name, Type, Breed, Age, Price
 
-        customerPetHeader("AVAILABLE PETS");
-
         for (Pet pet : pets) {
             System.out.printf(
                     "%-20s | %-20s | %-15s | %-15s | %-5d | %-10s | %-15s%n",

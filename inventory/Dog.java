@@ -2,7 +2,7 @@ package inventory;
 
 public class Dog extends Pet {
     public static final String TYPE = "Dog";
-    public static final String ID_PREFIX = "DO";
+    public static final String ID_PREFIX = "D";
 
     public Dog(String petID, String name, String breed, char gender, int age, double price) {
         super(petID, name, breed, gender, age, price);

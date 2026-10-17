@@ -17,8 +17,10 @@ import java.util.Scanner;
 import static utils.RecordManager.RES_TRANSACTION_NUM;
 import static utils.RecordManager.readRecords;
 import static utils.RecordManager.viewAllPetAdoptedRecords;
+import static utils.RecordManager.viewAllReserveRecords;
 import static utils.DataValidation.dateForClaimingPet;
 import static utils.RecordManager.AD_DATE_FINALIZED;
+import static utils.RecordManager.RES_PET_ID;
 
 public class Customer extends User {
     public Customer(String userID, String firstName, String lastName, int age, String emailAddress,
@@ -72,111 +74,105 @@ public class Customer extends User {
         ArrayList<Pet> pets = getAvailablePets();
 
         if (pets.isEmpty()) {
+            DisplayUtils.centeredTitle("VIEW ALL AVAILABLE PETS", 100);
             System.out.println("No available pets found.");
             return;
         }
 
-        DisplayUtils.displayPetsForCustomer(pets);
+        showResults(pets, "VIEW ALL AVAILABLE PETS");
     }
 
     public ArrayList<Pet> getAvailablePets() {
         ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
-        ArrayList<Reservation> reservations = RecordManager.viewAllReserveRecords();
-        ArrayList<Pet> available = new ArrayList<>();
+        ArrayList<Pet> available = availablePets(pets);
 
-        for (Pet pet : pets) {
-            if (!isReserved(pet.getPetID(), reservations)) {
-                available.add(pet);
-            }else{}
-        }
         return available;
     }
 
-    private boolean isReserved(String id, ArrayList<Reservation> reservations) {
-        for (Reservation reserved : reservations) {
-            if (reserved.getPetID().equalsIgnoreCase(id)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void searchByCategory() {
+        
         if (getAvailablePets().isEmpty()) {
+            DisplayUtils.centeredTitle("SEARCH BY CATEGORY", 100);
             System.out.println("No available pets found.");
             return;
         }
 
-        boolean isDone = false;
-        while (!isDone) {
-            DisplayUtils.printMenu("SEARCH BY CATEGORY",
-                    "#Select Category",
-                    "Pet Name",
-                    "Type",
-                    "Breed",
-                    "Gender",
-                    "Age");
-            int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 4, 5, 0);
+        DisplayUtils.printMenu("SEARCH BY CATEGORY",
+                "#Select Category",
+                "Pet Name",
+                "Type",
+                "Breed",
+                "Gender",
+                "Age");
+        int choice = DataValidation.intChoiceValidation("Select Option",
+                1, 2, 3, 4, 5);
 
-            switch (choice) {
-                case 1: // SEARCH PET BY NAME
-                    String name = DataValidation.validateString("Enter Pet Name: ");
+        switch (choice) {
+            case 1: // SEARCH PET BY NAME
+                DisplayUtils.centeredTitle("SEARCH PET BY NAME", 60);
+                String name = DataValidation.validateString("Enter Pet Name: ");
 
-                    showResults(FileHandler.filterRecords("PET_LIST.txt", name, Pet::getPetName));
+                showResults(FileHandler.filterRecords("PET_LIST.txt", name, Pet::getPetName), "VIEW BY PET NAME: " + name.toUpperCase());
+                break;
+            case 2: // VIEW PET BY PET TYPE
+            ArrayList<Pet> pets = getSpecificPetDetailsPerType();
+                String petType = "";
+                for(Pet pet : pets){
+                    petType = pet.getType();
                     break;
-                case 2: // VIEW PET BY PET TYPE
-                    showResults(getSpecificPetDetailsPerType());
-                    break;
-                case 3: // SEARCH PET BY PET BREED
-                    String breed = DataValidation.validateString("Enter Pet Breed: ");
+                }
+                showResults(pets, "VIEW BY PET TYPE: " + petType.toUpperCase());
+                break;
+            case 3: // SEARCH PET BY PET BREED
+                DisplayUtils.centeredTitle("SEARCH PET BY BREED", 60);
+                String breed = DataValidation.validateString("Enter Pet Breed: ");
 
-                    showResults(FileHandler.filterRecords("PET_LIST.txt", breed, Pet::getBreed));
-                    break;
-                case 4: // SEARCH PET BY GENDER
-                    DisplayUtils.printMenu("SEARCH BY PET GENDER",
-                            "#Select Gender",
-                            "Male",
-                            "Female");
-                    int choiceGender = DataValidation.intChoiceValidation("Select Option",
-                            1, 2, 0);
+                showResults(FileHandler.filterRecords("PET_LIST.txt", breed, Pet::getBreed), "VIEW BY PET BREED " + breed.toUpperCase());
+                break;
+            case 4: // SEARCH PET BY GENDER
+                DisplayUtils.printMenu("SEARCH BY PET GENDER",
+                        "#Select Gender",
+                        "Male",
+                        "Female");
+                int choiceGender = DataValidation.intChoiceValidation("Select Option",
+                        1, 2, 0);
 
-                    if (choiceGender == 0) {
-                        break;
-                    }
+                if (choiceGender == 0) {
+                    break;
+                }
 
-                    String gender = (choiceGender == 1) ? "Male" : "Female";
-                    showResults(FileHandler.filterRecords("PET_LIST.txt", String.valueOf(gender), Pet::getGender));
-                    break;
-                case 5: // SEARCH PET BY AGE
-                    int age = DataValidation.validatePetAgeInput("Enter Pet Age: ");
+                String gender = (choiceGender == 1) ? "Male" : "Female";
+                showResults(FileHandler.filterRecords("PET_LIST.txt", String.valueOf(gender), Pet::getGender), "VIEW BY PET GENDER " + gender.toUpperCase());
+                break;
+            case 5: // SEARCH PET BY AGE
+            DisplayUtils.centeredTitle("SEARCH PET BY AGE", 60);
+                int age = DataValidation.validatePetAgeInput("Enter Pet Age: ");
 
-                    showResults(FileHandler.filterRecords("PET_LIST.txt", age, Pet::getAge));
-                    break;
-                case 0:
-                    isDone = true;
-                    break;
-            }
+                showResults(FileHandler.filterRecords("PET_LIST.txt", age, Pet::getAge), "VIEW BY PET AGE " + age);
+                break;
         }
     }
 
-    private void showResults(ArrayList<Pet> pets) {
+    private void showResults(ArrayList<Pet> pets, String title) {
         if (pets == null || pets.isEmpty()) {
-            System.out.println("No available pets found.");
+            DisplayUtils.centeredTitle(title, 100);
+            System.out.println("No available pet(s) found.");
             return;
         }
-        DisplayUtils.displayPetsForCustomer(pets);
+        DisplayUtils.centeredTitle(title, 100);
+        DisplayUtils.displayPetsForCustomer(availablePets(pets));
     }
 
     private ArrayList<Pet> getSpecificPetDetailsPerType() {
         String type = "";
 
         if (getAvailablePets().isEmpty()) {
+            DisplayUtils.centeredTitle("FIND SPECIFIC PETS [DOG/CAT/BIRD]", 100);
             System.out.println("No available pets found.");
             return null;
         }
 
-        DisplayUtils.printMenu("SEARCH BY PET TYPE",
+        DisplayUtils.printMenu("PET TYPE",
                 "#Select Pet Type",
                 "Dog",
                 "Cat",
@@ -195,16 +191,15 @@ public class Customer extends User {
     }
 
     private void findSpecificPets() {
-        ArrayList<Pet> petTypes = getSpecificPetDetailsPerType();
+        ArrayList<Pet> petTypes = availablePets(getSpecificPetDetailsPerType());
 
-        if (petTypes == null) {
+        showResults(petTypes, "FIND SPECIFIC PETS");
+
+        if (petTypes == null || petTypes.isEmpty()) {
             return;
         }
 
-        DisplayUtils.displayPetsForCustomer(petTypes);
-
-        char viewDetailsChoice = DataValidation
-                .charChoiceValidation("Do you want to view specific pet details? (y/n): ", 'Y', 'N');
+        char viewDetailsChoice = DataValidation.charChoiceValidation("Do you want to view specific pet details? (y/n): ", 'Y', 'N');
 
         if (viewDetailsChoice == 'Y') {
             String type = petTypes.get(0).getType();
@@ -215,6 +210,7 @@ public class Customer extends User {
     }
 
     private void specificPetDetails(String type, ArrayList<Pet> petTypes) { // EDIT THIS
+        DisplayUtils.centeredTitle("VIEW SPECIFIC PET DETAILS", 60);
         String petID = DataValidation.validatePetIdInput("Enter Pet ID: ", type);
 
         for (Pet pet : petTypes) {
@@ -229,34 +225,29 @@ public class Customer extends User {
     private void filterByPrice() {
         ArrayList<Pet> pets = getAvailablePets();
         if (pets.isEmpty()) {
+            DisplayUtils.centeredTitle("FILTER BY PRICE", 100);
             System.out.println("No available pets found.");
             return;
         }
 
-        boolean isDone = false;
-        while (!isDone) {
-            DisplayUtils.printMenu("FILTER BY PRICE",
-                    "#Select Option",
-                    "Ascending Price",
-                    "Descending Price",
-                    "Price Range");
-            int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 0);
+        DisplayUtils.printMenu("FILTER BY PRICE",
+                "#Select Option",
+                "Ascending Price",
+                "Descending Price",
+                "Price Range");
+        int choice = DataValidation.intChoiceValidation("Select Option",
+                1, 2, 3, 0);
 
-            switch (choice) {
-                case 1:
-                    showResults(sortByPrice(choice, pets));
-                    break;
-                case 2:
-                    showResults(sortByPrice(choice, pets));
-                    break;
-                case 3:
-                    showResults(filterByPriceRange(pets));
-                    break;
-                case 0:
-                    isDone = true;
-                    break;
-            }
+        switch (choice) {
+            case 1:
+                showResults(sortByPrice(choice, pets), "SORT BY ASCENDING PRICE");
+                break;
+            case 2:
+                showResults(sortByPrice(choice, pets), "SORT BY DESCENDING PRICE");
+                break;
+            case 3:
+                showResults(filterByPriceRange(pets), "FILTER BY PRICE RANGE");
+                break;
         }
     }
 
@@ -274,6 +265,7 @@ public class Customer extends User {
     }
 
     private ArrayList<Pet> filterByPriceRange(ArrayList<Pet> pets) {
+        DisplayUtils.centeredTitle("FILTER BY PRICE RANGE", 60);
         ArrayList<Pet> filteredPets = new ArrayList<>();
         double startingPrice = DataValidation.validatePriceInput("Enter Starting Price: ");
         double endingPrice = DataValidation.validatePriceInput("Enter Ending Price: ");
@@ -319,7 +311,7 @@ public class Customer extends User {
 
         System.out.println("Pet ID: " + petID + " found and is available for adoption.");
 
-        char requestAdoption = DataValidation.charChoiceValidation("Do you want to request adoption for Pet ID: " + petID + "? (y/n): ", 'y', 'n');
+        char requestAdoption = DataValidation.charChoiceValidation("\nDo you want to request adoption for Pet ID: " + petID + "? (y/n): ", 'y', 'n');
 
         if (requestAdoption == 'N') {
             System.out.println("Adoption request cancelled.");
@@ -468,7 +460,7 @@ public class Customer extends User {
         String petRecord = FileHandler.findRecord("RESERVED.txt", transactionNum, RES_TRANSACTION_NUM);
         FileHandler.appendRecord("CANCELLATION_REQUEST.txt", petRecord);
         System.out.println(
-                "Your cancellation request of pet request of adoption is now being processed. Wait for the Admin or Coordinator to approve your request.");
+                "Your cancellation request of pet request adoption is now being processed. Wait for the Admin or Coordinator to approve your request.");
     }
 
     private void requestReturn() {
@@ -532,5 +524,20 @@ public class Customer extends User {
         FileHandler.appendRecord("RETURN_REQUEST.txt", adoptedPet);
         System.out.println(
                 "Your return request is now being processed. Wait for the Admin or Coordinator to approve your request.");
+    }
+
+    public ArrayList<Pet> availablePets(ArrayList<Pet> pets){
+        ArrayList<Pet> availablePets = new ArrayList<>();
+        ArrayList<String> reserve = new ArrayList<>();
+        for(Reservation pet : viewAllReserveRecords()){
+            reserve.add(pet.getPetID().toUpperCase());
+        }
+
+        for(Pet pet : pets){
+            if(!reserve.contains(pet.getPetID().toUpperCase())){
+                availablePets.add(pet);
+            }
+        }
+        return availablePets;
     }
 }
