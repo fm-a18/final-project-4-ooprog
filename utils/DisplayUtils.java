@@ -70,7 +70,8 @@ public class DisplayUtils {
 
         for (Pet pet : pets) {
             System.out.printf(
-                    "%-20s | %-15s | %-15s | %-5d | %-10s | %-15s%n",
+                    "%-20s | %-20s | %-15s | %-15s | %-5d | %-10s | %-15s%n",
+                    pet.getPetID(),
                     pet.getPetName(),
                     pet.getType(),
                     pet.getBreed(),
