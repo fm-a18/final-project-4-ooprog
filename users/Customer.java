@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 import static utils.RecordManager.RES_TRANSACTION_NUM;
+import static utils.RecordManager.readRecords;
 import static utils.DataValidation.dateForClaimingPet;
 import static utils.RecordManager.AD_DATE_FINALIZED;
 
@@ -169,6 +170,11 @@ public class Customer extends User {
     private ArrayList<Pet> getSpecificPetDetailsPerType() {
         String type = "";
 
+        if (getAvailablePets().isEmpty()) {
+            System.out.println("No pets found.");
+            return null;
+        }
+
         DisplayUtils.printMenu("SEARCH BY PET TYPE",
                 "#Select Pet Type",
                 "Dog",
@@ -190,8 +196,7 @@ public class Customer extends User {
     private void findSpecificPets() {
         ArrayList<Pet> petTypes = getSpecificPetDetailsPerType();
 
-        if (petTypes.isEmpty()) {
-            System.out.println("No pets found.");
+        if (petTypes.isEmpty() || petTypes == null) {
             return;
         }
 
@@ -462,6 +467,7 @@ public class Customer extends User {
     }
 
     private void requestReturn() {
+        
         String transactionNum = DataValidation.transactionNumberValidation(
                 "Enter Transaction Number from your Request of Adoption Confirmation Message: ");
 
