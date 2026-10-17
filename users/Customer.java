@@ -202,10 +202,8 @@ public class Customer extends User {
         char viewDetailsChoice = DataValidation.charChoiceValidation("Do you want to view specific pet details? (y/n): ", 'Y', 'N');
 
         if (viewDetailsChoice == 'Y') {
-            String type = petTypes.get(0).getType();
+            String type = petTypes.getFirst().getType();
             specificPetDetails(type, petTypes);
-        } else {
-            return;
         }
     }
 
@@ -442,7 +440,7 @@ public class Customer extends User {
                 }
         );
 
-        char cancelAdoptionConfirmation = DataValidation.charChoiceValidation("Are you sure you want to cancel your reservation? (y/n): ", 'y', 'n');
+        char cancelAdoptionConfirmation = DataValidation.charChoiceValidation("Are you sure you want to cancel your reservation? (Y/N): ", 'Y', 'N');
 
         if(cancelAdoptionConfirmation == 'N'){
             System.out.println("Adoption Cancellation Cancelled.");
@@ -506,7 +504,7 @@ public class Customer extends User {
         );
 
         char returnAdoptionConfirmation = DataValidation
-                .charChoiceValidation("Are you sure you want to return your pet? (y/n): ", 'y', 'n');
+                .charChoiceValidation("Are you sure you want to return your pet? (Y/N): ", 'Y', 'N');
 
         if (returnAdoptionConfirmation == 'N') {
             System.out.println("Return Adoption Request Cancelled.");

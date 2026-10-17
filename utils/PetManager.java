@@ -9,11 +9,11 @@ import java.util.Scanner;
 
 public class PetManager {
     private static PetManager instance;
-    private ArrayList<Pet> pets;
+    private final ArrayList<Pet> pets;
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-uuuu").withResolverStyle(ResolverStyle.STRICT);
 
     private PetManager() {
-        pets = new ArrayList<>();
+        pets = FileHandler.viewAllPetRecords();
     }
 
     public static PetManager getInstance() {
@@ -24,23 +24,13 @@ public class PetManager {
     }
 
     public void addPet(){
-        if(pets.isEmpty()){
-            System.out.println("No pets found.");
-            return;
-        }
         boolean isDone = true;
 
         while (isDone) {
             DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird");
             int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3);
 
-            String type = switch (choice) {
-                case 1 -> "Dog";
-                case 2 -> "Cat";
-                default -> "Bird";
-            };
-
-            String petID = DataValidation.validatePetIdInput("Enter Pet ID: ", type);
+            String petID = DataValidation.validatePetIdInput();
             String petName = DataValidation.validateString("Enter Name: ");
             String petBreed = DataValidation.validateString("Enter Breed: ");
             char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
@@ -49,8 +39,8 @@ public class PetManager {
             char hasRecords = DataValidation.charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
             if (hasRecords == 'Y') {
                 String petMedCon = DataValidation.validateString("Enter medical condition/treatment name: ");
-                String petMedHis = DataValidation.validateDate("Enter date of the condition/treatment: ");
-                findPetID(petID).addAdoptionHistory(petMedHis, petMedCon);
+                String petMedHis = String.valueOf(DataValidation.validateDate("Enter date of the condition/treatment: "));
+                findPetID(petID).addMedicalHistory(petMedHis, petMedCon);
             }
 
             System.out.println("Pet Added on " + LocalDate.now().format(dateFormat));
@@ -95,38 +85,38 @@ public class PetManager {
             switch (choice) {
                 case 1: {
                     String petName = DataValidation.validateString("Enter pet name:");
-                    ArrayList<Pet> listpet = FileHandler.filterRecords("PET_LIST.txt", petName, Pet::getPetName);
-                    DisplayUtils.displayPetsForStaff(listpet);
+                    ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petName, Pet::getPetName);
+                    DisplayUtils.displayPetsForStaff(listOfPet);
                     break;
                 }
                 case 2: {
                     String petType = DataValidation.validateString("Enter pet type:");
-                    ArrayList<Pet> listpet = FileHandler.filterRecords("PET_LIST.txt", petType, Pet::getType);
-                    DisplayUtils.displayPetsForStaff(listpet);
+                    ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petType, Pet::getType);
+                    DisplayUtils.displayPetsForStaff(listOfPet);
                     break;
                 }
                 case 3: {
                     String petBreed = DataValidation.validateString("Enter pet breed:");
-                    ArrayList<Pet> listpet = FileHandler.filterRecords("PET_LIST.txt", petBreed, Pet::getBreed);
-                    DisplayUtils.displayPetsForStaff(listpet);
+                    ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petBreed, Pet::getBreed);
+                    DisplayUtils.displayPetsForStaff(listOfPet);
                     break;
                 }
                 case 4: {
                     String petGender = DataValidation.validateString("Enter pet gender:");
-                    ArrayList<Pet> listpet = FileHandler.filterRecords("PET_LIST.txt", petGender, Pet::getGender);
-                    DisplayUtils.displayPetsForStaff(listpet);
+                    ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petGender, Pet::getGender);
+                    DisplayUtils.displayPetsForStaff(listOfPet);
                     break;
                 }
                 case 5: {
                     String petAge = DataValidation.validateString("Enter pet age:");
-                    ArrayList<Pet> listpet = FileHandler.filterRecords("PET_LIST.txt", petAge, Pet::getAge);
-                    DisplayUtils.displayPetsForStaff(listpet);
+                    ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petAge, Pet::getAge);
+                    DisplayUtils.displayPetsForStaff(listOfPet);
                     break;
                 }
                 case 6: {
                     String petStatus = DataValidation.validateString("Enter adoption status:");
-                    ArrayList<Pet> listpet = FileHandler.filterRecords("PET_LIST.txt", petStatus, Pet::getAdoptionStatus);
-                    DisplayUtils.displayPetsForStaff(listpet);
+                    ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petStatus, Pet::getAdoptionStatus);
+                    DisplayUtils.displayPetsForStaff(listOfPet);
                     break;
                 }
                 case 7: {
@@ -138,6 +128,7 @@ public class PetManager {
     }
 
     public Pet findPetID(String petID) {
+        System.out.println("Size: " + pets.size());
         for (Pet pet : pets) {
             if (pet.getPetID().equalsIgnoreCase(petID)) {
                 return pet;
@@ -168,7 +159,7 @@ public class PetManager {
                 default -> cat = "Bird";
             }
 
-            String petID = DataValidation.validatePetIdInput("Enter existing pet ID: ", cat);
+            String petID = DataValidation.validatePetIdInput();
             PetManager.getInstance().findPetID(petID).setAdoptionStatus(AdoptionStatus.ADOPTED);
         }
     }
@@ -195,7 +186,7 @@ public class PetManager {
             DisplayUtils.printMenu("Order: ", "Ascending", "Descending");
             int choicev2 = DataValidation.intChoiceValidation("Enter choice: ", 1, 2);
 
-            FileHandler.sortCategory("PET_LIST.txt", choice, choicev1, choicev2 == 1);
+            FileHandler.sortCategory(RecordManager.FILE_PET_LIST, choice, choicev1, choicev2 == 1);
         }
 
 

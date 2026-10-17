@@ -1,13 +1,13 @@
 package users;
 
 import inventory.AdoptionStatus;
-import utils.PetManager;
-import utils.DataValidation;
-import utils.FileHandler;
-import utils.RecordManager;
+import inventory.Pet;
+import utils.*;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
+import static utils.DataValidation.sc;
 import static utils.DisplayUtils.printMenu;
 
 public class Admin extends User {
@@ -61,7 +61,12 @@ public class Admin extends User {
     }
 
     private void viewAllPets() {
-        PetManager.getInstance().getAllPets();
+        var pets = PetManager.getInstance().getAllPets();
+        if (pets == null || pets.isEmpty()){
+            System.out.println("No pets found.");
+            return;
+        }
+        DisplayUtils.displayPetsForStaff(pets);
     }
 
     private void searchByCategory() {
@@ -69,22 +74,27 @@ public class Admin extends User {
     }
 
     private void filterByStatus() {
-        PetManager.getInstance().filterByStatus();
+        PetManager.getInstance().sortByCategory(sc);
     }
 
     private void addPet() {
-        PetManager.getInstance().addPet(pet);
+        PetManager.getInstance().addPet();
     }
 
     public String findAndConfirmTransaction(String fileName, String action) {
         String findTransactionNum = DataValidation.transactionNumberValidation("Transaction Number: ");
-        String record = FileHandler.findRecord(fileName, findTransactionNum, 0);
 
-        if (record == null) {
-            System.out.println("Transaction not found.");
+        if (findTransactionNum == null || findTransactionNum.isBlank()) {
+            System.out.println("Invalid Transaction Number.");
             return null;
         }
 
+        String record = FileHandler.findRecord(fileName, findTransactionNum, 0);
+
+        if (record == null){
+            System.out.println("Transaction not found.");
+            return null;
+        }
         System.out.println("Transaction number found.");
 
         char approve = DataValidation.charChoiceValidation("Approve " + action + "?", 'Y', 'N');
@@ -95,9 +105,17 @@ public class Admin extends User {
         return record;
     }
 
+    private Pet findPet(String petID){
+        Pet pet = PetManager.getInstance().findPetID(petID);
+        if (pet == null) {
+            System.out.println("Pet " + petID + " not found in the pet list. No changes were made.");
+        }
+        return pet;
+    }
+
     private void approveAdoptionRequest() {
         System.out.println("Adoption Requests");
-        String reservationRecord = findAndConfirmTransaction("RESERVED.txt", "Adoption Request");
+        String reservationRecord = findAndConfirmTransaction(RecordManager.FILE_RESERVED, "Adoption Request");
         if (reservationRecord == null)
             return;
 
@@ -105,11 +123,17 @@ public class Admin extends User {
         String petID = parts[RES_PET_ID];
         String transactionNum = parts[RES_TRANSACTION_ID];
 
+        Pet pet = findPet(petID);
+        if (pet == null)
+            return;
+
         String adoptedRecord = RecordManager.buildAdoptedRecord(reservationRecord, this.getEmailAddress());
 
-        FileHandler.appendRecord("ADOPTED_LIST.txt", adoptedRecord);
-        FileHandler.removeRecord("RESERVED.txt", transactionNum, 0);
-        PetManager.getInstance().findPetID(petID).setAdoptionStatus(AdoptionStatus.ADOPTED);
+        FileHandler.appendRecord(RecordManager.FILE_ADOPTED, adoptedRecord);
+        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, 0);
+        pet.setAdoptionStatus(AdoptionStatus.ADOPTED);
+
+        System.out.printf("Adoption approved for transaction %s.\n", transactionNum);
 
     }
 
@@ -126,9 +150,17 @@ public class Admin extends User {
         String petID = parts[RES_PET_ID];
         String transactionNum = parts[RES_TRANSACTION_ID];
 
-        FileHandler.appendRecord("CANCELLED_LIST.txt", record);
-        FileHandler.removeRecord("CANCELLATION_REQUEST.txt", transactionNum, 0);
+        Pet pet = findPet(petID);
+        if (pet == null)
+            return;
+
+        FileHandler.appendRecord(RecordManager.FILE_CANCELLED_LIST, record);
+        FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, 0); //Remove from cancellation_request
+        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RES_TRANSACTION_ID); //Remove from reserved_req
         PetManager.getInstance().findPetID(petID).setAdoptionStatus(AdoptionStatus.AVAILABLE);
+
+        System.out.printf("Cancellation approved for transaction %s.\n", transactionNum);
+
     }
 
     private void approvePetReturn() {
@@ -141,22 +173,61 @@ public class Admin extends User {
         String petID = parts[RES_PET_ID];
         String transactionNum = parts[RES_TRANSACTION_ID];
 
-        FileHandler.appendRecord("RETURNED_LIST.txt", record); // Documentation
-        FileHandler.removeRecord("RETURN_REQUEST.txt", transactionNum, 0);
-        PetManager.getInstance().findPetID(petID).setAdoptionStatus(AdoptionStatus.AVAILABLE);
+        Pet pet = findPet(petID);
+        if (pet == null)
+            return;
+
+        FileHandler.appendRecord(RecordManager.FILE_RETURNED_LIST, record); // Documentation
+        FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, 0);
+        pet.setAdoptionStatus(AdoptionStatus.AVAILABLE); //need to append adoption history
+
+        System.out.printf("Return of pet approved for transaction %s.\n", transactionNum);
+
     }
 
-    private void manageIncomingPets() {
-        System.out.println("Adoption Requests");
-        String record = findAndConfirmTransaction("RESERVED.txt", "Adoption Request");
-        if (record == null) return;
+    private void manageIncomingPets() { //double check if it will allow duplicated id
+        System.out.println("Incoming Pet Requests");
 
-        String[] parts = record.split("\\s*\\|\\s*");
-        String petID = parts[RES_PET_ID];
-        String transactionNum = parts[RES_TRANSACTION_ID];
+        var incomingPets = RecordManager.readRecords(RecordManager.FILE_INCOMING_LIST,
+                RecordManager.PET_FIELD_COUNT, RecordManager::parsePet);
 
-        FileHandler.appendRecord("ADOPTED_LIST.txt", record); //Documentation
-        FileHandler.removeRecord("RESERVED.txt", transactionNum, 0);
-        PetManager.getInstance().findPetID(petID).setAdoptionStatus(AdoptionStatus.ADOPTED);
+        if (incomingPets == null || incomingPets.isEmpty()) {
+            System.out.println("No incoming pets to review.");
+            return;
+        }
+
+        DisplayUtils.displayPetsForStaff(new ArrayList<>(incomingPets));
+        String petID = DataValidation.validatePetIdInput();
+        //view specific pet details
+
+        Pet selectedPet = null;
+        for(Pet pet : incomingPets){
+            if(pet.getPetID().equalsIgnoreCase(petID)){
+                selectedPet = pet;
+                break;
+            }
+        }
+
+        assert selectedPet != null;
+        DisplayUtils.printSummaryBox("INCOMING PET", new String[][] {
+                { "Pet ID", selectedPet.getPetID() },
+                { "Name", selectedPet.getPetName() },
+                { "Type", selectedPet.getType() },
+                { "Breed", selectedPet.getBreed() },
+                { "Age", String.valueOf(selectedPet.getAge()) },
+                { "Price", String.format("Php %,.2f", selectedPet.getPrice()) }
+        });
+
+        char approve = DataValidation.charChoiceValidation("Approve this pet to be added to inventory?", 'Y', 'N');
+        if (approve != 'Y') {
+            System.out.println("Approval cancelled.");
+            return;
+        }
+
+        FileHandler.appendRecord(RecordManager.FILE_PET_LIST, selectedPet.toFileString());
+        selectedPet.setAdoptionStatus(AdoptionStatus.AVAILABLE);
+
+        System.out.printf("Incoming pet with ID %s approved and added to inventory.\n", petID);
+
     }
 }

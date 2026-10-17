@@ -1,7 +1,6 @@
 package utils;
 
 import java.time.format.ResolverStyle;
-import java.util.Random;
 import java.util.Scanner;
 import inventory.Bird;
 import inventory.Cat;
@@ -41,7 +40,7 @@ public class DataValidation {
     }
 
     public static int validateCustomerAgeInput(String prompt) { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX
-                                                                // HUMAN AGE
+        // HUMAN AGE
         boolean isRunning = true;
         int number = 0;
         String inputNumber = "";
@@ -157,7 +156,12 @@ public class DataValidation {
                 System.out.println("Invalid Date Format. Please use (MM-DD-YYYY).");
             }
         }
-        return date;
+        return LocalDate.parse(res, dateFormat);
+    }
+
+    public static boolean dateForClaimingPet(LocalDate date) {
+        LocalDate today = LocalDate.now();
+        return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
     }
 
     public static boolean dateForClaimingPet(LocalDate date) {
@@ -291,7 +295,7 @@ public class DataValidation {
             sb.append(choices[i]);
 
             if (i < choices.length - 1) {
-                sb.append(", ");
+                sb.append("/ ");
             }
         }
 
@@ -305,7 +309,7 @@ public class DataValidation {
             sb.append(Character.toUpperCase(choices[i]));
 
             if (i < choices.length - 1) {
-                sb.append(", ");
+                sb.append("/ ");
             }
         }
 
@@ -325,7 +329,7 @@ public class DataValidation {
     }
 
     public static double validatePriceInput(String prompt) { // TODO ADJUST ERROR MESSAGE(REFLECT ACTUAL
-                                                             // LIMIT)
+        // LIMIT)
         boolean isRunning = true;
         double number = 0;
         String inputNumber = "";
@@ -348,45 +352,45 @@ public class DataValidation {
         return number;
     }
 
-    public static String getCategoryPrefix(String category) {
-        if (category == null) {
-            return null;
-        }
-        switch (category.trim().toLowerCase()) {
-            case "dog":
-                return Dog.ID_PREFIX;
-            case "cat":
-                return Cat.ID_PREFIX;
-            case "bird":
-                return Bird.ID_PREFIX;
-            default:
-                return null;
-        }
-    }
+//    public static String getCategoryPrefix(String category) {
+//        if (category == null) {
+//            return null;
+//        }
+//        switch (category.trim().toLowerCase()) {
+//            case "dog":
+//                return Dog.ID_PREFIX;
+//            case "cat":
+//                return Cat.ID_PREFIX;
+//            case "bird":
+//                return Bird.ID_PREFIX;
+//            default:
+//                return null;
+//        }
+//    }
 
-    // TODO ADJUST PET ID FORMAT
-    public static String validatePetIdInput(String prompt, String category) {
-        String prefix = getCategoryPrefix(category);
-        if (prefix == null) {
-            throw new IllegalArgumentException("Unknown pet category: " + category);
-        }
-
-        String input = "";
+    public static String validatePetIdInput() {
         boolean isValidated = false;
+        String input = "";
+
         while (!isValidated) {
-            System.out.print(prompt);
-            input = sc.nextLine().trim().toUpperCase();
+            System.out.print("Enter Pet ID: ");
+            try {
+                input = sc.nextLine().trim().toUpperCase();
+            } catch (java.util.NoSuchElementException e) {
+                System.out.println("Error: No input available. Please try again.");
+                continue;
+            }
 
             if (input.isEmpty()) {
                 System.out.println("Error: Pet ID cannot be empty.");
-            } else if (!input.matches("^" + prefix + "\\d{4}$")) {
-                System.out.println("Invalid Pet ID. A " + category + " ID must start with " + prefix
-                        + " followed by 4 digits (e.g., " + prefix + "0001).");
+            } else if (!input.matches("^([DBC])\\d{4}$")) {
+                System.out.println("Error: Invalid Pet ID format. Please follow the specified Pet ID format.");
             } else {
                 isValidated = true;
             }
         }
         return input;
+
     }
 
     public static String validatePetID(String prompt, String regex) {
@@ -455,16 +459,12 @@ public class DataValidation {
         if (category == null) {
             return null;
         }
-        switch (category.trim().toLowerCase()) {
-            case "dog":
-                return new Dog(petID, name, breed, gender, age, price);
-            case "cat":
-                return new Cat(petID, name, breed, gender, age, price);
-            case "bird":
-                return new Bird(petID, name, breed, gender, age, price);
-            default:
-                return null;
-        }
+        return switch (category.trim().toLowerCase()) {
+            case "dog" -> new Dog(petID, name, breed, gender, age, price);
+            case "cat" -> new Cat(petID, name, breed, gender, age, price);
+            case "bird" -> new Bird(petID, name, breed, gender, age, price);
+            default -> null;
+        };
     }
 
     // TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS

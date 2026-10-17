@@ -53,36 +53,32 @@ public class FileHandler {
         }
     }
 
-    public static boolean removeRecord(String fileName, String searchFor, int colIndex) {
+    public static void removeRecord(String fileName, String searchFor, int colIndex) {
         File file = new File(fileName);
         StringBuilder updated = new StringBuilder();
-        boolean recordFound = false;
 
         try (Scanner read = new Scanner(file)) {
             while (read.hasNextLine()) {
                 String line = read.nextLine();
                 String[] parts = line.split("\\s*\\|\\s*");
                 if (parts.length > colIndex && parts[colIndex].trim().equalsIgnoreCase(searchFor)) {
-                    recordFound = true;
                     continue;
                 }
                 updated.append(line).append(System.lineSeparator());
             }
         } catch (IOException e) {
             System.out.println("Error in reading file.");
-            return false;
+            return;
         }
 
         try (FileWriter writer = new FileWriter(fileName)) {
             writer.write(updated.toString());
         } catch (IOException e) {
             System.out.println("Error in writing file.");
-            return false;
         }
-        return recordFound;
     }
 
-    public static boolean updateRecord(String fileName, String searchFor, int index, String newLine) {
+    public static boolean updateRecord(String fileName, String searchFor, int index, String newLine) { // for updating pet medical history
         File file = new File(fileName);
         StringBuilder updated = new StringBuilder();
         boolean found = false;
@@ -157,7 +153,7 @@ public class FileHandler {
     }
 
     public static void savePet(Pet pet){
-        appendRecord("PET_LIST.txt", pet.toFileString());
+        appendRecord(RecordManager.FILE_PET_LIST, pet.toFileString());
     }
 
     public static void sortCategory(String fileName, int category, int sortBy, boolean ascending) {
