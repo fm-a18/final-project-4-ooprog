@@ -11,9 +11,6 @@ import utils.RecordManager;
 
 import static utils.RecordManager.US_EMAIL_ADDRESS;
 
-import static utils.RecordManager.RES_TRANSACTION_NUM;
-import static utils.RecordManager.US_EMAIL_ADDRESS;
-
 public class Coordinator extends User {
     private static PetManager instance;
     private ArrayList<Pet> pets;

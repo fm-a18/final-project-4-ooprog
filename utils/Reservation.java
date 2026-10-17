@@ -9,15 +9,15 @@ public class Reservation {
 
   public Reservation(String transactionNum, String firstName, String lastName, String email, String petID, String paymentPlan, double downPayment, double balanceLeft, LocalDate dateRequested, LocalDate dateClaiming){
     this.transactionNum = transactionNum;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.petID = petID;
-        this.paymentPlan = paymentPlan;
-        this.downPayment = downPayment;
-        this.balanceLeft = balanceLeft;
-        this.dateRequested = dateRequested;
-        this.dateClaiming = dateClaiming;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
+    this.petID = petID;
+    this.paymentPlan = paymentPlan;
+    this.downPayment = downPayment;
+    this.balanceLeft = balanceLeft;
+    this.dateRequested = dateRequested;
+    this.dateClaiming = dateClaiming;
   }
 
   public String getTransactionNum(){return this.transactionNum;}

@@ -59,11 +59,6 @@ public class RecordManager {
         ArrayList<T> records = new ArrayList<>();
         File file = new File(fileName);
 
-        if (!file.exists() || file.length() == 0) {
-            System.out.println(fileName + " not found or empty.");
-            return records;
-        }
-
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -171,7 +166,7 @@ public class RecordManager {
         parts[RES_PAYMENT_PLAN] = paymentPlan;
         parts[RES_DOWN_PAYMENT] = String.format("%,.2f", downPayment);
         parts[RES_BALANCE_LEFT] = String.format("%,.2f", balanceLeft);
-        parts[RES_DATE_REQUESTED] = LocalDate.now().format(dateFormat);
+        parts[RES_DATE_REQUESTED] = java.time.LocalDate.now().toString();
         parts[RES_DATE_CLAIMING] = date.toString();
 
         return String.join("|", parts);

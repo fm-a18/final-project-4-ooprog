@@ -164,6 +164,11 @@ public class DataValidation {
         return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
     }
 
+    public static boolean dateForClaimingPet(LocalDate date) {
+        LocalDate today = LocalDate.now();
+        return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
+    }
+
     public static String validatePhoneNumber() {
         boolean isValidated = false;
         String input = "";
@@ -463,11 +468,16 @@ public class DataValidation {
     }
 
     // TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS
-    private static int transactionCtr = 0;
-
     public static String transactionNumGenerator() {
-        transactionCtr++;
-        return "T" + String.format("%07d", transactionCtr);
+        int n = 6;
+        StringBuilder transactionNum = new StringBuilder();
+        String randomNum = "0123456789";
+        Random rand = new Random();
+
+        for (int i = 0; i < n; i++) {
+            transactionNum.append(randomNum.charAt(rand.nextInt(randomNum.length())));
+        }
+        return "TN" + transactionNum.toString();
     }
 
     public static String transactionNumberValidation(String prompt) {
@@ -484,7 +494,7 @@ public class DataValidation {
 
             if (transactionNum.isEmpty()) {
                 System.out.println("Error: Transaction Number cannot be empty.");
-            } else if (!transactionNum.matches("^T\\d{7}$")) {
+            } else if (!transactionNum.matches("^TN\\d{6}$")) {
                 System.out.println(
                         "Invalid Transaction Number. Please input the transaction number given after the request for adoption is granted.");
             } else {

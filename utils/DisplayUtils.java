@@ -33,7 +33,8 @@ public class DisplayUtils {
         centeredTitle(tableName, TABLE_WIDTH);
 
         System.out.printf(
-                "%-20s | %-15s | %-15s | %-5s | %-10s | %-6s%n",
+                "%-20s | %-20s | %-15s | %-15s | %-5s | %-10s | %-15s%n",
+                "Pet ID",
                 "Pet Name",
                 "Type",
                 "Breed",
@@ -62,11 +63,10 @@ public class DisplayUtils {
 
     public static void displayPetsForCustomer(ArrayList<Pet> pets) { // Name, Type, Breed, Age, Price
 
-        customerPetHeader("AVAILABLE PETS");
-
         for (Pet pet : pets) {
             System.out.printf(
-                    "%-20s | %-15s | %-15s | %-5d | %-10.2f | %-6s%n",
+                    "%-20s | %-20s | %-15s | %-15s | %-5d | %-10s | %-15s%n",
+                    pet.getPetID(),
                     pet.getPetName(),
                     pet.getType(),
                     pet.getBreed(),
