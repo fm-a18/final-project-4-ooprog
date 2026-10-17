@@ -47,11 +47,6 @@ public class RecordManager {
         ArrayList<T> records = new ArrayList<>();
         File file = new File(fileName);
 
-        if (!file.exists() || file.length() == 0) {
-            System.out.println(fileName + " not found or empty.");
-            return records;
-        }
-
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {

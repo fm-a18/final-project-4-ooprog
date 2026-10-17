@@ -7,6 +7,7 @@ import utils.DataValidation;
 import utils.DisplayUtils;
 import utils.Reservation;
 import utils.RecordManager;
+import utils.generators.TransactionNumGenerator;
 import java.time.LocalDate;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 import static utils.RecordManager.RES_TRANSACTION_NUM;
+import static utils.DataValidation.dateForClaimingPet;
 import static utils.RecordManager.AD_DATE_FINALIZED;
 
 public class Customer extends User {
@@ -83,7 +85,7 @@ public class Customer extends User {
         for (Pet pet : pets) {
             if (!isReserved(pet.getPetID(), reservations)) {
                 available.add(pet);
-            }
+            }else{}
         }
         return available;
     }
@@ -98,7 +100,7 @@ public class Customer extends User {
     }
 
     private void searchByCategory() {
-        if (FileHandler.viewAllPetRecords().isEmpty()) {
+        if (getAvailablePets().isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
@@ -219,7 +221,7 @@ public class Customer extends User {
     }
 
     private void filterByPrice() {
-        ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
+        ArrayList<Pet> pets = getAvailablePets();
         if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
@@ -299,7 +301,6 @@ public class Customer extends User {
 
         for (Pet pet : availablePets) {
             if (pet.idExists(petID)) {
-                System.out.println("Pet ID: " + petID + " found and is available for adoption.");
                 selectedPet = pet;
                 break;
             }
@@ -310,15 +311,17 @@ public class Customer extends User {
             return;
         }
 
-        char requestAdoption = DataValidation
-                .charChoiceValidation("Do you want to request adoption for Pet ID: " + petID + "? (y/n): ", 'y', 'n');
+        System.out.println("Pet ID: " + petID + " found and is available for adoption.");
 
-        if (requestAdoption == 'n') {
+        char requestAdoption = DataValidation.charChoiceValidation("Do you want to request adoption for Pet ID: " + petID + "? (y/n): ", 'y', 'n');
+
+        if (requestAdoption == 'N') {
             System.out.println("Adoption request cancelled.");
             return;
+        }else{
+            System.out.println("Fill out the following information for the adoption request:");
         }
-
-        System.out.println("Fill out the following information for the adoption request:");
+        
         String paymentPlan = paymentPlanSelection();
         if (paymentPlan == null) {
             System.out.println("Adoption request cancelled.");
@@ -328,7 +331,7 @@ public class Customer extends User {
         double downPaymentAmount = downPayment(paymentPlan, selectedPet.getPrice());
         double balanceLeft = selectedPet.getPrice() - downPaymentAmount;
 
-        LocalDate date = DataValidation.validateDate("Enter date for claiming of pet: ");
+        LocalDate date = DataValidation.validateDate("Enter date for claiming of pet (mm-dd-yyyy)");
         while (!DataValidation.dateForClaimingPet(date)) {
             System.out.println("Date should be on or within 7 days after the adoption request.");
             date = DataValidation.validateDate("Enter date for claiming of pet: ");
@@ -342,11 +345,23 @@ public class Customer extends User {
             confirmByEmail = DataValidation.validateEmailAddress();
         }
 
-        String transactionNum = DataValidation.transactionNumGenerator();
+        String transactionNum = TransactionNumGenerator.transactionNumGenerator();
         RecordManager rm = new RecordManager();
         String reservationRecord = rm.buildAdoptionRequestRecord(this.getFirstName(), this.getLastName(), this.getEmailAddress(), selectedPet, paymentPlan, downPaymentAmount, balanceLeft, transactionNum, date);
         FileHandler.appendRecord("RESERVED.txt", reservationRecord);
         selectedPet.setAdoptionStatus(AdoptionStatus.ADOPTION_REVIEW);
+
+        DisplayUtils.printSummaryBox("ADOPTION REQUEST DETAILS",
+                new String[][] {
+                        { "Transaction Number", transactionNum},
+                        { "Pet ID", selectedPet.getPetID()},
+                        { "Payment Plan", paymentPlan},
+                        { "Down Payment", String.valueOf(downPaymentAmount)},
+                        { "Balance", String.valueOf(balanceLeft)},
+                        { "Date Requested", LocalDate.now().toString()},
+                        { "Date Claiming", date.toString()}
+                }
+        );
         System.out.println("Adoption request for Pet ID: " + petID + " with transaction number " + transactionNum + " has been submitted for review.");
     }
 
@@ -427,7 +442,7 @@ public class Customer extends User {
 
         char cancelAdoptionConfirmation = DataValidation.charChoiceValidation("Are you sure you want to cancel your reservation? (y/n): ", 'y', 'n');
 
-        if(cancelAdoptionConfirmation == 'n'){
+        if(cancelAdoptionConfirmation == 'N'){
             System.out.println("Adoption Cancellation Cancelled.");
             return;
         }
@@ -485,7 +500,7 @@ public class Customer extends User {
         char returnAdoptionConfirmation = DataValidation
                 .charChoiceValidation("Are you sure you want to return your pet? (y/n): ", 'y', 'n');
 
-        if (returnAdoptionConfirmation == 'n') {
+        if (returnAdoptionConfirmation == 'N') {
             System.out.println("Return Adoption Request Cancelled.");
             return;
         }

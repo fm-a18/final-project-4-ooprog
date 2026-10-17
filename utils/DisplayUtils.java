@@ -33,7 +33,8 @@ public class DisplayUtils {
         centeredTitle(tableName, TABLE_WIDTH);
 
         System.out.printf(
-                "%-20s | %-15s | %-15s | %-5s | %-10s | %-15s%n",
+                "%-20s | %-20s | %-15s | %-15s | %-5s | %-10s | %-15s%n",
+                "Pet ID",
                 "Pet Name",
                 "Type",
                 "Breed",

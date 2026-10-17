@@ -494,7 +494,7 @@ public class DataValidation {
 
             if (transactionNum.isEmpty()) {
                 System.out.println("Error: Transaction Number cannot be empty.");
-            } else if (!transactionNum.matches("^T\\d{7}$")) {
+            } else if (!transactionNum.matches("^TN\\d{6}$")) {
                 System.out.println(
                         "Invalid Transaction Number. Please input the transaction number given after the request for adoption is granted.");
             } else {
