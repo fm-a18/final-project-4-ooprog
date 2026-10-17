@@ -16,6 +16,7 @@ import java.util.Scanner;
 
 import static utils.RecordManager.RES_TRANSACTION_NUM;
 import static utils.RecordManager.readRecords;
+import static utils.RecordManager.viewAllPetAdoptedRecords;
 import static utils.DataValidation.dateForClaimingPet;
 import static utils.RecordManager.AD_DATE_FINALIZED;
 
@@ -71,7 +72,7 @@ public class Customer extends User {
         ArrayList<Pet> pets = getAvailablePets();
 
         if (pets.isEmpty()) {
-            System.out.println("No pets found.");
+            System.out.println("No available pets found.");
             return;
         }
 
@@ -102,7 +103,7 @@ public class Customer extends User {
 
     private void searchByCategory() {
         if (getAvailablePets().isEmpty()) {
-            System.out.println("No pets found.");
+            System.out.println("No available pets found.");
             return;
         }
 
@@ -161,7 +162,7 @@ public class Customer extends User {
 
     private void showResults(ArrayList<Pet> pets) {
         if (pets == null || pets.isEmpty()) {
-            System.out.println("No pets found.");
+            System.out.println("No available pets found.");
             return;
         }
         DisplayUtils.displayPetsForCustomer(pets);
@@ -171,7 +172,7 @@ public class Customer extends User {
         String type = "";
 
         if (getAvailablePets().isEmpty()) {
-            System.out.println("No pets found.");
+            System.out.println("No available pets found.");
             return null;
         }
 
@@ -196,7 +197,7 @@ public class Customer extends User {
     private void findSpecificPets() {
         ArrayList<Pet> petTypes = getSpecificPetDetailsPerType();
 
-        if (petTypes.isEmpty() || petTypes == null) {
+        if (petTypes == null) {
             return;
         }
 
@@ -228,7 +229,7 @@ public class Customer extends User {
     private void filterByPrice() {
         ArrayList<Pet> pets = getAvailablePets();
         if (pets.isEmpty()) {
-            System.out.println("No pets found.");
+            System.out.println("No available pets found.");
             return;
         }
 
@@ -413,6 +414,10 @@ public class Customer extends User {
 
     private void cancelAdoption() {
         ArrayList<Reservation> reserveDetails = RecordManager.viewAllReserveRecords();
+        if(reserveDetails.isEmpty()){
+            System.out.println("No pets are reserved.");
+            return;
+        }
         String transactionNum = DataValidation.transactionNumberValidation(
                 "Enter Transaction Number from your Request of Adoption Confirmation Message: ");
 
@@ -467,15 +472,20 @@ public class Customer extends User {
     }
 
     private void requestReturn() {
-        
+        ArrayList<Reservation> adopted = RecordManager.viewAllPetAdoptedRecords();
+
+        if(adopted.isEmpty()){
+            System.out.println("No pets available for return.");
+            return;
+        }
         String transactionNum = DataValidation.transactionNumberValidation(
                 "Enter Transaction Number from your Request of Adoption Confirmation Message: ");
 
         Reservation found = null;
 
-        for (Reservation adopted : RecordManager.viewAllPetAdoptedRecords()) {
-            if (adopted.getTransactionNum().equalsIgnoreCase(transactionNum)) {
-                found = adopted;
+        for (Reservation adopt : adopted) {
+            if (adopt.getTransactionNum().equalsIgnoreCase(transactionNum)) {
+                found = adopt;
                 break;
             }
         }
