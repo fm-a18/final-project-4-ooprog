@@ -1,2 +1,0 @@
-D0001|Bud|dog|Labrador|M|5|7000.00
-D0002|Lucy|dog|Shih tzu|F|7|3500.00
