@@ -219,4 +219,29 @@ public class FileHandler {
         }
         DisplayUtils.displayPetsForStaff(sorted);
     }
+
+    public static int highestNumber(String fileName, int colIndex, String prefix) {
+        int max = 0;
+        File file = new File(fileName);
+        if (!file.exists()) {
+            return 0;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\s*\\|\\s*", -1);
+                if (parts.length > colIndex && parts[colIndex].startsWith(prefix)) {
+                    try {
+                        max = Math.max(max, Integer.parseInt(parts[colIndex].substring(prefix.length())));
+                    } catch (NumberFormatException e) {
+                        // skip IDs that don't end in a number
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error in reading " + fileName + ".");
+        }
+        return max;
+    }
 }

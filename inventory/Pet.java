@@ -67,8 +67,8 @@ public abstract class Pet {
         this.price = price;
     }
 
-    public String getAdoptionStatus() {
-        return adoptionStatus.toString();
+    public AdoptionStatus getAdoptionStatus() {
+        return adoptionStatus;
     }
 
     public boolean idExists(String petID) {
@@ -120,7 +120,8 @@ public abstract class Pet {
                 breed,
                 String.valueOf(gender),
                 String.valueOf(age),
-                String.valueOf(price));
+                String.valueOf(price),
+                adoptionStatus.name());
     }
 
 }

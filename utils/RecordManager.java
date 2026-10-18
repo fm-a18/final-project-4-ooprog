@@ -7,10 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import inventory.Bird;
-import inventory.Cat;
-import inventory.Dog;
-import inventory.Pet;
+import inventory.*;
 
 import users.Customer;
 
@@ -24,6 +21,7 @@ public class RecordManager {
     public static final String FILE_RETURNED_LIST = "RETURNED_LIST.txt";
     public static final String FILE_PET_LIST = "PET_LIST.txt";
     public static final String FILE_INCOMING_LIST = "INCOMING_PET_LIST.txt";
+    public static final String FILE_USER_LIST = "USER_LIST.txt";
 
     //FOR USER_LIST.txt
     public static final int US_USER_ID = 0, US_FIRST_NAME = 1, US_LAST_NAME = 2, US_AGE = 3,
@@ -31,8 +29,8 @@ public class RecordManager {
     public static final int US_FIELD_COUNT = 9;
 
     //FOR PET_LIST.txt
-    private static final int PET_ID = 0, PET_NAME = 1, PET_TYPE = 2, PET_BREED = 3, PET_GENDER = 4, PET_AGE = 5, PET_PRICE = 6;
-    public static final int PET_FIELD_COUNT = 7;
+    private static final int PET_ID = 0, PET_NAME = 1, PET_TYPE = 2, PET_BREED = 3, PET_GENDER = 4, PET_AGE = 5, PET_PRICE = 6, PET_STATUS = 7;
+    public static final int PET_FIELD_COUNT = 8;
 
     //FOR RESERVED.txt
     public static final int RES_TRANSACTION_NUM = 0;
@@ -94,12 +92,17 @@ public class RecordManager {
         int age = Integer.parseInt(pet[PET_AGE].trim());
         double price = Double.parseDouble(pet[PET_PRICE].trim());
 
-        return switch (type.toLowerCase()) {
+        Pet parsedPet = switch (type.toLowerCase()) {
             case "dog" -> new Dog(id, name, breed, gender, age, price);
             case "cat" -> new Cat(id, name, breed, gender, age, price);
             case "bird" -> new Bird(id, name, breed, gender, age, price);
             default -> null;
         };
+
+        if (parsedPet != null) {
+            parsedPet.setAdoptionStatus(AdoptionStatus.valueOf(pet[PET_STATUS].trim().toUpperCase()));
+        }
+        return parsedPet;
     }
 
     public static Reservation parseReservation(String[] pet) {
@@ -117,7 +120,7 @@ public class RecordManager {
     }
 
     public static ArrayList<Pet> viewAllPetRecords() {
-        return readRecords("PET_LIST.txt", PET_FIELD_COUNT, RecordManager::parsePet);
+        return readRecords(FILE_PET_LIST, PET_FIELD_COUNT, RecordManager::parsePet);
     }
 
     public static ArrayList<Reservation> viewAllReserveRecords() {

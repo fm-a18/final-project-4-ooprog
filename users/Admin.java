@@ -4,6 +4,8 @@ import inventory.AdoptionStatus;
 import inventory.Pet;
 import utils.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -131,7 +133,7 @@ public class Admin extends User {
 
         FileHandler.appendRecord(RecordManager.FILE_ADOPTED, adoptedRecord);
         FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, 0);
-        pet.setAdoptionStatus(AdoptionStatus.ADOPTED);
+        PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.ADOPTED);
 
         System.out.printf("Adoption approved for transaction %s.\n", transactionNum);
 
@@ -157,11 +159,13 @@ public class Admin extends User {
         FileHandler.appendRecord(RecordManager.FILE_CANCELLED_LIST, record);
         FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, 0); //Remove from cancellation_request
         FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RES_TRANSACTION_ID); //Remove from reserved_req
-        PetManager.getInstance().findPetID(petID).setAdoptionStatus(AdoptionStatus.AVAILABLE);
+        PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
 
         System.out.printf("Cancellation approved for transaction %s.\n", transactionNum);
 
     }
+
+    static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
     private void approvePetReturn() {
         System.out.println("Return Requests");
@@ -177,10 +181,12 @@ public class Admin extends User {
         if (pet == null)
             return;
 
+        String detailsOfReturn = DataValidation.validateString("Details");
+
         FileHandler.appendRecord(RecordManager.FILE_RETURNED_LIST, record); // Documentation
         FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, 0);
-        pet.setAdoptionStatus(AdoptionStatus.AVAILABLE); //need to append adoption history
-
+        PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
+        pet.addAdoptionHistory(LocalDate.now().format(dateFormat), detailsOfReturn);
         System.out.printf("Return of pet approved for transaction %s.\n", transactionNum);
 
     }
@@ -225,7 +231,7 @@ public class Admin extends User {
         }
 
         FileHandler.appendRecord(RecordManager.FILE_PET_LIST, selectedPet.toFileString());
-        selectedPet.setAdoptionStatus(AdoptionStatus.AVAILABLE);
+        PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
 
         System.out.printf("Incoming pet with ID %s approved and added to inventory.\n", petID);
 

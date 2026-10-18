@@ -1,16 +1,17 @@
 package utils;
 
-import java.time.format.ResolverStyle;
-import java.util.Scanner;
 import inventory.Bird;
 import inventory.Cat;
 import inventory.Dog;
 import inventory.Pet;
+
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+import java.util.Scanner;
 
 public class DataValidation {
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-uuuu").withResolverStyle(ResolverStyle.STRICT);
@@ -133,7 +134,7 @@ public class DataValidation {
             }
             if (input.isEmpty()) {
                 System.out.println("Error: Address cannot be empty.");
-            } else if (!input.matches("^(?=.*[A-Za-z])[A-Za-z0-9.,#\\-/\\s]{10,150}$")) {
+            } else if (!input.matches("^(?=.*[A-Za-z])[A-Za-z0-9.,#\\-/\\s]{5,150}$")) {
                 System.out.println("Invalid Address. Please enter a valid address.");
             } else {
                 isValidated = true;
@@ -157,11 +158,6 @@ public class DataValidation {
             }
         }
         return LocalDate.parse(res, dateFormat);
-    }
-
-    public static boolean dateForClaimingPet(LocalDate date) {
-        LocalDate today = LocalDate.now();
-        return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
     }
 
     public static boolean dateForClaimingPet(LocalDate date) {
@@ -295,7 +291,7 @@ public class DataValidation {
             sb.append(choices[i]);
 
             if (i < choices.length - 1) {
-                sb.append("/ ");
+                sb.append("/");
             }
         }
 
@@ -309,7 +305,7 @@ public class DataValidation {
             sb.append(Character.toUpperCase(choices[i]));
 
             if (i < choices.length - 1) {
-                sb.append("/ ");
+                sb.append("/");
             }
         }
 
@@ -468,17 +464,6 @@ public class DataValidation {
     }
 
     // TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS
-    public static String transactionNumGenerator() {
-        int n = 6;
-        StringBuilder transactionNum = new StringBuilder();
-        String randomNum = "0123456789";
-        Random rand = new Random();
-
-        for (int i = 0; i < n; i++) {
-            transactionNum.append(randomNum.charAt(rand.nextInt(randomNum.length())));
-        }
-        return "TN" + transactionNum.toString();
-    }
 
     public static String transactionNumberValidation(String prompt) {
         String transactionNum = "";

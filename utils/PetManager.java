@@ -128,7 +128,6 @@ public class PetManager {
     }
 
     public Pet findPetID(String petID) {
-        System.out.println("Size: " + pets.size());
         for (Pet pet : pets) {
             if (pet.getPetID().equalsIgnoreCase(petID)) {
                 return pet;
@@ -137,31 +136,21 @@ public class PetManager {
         return null;
     }
 
-    public void updatePetStatus(Scanner sc) {
-        if(pets.isEmpty()){
-            System.out.println("No pets found.");
-            return;
+    public boolean updatePetStatus(String petID, AdoptionStatus adoptionStatus) {
+        Pet pet = findPetID(petID);
+        if (pet == null){
+            return false;
         }
-        boolean isDone = true;
 
-        while (isDone) {
-            DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird", "#Exit", "Back");
-            int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3, 4);
-            String cat = "";
+        pet.setAdoptionStatus(adoptionStatus);
 
-            if (choice==4) {
-                isDone = false;
-                continue;
-            }
-            switch (choice) {
-                case 1 -> cat = "Dog";
-                case 2 -> cat = "Cat";
-                default -> cat = "Bird";
-            }
-
-            String petID = DataValidation.validatePetIdInput();
-            PetManager.getInstance().findPetID(petID).setAdoptionStatus(AdoptionStatus.ADOPTED);
+        boolean isSaved = FileHandler.updateRecord(RecordManager.FILE_PET_LIST, pet.getPetID(),
+                0, pet.toFileString());
+        if (!isSaved) {
+            System.out.println("Warning: " + petID + " is not in " + RecordManager.FILE_PET_LIST + ". Status changed in memory only.");
         }
+
+        return true;
     }
 
     public void sortByCategory(Scanner sc) {
