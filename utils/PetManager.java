@@ -1,6 +1,10 @@
 package utils;
 
 import inventory.*;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
@@ -23,7 +27,7 @@ public class PetManager {
         return instance;
     }
 
-    public void addPet(){
+    public void addPet() {
         boolean isDone = true;
 
         while (isDone) {
@@ -36,6 +40,13 @@ public class PetManager {
             char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
             int petAge = DataValidation.validatePetAgeInput("Enter age: ");
             double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
+
+            Pet pet = switch (choice) {
+                case 1 -> new Dog(petID, petName, petBreed, petGender, petAge, petPrice);
+                case 2 -> new Cat(petID, petName, petBreed, petGender, petAge, petPrice);
+                default -> new Bird(petID, petName, petBreed, petGender, petAge, petPrice);
+            };
+
             char hasRecords = DataValidation.charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
             if (hasRecords == 'Y') {
                 String petMedCon = DataValidation.validateString("Enter medical condition/treatment name: ");
@@ -45,18 +56,39 @@ public class PetManager {
 
             System.out.println("Pet Added on " + LocalDate.now().format(dateFormat));
 
-            Pet pet = switch (choice) {
-                case 1 -> new Dog(petID, petName, petBreed, petGender, petAge, petPrice);
-                case 2 -> new Cat(petID, petName, petBreed, petGender, petAge, petPrice);
-                default -> new Bird(petID, petName, petBreed, petGender, petAge, petPrice);
-            };
-            pets.add(choice, pet);
+            pets.add(pet);
+            boolean isFileSaved = false; //Double check
+            while (!isFileSaved) {
+                try (BufferedWriter writer =
+                             new BufferedWriter(new FileWriter(RecordManager.FILE_PET_LIST, true))) {
+
+                    writer.write(String.format(
+                            "%s|%s|%s|%c|%d|%.2f%n",
+                            petID,
+                            petName,
+                            petBreed,
+                            petGender,
+                            petAge,
+                            petPrice
+                    ));
+
+                    System.out.println("Pet successfully added!");
+                    isFileSaved = true;
+
+                } catch (IOException e) {
+                    System.out.println("Error writing file.");
+                    char retry = DataValidation.charChoiceValidation("Try again?", 'Y', 'N');
+                    if (retry != 'Y') {
+                        isFileSaved = true;
+                    }
+                }
+            }
             isDone = false;
         }
     }
 
     public ArrayList<Pet> getAllPets() {
-        if(pets.isEmpty()){
+        if (pets.isEmpty()) {
             ArrayList<Pet> all = PetManager.getInstance().getAllPets();
             if (all == null) {
                 return null;
@@ -66,8 +98,8 @@ public class PetManager {
         return pets;
     }
 
-    public void searchByCategory(Scanner sc){
-        if(pets.isEmpty()){
+    public void searchByCategory(Scanner sc) {
+        if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
@@ -138,7 +170,7 @@ public class PetManager {
 
     public boolean updatePetStatus(String petID, AdoptionStatus adoptionStatus) {
         Pet pet = findPetID(petID);
-        if (pet == null){
+        if (pet == null) {
             return false;
         }
 
