@@ -9,8 +9,6 @@ import java.util.function.Function;
 
 import inventory.*;
 
-import users.Customer;
-
 public class RecordManager {
     //ALL TXT FILES
     public static final String FILE_RESERVED = "RESERVED.txt";

@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class PetManager {
     private static PetManager instance;
@@ -28,64 +27,65 @@ public class PetManager {
     }
 
     public void addPet() {
-        boolean isDone = true;
+        DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird");
+        int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3);
 
-        while (isDone) {
-            DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird");
-            int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3);
+        String petID = DataValidation.validatePetIdInput();
+        String petName = DataValidation.validateString("Enter Name: ");
+        String petBreed = DataValidation.validateString("Enter Breed: ");
+        char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
+        int petAge = DataValidation.validatePetAgeInput("Enter age: ");
+        double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
 
-            String petID = DataValidation.validatePetIdInput();
-            String petName = DataValidation.validateString("Enter Name: ");
-            String petBreed = DataValidation.validateString("Enter Breed: ");
-            char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
-            int petAge = DataValidation.validatePetAgeInput("Enter age: ");
-            double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
+        Pet pet = createNewPet(choice, petID, petName, petBreed, petGender, petAge, petPrice);
 
-            Pet pet = switch (choice) {
-                case 1 -> new Dog(petID, petName, petBreed, petGender, petAge, petPrice);
-                case 2 -> new Cat(petID, petName, petBreed, petGender, petAge, petPrice);
-                default -> new Bird(petID, petName, petBreed, petGender, petAge, petPrice);
-            };
+        char hasRecords = DataValidation.charChoiceValidation("Does the pet have any existing medical records?", 'Y', 'N');
+        if (hasRecords == 'Y') {
+            String petMedHis = String.valueOf(DataValidation.validateDate("Enter date of the condition/treatment: "));
+            String petMedCon = DataValidation.validateString("Enter medical condition/treatment name: ");
+                pet.addMedicalHistory(petMedHis, petMedCon);
+        }
 
-            char hasRecords = DataValidation.charChoiceValidation("Does the pet have any existing medical records? (Y/N): ", 'Y', 'N');
-            if (hasRecords == 'Y') {
-                String petMedCon = DataValidation.validateString("Enter medical condition/treatment name: ");
-                String petMedHis = String.valueOf(DataValidation.validateDate("Enter date of the condition/treatment: "));
-                findPetID(petID).addMedicalHistory(petMedHis, petMedCon);
-            }
-
-            System.out.println("Pet Added on " + LocalDate.now().format(dateFormat));
-
+        if (savePet(pet)) {
             pets.add(pet);
-            boolean isFileSaved = false; //Double check
-            while (!isFileSaved) {
-                try (BufferedWriter writer =
-                             new BufferedWriter(new FileWriter(RecordManager.FILE_PET_LIST, true))) {
+            System.out.println("Pet successfully added on " + LocalDate.now().format(dateFormat));
+        } else {
+            System.out.println("Pet was not saved.");
+        }
 
-                    writer.write(String.format(
-                            "%s|%s|%s|%c|%d|%.2f%n",
-                            petID,
-                            petName,
-                            petBreed,
-                            petGender,
-                            petAge,
-                            petPrice
-                    ));
+    }
 
-                    System.out.println("Pet successfully added!");
+    private Pet createNewPet(int choice, String id, String name, String breed,
+                          char gender, int age, double price) {
+        return switch (choice) {
+            case 1 -> new Dog(id, name, breed, gender, age, price);
+            case 2 -> new Cat(id, name, breed, gender, age, price);
+            default -> new Bird(id, name, breed, gender, age, price);
+        };
+    }
+
+    private boolean savePet(Pet pet){
+        boolean isFileSaved = false;
+        while (!isFileSaved) {
+            try (BufferedWriter writer =
+                         new BufferedWriter(new FileWriter(RecordManager.FILE_PET_LIST, true))) {
+
+                writer.write(pet.toFileString());
+                writer.newLine();
+                return true;
+
+            } catch (IOException e) {
+                System.out.println("Error writing file.");
+                char retry = DataValidation.charChoiceValidation("Try again?", 'Y', 'N');
+                if (retry != 'Y') {
                     isFileSaved = true;
-
-                } catch (IOException e) {
-                    System.out.println("Error writing file.");
-                    char retry = DataValidation.charChoiceValidation("Try again?", 'Y', 'N');
-                    if (retry != 'Y') {
-                        isFileSaved = true;
-                    }
                 }
             }
-            isDone = false;
         }
+        return false;
     }
+
+
 
     public ArrayList<Pet> getAllPets() {
         if (pets.isEmpty()) {
@@ -98,7 +98,7 @@ public class PetManager {
         return pets;
     }
 
-    public void searchByCategory(Scanner sc) {
+    public void searchByCategory() {
         if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
@@ -168,10 +168,10 @@ public class PetManager {
         return null;
     }
 
-    public boolean updatePetStatus(String petID, AdoptionStatus adoptionStatus) {
+    public void updatePetStatus(String petID, AdoptionStatus adoptionStatus) {
         Pet pet = findPetID(petID);
         if (pet == null) {
-            return false;
+            return;
         }
 
         pet.setAdoptionStatus(adoptionStatus);
@@ -181,11 +181,9 @@ public class PetManager {
         if (!isSaved) {
             System.out.println("Warning: " + petID + " is not in " + RecordManager.FILE_PET_LIST + ". Status changed in memory only.");
         }
-
-        return true;
     }
 
-    public void sortByCategory(Scanner sc) {
+    public void sortByCategory() {
         if (pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
@@ -211,5 +209,14 @@ public class PetManager {
         }
 
 
+    }
+
+    public void requestPetReturn() {
+    }
+
+    public void cancelPetAdoptionRequest() {
+    }
+
+    public void requestPetAdoption() {
     }
 }

@@ -9,7 +9,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import static utils.DataValidation.sc;
 import static utils.DisplayUtils.printMenu;
 
 public class Admin extends User {
@@ -72,11 +71,11 @@ public class Admin extends User {
     }
 
     private void searchByCategory() {
-        PetManager.getInstance().searchByCategory(sc);
+        PetManager.getInstance().searchByCategory();
     }
 
     private void filterByStatus() {
-        PetManager.getInstance().sortByCategory(sc);
+        PetManager.getInstance().sortByCategory();
     }
 
     private void addPet() {

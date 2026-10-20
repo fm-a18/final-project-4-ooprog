@@ -38,7 +38,7 @@ public class Main {
         }
     }
 
-    public void employeeLandingPage() {
+    public static void employeeLandingPage() {
         boolean isDone = false;
         while (!isDone) {
             DisplayUtils.printMenu("EMPLOYEE",
