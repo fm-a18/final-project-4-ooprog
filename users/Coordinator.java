@@ -7,10 +7,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import inventory.*;
-import utils.FileHandler;
-import utils.RecordManager;
-
-import static utils.RecordManager.US_EMAIL_ADDRESS;
 
 public class Coordinator extends User {
 
@@ -70,11 +66,11 @@ public class Coordinator extends User {
     }
 
     private void searchByCategory() {
-        PetManager.getInstance().searchByCategory(sc);
+        PetManager.getInstance().searchByCategory();
     }
 
     private void sortByCategory() {
-        PetManager.getInstance().sortByCategory(sc);
+        PetManager.getInstance().sortByCategory();
     }
 
     private void addPet() {
@@ -82,6 +78,7 @@ public class Coordinator extends User {
     }
 
     private void updatePetMedicalHistory() {
+        PetManager.getInstance().updatePetMedicalHistory();
     }
 
     private void requestPetAdoption() {

@@ -41,9 +41,7 @@ public class PetManager {
 
         char hasRecords = DataValidation.charChoiceValidation("Does the pet have any existing medical records?", 'Y', 'N');
         if (hasRecords == 'Y') {
-            String petMedHis = String.valueOf(DataValidation.validateDate("Enter date of the condition/treatment: "));
-            String petMedCon = DataValidation.validateString("Enter medical condition/treatment name: ");
-                pet.addMedicalHistory(petMedHis, petMedCon);
+            promptMedicalRecord(pet);
         }
 
         if (savePet(pet)) {
@@ -56,7 +54,7 @@ public class PetManager {
     }
 
     private Pet createNewPet(int choice, String id, String name, String breed,
-                          char gender, int age, double price) {
+                             char gender, int age, double price) {
         return switch (choice) {
             case 1 -> new Dog(id, name, breed, gender, age, price);
             case 2 -> new Cat(id, name, breed, gender, age, price);
@@ -64,7 +62,7 @@ public class PetManager {
         };
     }
 
-    private boolean savePet(Pet pet){
+    private boolean savePet(Pet pet) {
         boolean isFileSaved = false;
         while (!isFileSaved) {
             try (BufferedWriter writer =
@@ -85,7 +83,29 @@ public class PetManager {
         return false;
     }
 
+    public void updatePetMedicalHistory() {
+        String petID = DataValidation.validateString("Enter Pet ID: ");
+        Pet pet = findPetID(petID);
+        if (pet == null) {
+            System.out.println("Pet " + petID + " not found.");
+            return;
+        }
 
+        System.out.println("Current medical history: " + pet.getMedicalHistory());
+        promptMedicalRecord(pet);
+
+        if (FileHandler.updateRecord(RecordManager.FILE_PET_LIST, pet.getPetID(), 0, pet.toFileString())) {
+            System.out.println("Medical record added.");
+        } else {
+            System.out.println("Warning: could not save to " + RecordManager.FILE_PET_LIST + ". Changed in memory only.");
+        }
+    }
+
+    private void promptMedicalRecord(Pet pet) {
+        String date = String.valueOf(DataValidation.validateDate("Enter date of the condition/treatment: "));
+        String condition = DataValidation.validateString("Enter medical condition/treatment name: ");
+        pet.addMedicalHistory(date, condition);
+    }
 
     public ArrayList<Pet> getAllPets() {
         if (pets.isEmpty()) {
@@ -188,26 +208,20 @@ public class PetManager {
             System.out.println("No pets found.");
             return;
         }
+        DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird");
+        int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3);
 
-        boolean isDone = true;
+        DisplayUtils.printMenu("Sort By..", "Age", "Price", "Gender", "#Exit", "Back");
+        int choicev1 = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3, 4);
 
-        while (isDone) {
-            DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird");
-            int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3);
-
-            DisplayUtils.printMenu("Sort By..", "Age", "Price", "Gender", "#Exit", "Back");
-            int choicev1 = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3, 4);
-
-            if (choicev1 == 4) {
-                return;
-            }
-
-            DisplayUtils.printMenu("Order: ", "Ascending", "Descending");
-            int choicev2 = DataValidation.intChoiceValidation("Enter choice: ", 1, 2);
-
-            FileHandler.sortCategory(RecordManager.FILE_PET_LIST, choice, choicev1, choicev2 == 1);
+        if (choicev1 == 4) {
+            return;
         }
 
+        DisplayUtils.printMenu("Order: ", "Ascending", "Descending");
+        int choicev2 = DataValidation.intChoiceValidation("Enter choice: ", 1, 2);
+
+        FileHandler.sortCategory(RecordManager.FILE_PET_LIST, choice, choicev1, choicev2 == 1);
 
     }
 

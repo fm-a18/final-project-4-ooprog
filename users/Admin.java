@@ -182,10 +182,11 @@ public class Admin extends User {
 
         String detailsOfReturn = DataValidation.validateString("Details");
 
+        pet.addAdoptionHistory(LocalDate.now().format(dateFormat), detailsOfReturn);
         FileHandler.appendRecord(RecordManager.FILE_RETURNED_LIST, record); // Documentation
         FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, 0);
         PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
-        pet.addAdoptionHistory(LocalDate.now().format(dateFormat), detailsOfReturn);
+
         System.out.printf("Return of pet approved for transaction %s.\n", transactionNum);
 
     }

@@ -82,6 +82,47 @@ public abstract class Pet {
         this.adoptionStatus = adoptionStatus;
     }
 
+    public void setAdoptionHistory(String fileText) {
+        adoptionHistory.clear();
+        fillHistory(adoptionHistory, fileText);
+    }
+
+    public void setMedicalHistory(String fileText) {
+        medicalHistory.clear();
+        fillHistory(medicalHistory, fileText);
+    }
+
+    private static void fillHistory(Map<String, String> history, String fileText) {
+        if (fileText.isEmpty()) {
+            return;
+        }
+
+        String[] entries = fileText.split(";");
+        for (String entry : entries) {
+            String[] parts = entry.split("~", 2);
+            if (parts.length == 2) {
+                history.put(parts[0], parts[1]);
+            }
+        }
+    }
+
+    private static String historyToFileText(Map<String, String> history) {
+        StringBuilder sb = new StringBuilder();
+
+        for (Map.Entry<String, String> entry : history.entrySet()) {
+            if (sb.length() > 0) {
+                sb.append(";");
+            }
+            sb.append(entry.getKey()).append("~").append(entry.getValue());
+        }
+
+        return sb.toString();
+    }
+
+    private static String removeSeparators(String text) {
+        return text.replace("|", " ").replace(";", " ").replace("~", " ");
+    }
+
     public void addAdoptionHistory(String date, String details) {
         adoptionHistory.put(date, details);
     }
@@ -98,7 +139,10 @@ public abstract class Pet {
         StringBuilder sb = new StringBuilder();
 
         for (Map.Entry<String, String> entry : history.entrySet()) {
-            sb.append(String.format("%s - %s%n", entry.getKey(), entry.getValue()));
+            if (sb.length() > 0) {
+                sb.append(", ");
+            }
+            sb.append(entry.getKey()).append(" - ").append(entry.getValue());
         }
 
         return sb.toString();

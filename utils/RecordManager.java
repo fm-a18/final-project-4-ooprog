@@ -27,8 +27,9 @@ public class RecordManager {
     public static final int US_FIELD_COUNT = 9;
 
     //FOR PET_LIST.txt
-    private static final int PET_ID = 0, PET_NAME = 1, PET_TYPE = 2, PET_BREED = 3, PET_GENDER = 4, PET_AGE = 5, PET_PRICE = 6, PET_STATUS = 7;
-    public static final int PET_FIELD_COUNT = 8;
+    private static final int PET_ID = 0, PET_NAME = 1, PET_TYPE = 2, PET_BREED = 3, PET_GENDER = 4,
+            PET_AGE = 5, PET_PRICE = 6, PET_STATUS = 7, PET_MEDICAL = 8, PET_ADOPTION = 9;
+    public static final int PET_FIELD_COUNT = 10;
 
     //FOR RESERVED.txt
     public static final int RES_TRANSACTION_NUM = 0;
@@ -99,6 +100,8 @@ public class RecordManager {
 
         if (parsedPet != null) {
             parsedPet.setAdoptionStatus(AdoptionStatus.valueOf(pet[PET_STATUS].trim().toUpperCase()));
+            parsedPet.setMedicalHistory(pet[PET_MEDICAL].trim());
+            parsedPet.setAdoptionHistory(pet[PET_ADOPTION].trim());
         }
         return parsedPet;
     }
