@@ -9,7 +9,7 @@ public class UserIdGenerator {
 
     public static String userIdGenerator() {
         if (!isSeeded) {
-            ctr = FileHandler.highestNumber(RecordManager.FILE_USERS, RecordManager.US_USER_ID, "UD");
+            ctr = FileHandler.highestNumber(RecordManager.FILE_USER_LIST, RecordManager.US_USER_ID, "UD");
             isSeeded = true;
         }
         ctr++;

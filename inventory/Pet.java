@@ -165,7 +165,9 @@ public abstract class Pet {
                 String.valueOf(gender),
                 String.valueOf(age),
                 String.valueOf(price),
-                adoptionStatus.name());
+                adoptionStatus.name(),
+                historyToFileText(medicalHistory), historyToFileText(adoptionHistory)
+        );
     }
 
 }
