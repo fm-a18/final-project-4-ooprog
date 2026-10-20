@@ -114,7 +114,7 @@ public class PetManager {
                     break;
                 }
                 case 5: {
-                    String petAge = DataValidation.validateString("Enter pet age:");
+                    int petAge = DataValidation.validatePetAgeInput("Enter pet age:");
                     ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petAge, Pet::getAge);
                     DisplayUtils.displayPetsForStaff(listOfPet);
                     break;
@@ -227,10 +227,12 @@ public class PetManager {
         ArrayList<Pet> availablePets = getAvailablePets();
 
         if (availablePets.isEmpty()) {
+            DisplayUtils.centeredTitle("REQUEST ADOPTION", 100);
             System.out.println("No pets available for adoption.");
             return;
         }
 
+        DisplayUtils.customerPetHeader("REQUEST ADOPTION");
         DisplayUtils.displayPetsForCustomer(availablePets);
 
         requestAdoptionCustomer(availablePets, customer);
@@ -350,6 +352,7 @@ public class PetManager {
 
     //------------CANCEL REQUEST ADOPTION (CUSTOMER)
     public void cancelAdoption(Customer customer) {
+        DisplayUtils.centeredTitle("CANCEL REQUEST ADOPTION", 100);
         ArrayList<Reservation> reserveDetails = RecordManager.viewAllReserveRecords();
         if(reserveDetails.isEmpty()){
             System.out.println("No pets are reserved.");
@@ -410,6 +413,7 @@ public class PetManager {
 
     //------------REQUEST RETURN ADOPTION (CUSTOMER)
     public void requestReturn(Customer customer) {
+        DisplayUtils.centeredTitle("REQUEST PET RETURN", 100);
         ArrayList<Reservation> adopted = RecordManager.viewAllPetAdoptedRecords();
 
         if(adopted.isEmpty()){
