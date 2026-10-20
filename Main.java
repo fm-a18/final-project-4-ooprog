@@ -161,6 +161,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        FileHandler.ensureFilesExist(); //For debugging
         System.out.println("Welcome!");
 
         boolean isDone = false;

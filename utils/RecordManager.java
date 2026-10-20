@@ -11,15 +11,17 @@ import inventory.*;
 
 public class RecordManager {
     //ALL TXT FILES
-    public static final String FILE_RESERVED = "RESERVED.txt";
-    public static final String FILE_ADOPTED = "ADOPTED_LIST.txt";
-    public static final String FILE_CANCELLATION_REQUEST = "CANCELLATION_REQUEST.txt";
-    public static final String FILE_CANCELLED_LIST = "CANCELLED_LIST.txt";
-    public static final String FILE_RETURN_REQUEST = "RETURN_REQUEST.txt";
-    public static final String FILE_RETURNED_LIST = "RETURNED_LIST.txt";
-    public static final String FILE_PET_LIST = "PET_LIST.txt";
-    public static final String FILE_INCOMING_LIST = "INCOMING_PET_LIST.txt";
-    public static final String FILE_USER_LIST = "USER_LIST.txt";
+    public static final String DATA_DIR = "data/";
+
+    public static final String FILE_RESERVED = DATA_DIR + "RESERVED.txt";
+    public static final String FILE_ADOPTED = DATA_DIR + "ADOPTED_LIST.txt";
+    public static final String FILE_CANCELLATION_REQUEST = DATA_DIR + "CANCELLATION_REQUEST.txt";
+    public static final String FILE_CANCELLED_LIST = DATA_DIR + "CANCELLED_LIST.txt";
+    public static final String FILE_RETURN_REQUEST = DATA_DIR + "RETURN_REQUEST.txt";
+    public static final String FILE_RETURNED_LIST = DATA_DIR + "RETURNED_LIST.txt";
+    public static final String FILE_PET_LIST = DATA_DIR + "PET_LIST.txt";
+    public static final String FILE_INCOMING_LIST = DATA_DIR + "INCOMING_PET_LIST.txt";
+    public static final String FILE_USER_LIST = DATA_DIR + "USER_LIST.txt";
 
     //FOR USER_LIST.txt
     public static final int US_USER_ID = 0, US_FIRST_NAME = 1, US_LAST_NAME = 2, US_AGE = 3,
@@ -159,7 +161,7 @@ public class RecordManager {
         return String.join("|", parts);
     }
 
-  public String buildAdoptionRequestRecord(String firstName, String lastName, String emailAddress, Pet selectedPet, String paymentPlan, double downPayment, double balanceLeft, String transactionNum, LocalDate date) {
+    public String buildAdoptionRequestRecord(String firstName, String lastName, String emailAddress, Pet selectedPet, String paymentPlan, double downPayment, double balanceLeft, String transactionNum, LocalDate date) {
         String[] parts = new String[RES_FIELD_COUNT];
 
         parts[RES_TRANSACTION_NUM] = transactionNum;

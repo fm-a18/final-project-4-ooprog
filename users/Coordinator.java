@@ -39,7 +39,7 @@ public class Coordinator extends User {
                     "Request Pet Return",
                     "#Exit", "Log Out");
             int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 4, 5, 6, 7, 8, 0);
+                    1, 2, 3, 4, 5, 6, 7, 8, 9);
 
             switch (choice) {
                 case 1 -> viewAllPets();
@@ -50,7 +50,7 @@ public class Coordinator extends User {
                 case 6 -> requestPetAdoption();
                 case 7 -> cancelPetAdoption();
                 case 8 -> requestPetReturn();
-                case 0 -> isDone = true;
+                case 9 -> isDone = true;
             }
         }
     }
