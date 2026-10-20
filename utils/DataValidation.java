@@ -67,12 +67,12 @@ public class DataValidation {
         return number;
     }
 
-    public static int validatePetAgeInput(String prompt) { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX PET AGE
+    public static int validatePetAgeInput() { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX PET AGE
         boolean isRunning = true;
         int number = 0;
         String inputNumber = "";
         while (isRunning) {
-            System.out.print(prompt);
+            System.out.print("Enter Pet Age:");
             inputNumber = sc.nextLine().trim();
             if (!inputNumber.matches("-?(0|[1-9]\\d*)")) {
                 System.out.println("Invalid Input. Only input positive integers without leading zeros. Try Again.");
@@ -81,7 +81,7 @@ public class DataValidation {
             try {
                 number = Integer.parseInt(inputNumber);
             } catch (NumberFormatException e) {
-                System.out.println("Invalid Input. Number is too large. Try Again.");
+                System.out.println("Invalid Input. Age is too large. Try Again.");
                 continue;
             }
             if (number < 1 || number > 15) {

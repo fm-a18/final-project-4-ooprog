@@ -31,11 +31,11 @@ public class PetManager {
         DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird");
         int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3);
 
-        String petID = DataValidation.validatePetID(choice);
+        String petID = DataValidation.validatePetIdInput();
         String petName = DataValidation.validateString("Name");
         String petBreed = DataValidation.validateString("Breed");
         char petGender = DataValidation.charChoiceValidation("Gender", 'M', 'F');
-        int petAge = DataValidation.validatePetAgeInput("Pet Age");
+        int petAge = DataValidation.validatePetAgeInput();
         double petPrice = DataValidation.validatePriceInput("Price of Pet");
 
         Pet pet = createNewPet(choice, petID, petName, petBreed, petGender, petAge, petPrice);
@@ -46,7 +46,6 @@ public class PetManager {
         }
 
         if (saveIncomingPet(pet)) {
-            pets.add(pet);
             System.out.println("Pet successfully submitted for approval and saved to INCOMING_PET_LIST.txt");
         } else {
             System.out.println("Pet was not saved.");
@@ -110,7 +109,7 @@ public class PetManager {
     }
 
     public void updatePetMedicalHistory() {
-        String petID = DataValidation.validateString("Enter Pet ID: ");
+        String petID = DataValidation.validatePetIdInput();
         Pet pet = findPetID(petID);
         if (pet == null) {
             System.out.println("Pet " + petID + " not found.");
@@ -179,7 +178,7 @@ public class PetManager {
                     break;
                 }
                 case 5: {
-                    String petAge = DataValidation.validateString("Enter pet age:");
+                    int petAge = DataValidation.validatePetAgeInput();
                     ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petAge, Pet::getAge);
                     DisplayUtils.displayPetsForStaff(listOfPet);
                     break;

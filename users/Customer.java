@@ -136,7 +136,7 @@ public class Customer extends User {
                 break;
             case 5: // SEARCH PET BY AGE
                 DisplayUtils.centeredTitle("SEARCH PET BY AGE", 60);
-                int age = DataValidation.validatePetAgeInput("Enter Pet Age: ");
+                int age = DataValidation.validatePetAgeInput();
 
                 showResults(FileHandler.filterRecords(RecordManager.FILE_PET_LIST, age, Pet::getAge), "VIEW BY PET AGE " + age);
                 break;
@@ -224,14 +224,13 @@ public class Customer extends User {
                 "Descending Price",
                 "Price Range");
         int choice = DataValidation.intChoiceValidation("Select Option",
-                1, 2, 3, 0);
+                1, 2, 3);
 
         switch (choice) {
             case 1:
                 showResults(sortByPrice(choice, pets), "SORT BY ASCENDING PRICE");
                 break;
             case 2:
-                showResults(sortByPrice(choice, pets), "SORT BY DESCENDING PRICE");
                 showResults(sortByPrice(choice, pets), "SORT BY DESCENDING PRICE");
                 break;
             case 3:
@@ -385,7 +384,7 @@ public class Customer extends User {
         double amount = 0;
 
         switch (paymentPlan) {
-            case "Full Payment" -> amount = 0;
+            case "Full Payment" -> amount = petPrice;
             case "50% Down Payment" -> amount = petPrice * 0.5;
             case "75% Down Payment" -> amount = petPrice * 0.75;
         }
@@ -506,7 +505,7 @@ public class Customer extends User {
         ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
         for (Pet pet : pets) {
             if (pet.getPetID().equalsIgnoreCase(found.getPetID())) {
-                pet.setAdoptionStatus(AdoptionStatus.RETURN_PENDING);
+                PetManager.getInstance().updatePetStatus(found.getPetID(), AdoptionStatus.RETURN_PENDING);
                 break;
             }
         }
