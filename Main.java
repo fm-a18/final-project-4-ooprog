@@ -5,6 +5,7 @@ import utils.FileHandler;
 import users.Coordinator;
 import users.Customer;
 import users.Admin;
+import utils.RecordManager;
 
 import static utils.RecordManager.US_ADDRESS;
 import static utils.RecordManager.US_AGE;
@@ -75,7 +76,7 @@ public class Main {
         boolean isFileSaved = false;
         String role = "Customer";
         while (!isFileSaved) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("USER_LIST.txt", true))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(RecordManager.FILE_USER_LIST, true))) {
                 writer.write(
                         String.format("%s|%s|%s|%s|%s|%s|%s|%s|%S%n", userID, firstName, lastName, age, emailAddress,
                                 address, phoneNumber, password, role));
@@ -113,14 +114,14 @@ public class Main {
     }
 
     private static String[] authenticate(String title, String expectedRole) {
-        if (!new File("USER_LIST.txt").exists()) {
+        if (!new File(RecordManager.FILE_USER_LIST).exists()) {
             System.out.println("No User Records found.");
             return null;
         }
 
         DisplayUtils.centeredTitle(title, DisplayUtils.MENU_WIDTH);
         String email = DataValidation.validateEmailAddress();
-        String userData = FileHandler.findRecord("USER_LIST.txt", email, US_EMAIL_ADDRESS);
+        String userData = FileHandler.findRecord(RecordManager.FILE_USER_LIST, email, US_EMAIL_ADDRESS);
         String password = promptLoginPassword();
 
         if (userData == null) {
