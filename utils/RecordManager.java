@@ -129,7 +129,7 @@ public class RecordManager {
     }
 
     public static ArrayList<Reservation> viewAllPetAdoptedRecords() {
-        return readRecords(FILE_ADOPTED, RES_FIELD_COUNT, RecordManager::parseAdoption);
+        return readRecords(FILE_ADOPTED, AD_FIELD_COUNT, RecordManager::parseAdoption);
     }
 
     public static String buildAdoptedRecord(String reservationRecord, String approvedByEmail) {
