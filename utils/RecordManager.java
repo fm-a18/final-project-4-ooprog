@@ -7,23 +7,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import inventory.Bird;
-import inventory.Cat;
-import inventory.Dog;
-import inventory.Pet;
-
-import users.Customer;
+import inventory.*;
 
 public class RecordManager {
     //ALL TXT FILES
-    public static final String FILE_RESERVED = "RESERVED.txt";
-    public static final String FILE_ADOPTED = "ADOPTED_LIST.txt";
-    public static final String FILE_CANCELLATION_REQUEST = "CANCELLATION_REQUEST.txt";
-    public static final String FILE_CANCELLED_LIST = "CANCELLED_LIST.txt";
-    public static final String FILE_RETURN_REQUEST = "RETURN_REQUEST.txt";
-    public static final String FILE_RETURNED_LIST = "RETURNED_LIST.txt";
-    public static final String FILE_PET_LIST = "PET_LIST.txt";
-    public static final String FILE_INCOMING_LIST = "INCOMING_PET_LIST.txt";
+    public static final String DATA_DIR = "data/";
+
+    public static final String FILE_RESERVED = DATA_DIR + "RESERVED.txt";
+    public static final String FILE_ADOPTED = DATA_DIR + "ADOPTED_LIST.txt";
+    public static final String FILE_CANCELLATION_REQUEST = DATA_DIR + "CANCELLATION_REQUEST.txt";
+    public static final String FILE_CANCELLED_LIST = DATA_DIR + "CANCELLED_LIST.txt";
+    public static final String FILE_RETURN_REQUEST = DATA_DIR + "RETURN_REQUEST.txt";
+    public static final String FILE_RETURNED_LIST = DATA_DIR + "RETURNED_LIST.txt";
+    public static final String FILE_PET_LIST = DATA_DIR + "PET_LIST.txt";
+    public static final String FILE_INCOMING_LIST = DATA_DIR + "INCOMING_PET_LIST.txt";
+    public static final String FILE_USER_LIST = DATA_DIR + "USER_LIST.txt";
 
     //FOR USER_LIST.txt
     public static final int US_USER_ID = 0, US_FIRST_NAME = 1, US_LAST_NAME = 2, US_AGE = 3,
@@ -31,8 +29,9 @@ public class RecordManager {
     public static final int US_FIELD_COUNT = 9;
 
     //FOR PET_LIST.txt
-    private static final int PET_ID = 0, PET_NAME = 1, PET_TYPE = 2, PET_BREED = 3, PET_GENDER = 4, PET_AGE = 5, PET_PRICE = 6;
-    public static final int PET_FIELD_COUNT = 7;
+    private static final int PET_ID = 0, PET_NAME = 1, PET_TYPE = 2, PET_BREED = 3, PET_GENDER = 4,
+            PET_AGE = 5, PET_PRICE = 6, PET_STATUS = 7, PET_MEDICAL = 8, PET_ADOPTION = 9;
+    public static final int PET_FIELD_COUNT = 10;
 
     //FOR RESERVED.txt
     public static final int RES_TRANSACTION_NUM = 0;
@@ -94,12 +93,19 @@ public class RecordManager {
         int age = Integer.parseInt(pet[PET_AGE].trim());
         double price = Double.parseDouble(pet[PET_PRICE].trim());
 
-        return switch (type.toLowerCase()) {
+        Pet parsedPet = switch (type.toLowerCase()) {
             case "dog" -> new Dog(id, name, breed, gender, age, price);
             case "cat" -> new Cat(id, name, breed, gender, age, price);
             case "bird" -> new Bird(id, name, breed, gender, age, price);
             default -> null;
         };
+
+        if (parsedPet != null) {
+            parsedPet.setAdoptionStatus(AdoptionStatus.valueOf(pet[PET_STATUS].trim().toUpperCase()));
+            parsedPet.setMedicalHistory(pet[PET_MEDICAL].trim());
+            parsedPet.setAdoptionHistory(pet[PET_ADOPTION].trim());
+        }
+        return parsedPet;
     }
 
     public static Reservation parseReservation(String[] pet) {
@@ -112,12 +118,12 @@ public class RecordManager {
                 pet[RES_PAYMENT_PLAN].trim(),
                 Double.parseDouble(pet[RES_DOWN_PAYMENT].trim().replace(",", "")),
                 Double.parseDouble(pet[RES_BALANCE_LEFT].trim().replace(",", "")),
-                LocalDate.parse(pet[RES_DATE_REQUESTED].trim()),
-                LocalDate.parse(pet[RES_DATE_CLAIMING].trim()));
+                LocalDate.parse(pet[RES_DATE_REQUESTED].trim(), dateFormat),
+                LocalDate.parse(pet[RES_DATE_CLAIMING].trim(), dateFormat));
     }
 
     public static ArrayList<Pet> viewAllPetRecords() {
-        return readRecords("PET_LIST.txt", PET_FIELD_COUNT, RecordManager::parsePet);
+        return readRecords(FILE_PET_LIST, PET_FIELD_COUNT, RecordManager::parsePet);
     }
 
     public static ArrayList<Reservation> viewAllReserveRecords() {
@@ -155,7 +161,7 @@ public class RecordManager {
         return String.join("|", parts);
     }
 
-  public String buildAdoptionRequestRecord(String firstName, String lastName, String emailAddress, Pet selectedPet, String paymentPlan, double downPayment, double balanceLeft, String transactionNum, LocalDate date) {
+    public String buildAdoptionRequestRecord(String firstName, String lastName, String emailAddress, Pet selectedPet, String paymentPlan, double downPayment, double balanceLeft, String transactionNum, LocalDate date) {
         String[] parts = new String[RES_FIELD_COUNT];
 
         parts[RES_TRANSACTION_NUM] = transactionNum;
@@ -166,8 +172,8 @@ public class RecordManager {
         parts[RES_PAYMENT_PLAN] = paymentPlan;
         parts[RES_DOWN_PAYMENT] = String.format("%,.2f", downPayment);
         parts[RES_BALANCE_LEFT] = String.format("%,.2f", balanceLeft);
-        parts[RES_DATE_REQUESTED] = java.time.LocalDate.now().toString();
-        parts[RES_DATE_CLAIMING] = date.toString();
+        parts[RES_DATE_REQUESTED] = LocalDate.now().format(dateFormat);
+        parts[RES_DATE_CLAIMING] = date.format(dateFormat);
 
         return String.join("|", parts);
     }
