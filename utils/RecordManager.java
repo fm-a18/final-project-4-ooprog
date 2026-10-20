@@ -118,8 +118,8 @@ public class RecordManager {
                 pet[RES_PAYMENT_PLAN].trim(),
                 Double.parseDouble(pet[RES_DOWN_PAYMENT].trim().replace(",", "")),
                 Double.parseDouble(pet[RES_BALANCE_LEFT].trim().replace(",", "")),
-                LocalDate.parse(pet[RES_DATE_REQUESTED].trim()),
-                LocalDate.parse(pet[RES_DATE_CLAIMING].trim()));
+                LocalDate.parse(pet[RES_DATE_REQUESTED].trim(), dateFormat),
+                LocalDate.parse(pet[RES_DATE_CLAIMING].trim(), dateFormat));
     }
 
     public static ArrayList<Pet> viewAllPetRecords() {
@@ -172,8 +172,8 @@ public class RecordManager {
         parts[RES_PAYMENT_PLAN] = paymentPlan;
         parts[RES_DOWN_PAYMENT] = String.format("%,.2f", downPayment);
         parts[RES_BALANCE_LEFT] = String.format("%,.2f", balanceLeft);
-        parts[RES_DATE_REQUESTED] = java.time.LocalDate.now().toString();
-        parts[RES_DATE_CLAIMING] = date.toString();
+        parts[RES_DATE_REQUESTED] = LocalDate.now().format(dateFormat);
+        parts[RES_DATE_CLAIMING] = date.format(dateFormat);
 
         return String.join("|", parts);
     }

@@ -117,7 +117,7 @@ public class DataValidation {
     }
 
     public static boolean emailExists(String emailAddress) {
-        return FileHandler.findRecord("USER_LIST.txt", emailAddress, 4) != null;
+        return FileHandler.findRecord(RecordManager.FILE_USER_LIST, emailAddress, 4) != null;
     }
 
     public static String validateAddress() {

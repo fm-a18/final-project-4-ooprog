@@ -11,7 +11,11 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 public class FileHandler {
+
     public static void ensureFilesExist() { //For debugging
+        File dir = new File("data");
+        if (!dir.exists()) dir.mkdirs();
+
         String[] files = {
                 RecordManager.FILE_USER_LIST, RecordManager.FILE_PET_LIST, RecordManager.FILE_INCOMING_LIST,
                 RecordManager.FILE_RESERVED, RecordManager.FILE_ADOPTED,
@@ -143,8 +147,8 @@ public class FileHandler {
                 if(pet != null){
                     pets.add(pet);
                 }
-                return pets;
             }
+            return pets;
         } catch (IOException e){
             System.out.println("Error in reading file.");
         }
