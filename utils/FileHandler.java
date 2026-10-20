@@ -11,6 +11,23 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 public class FileHandler {
+    public static void ensureFilesExist() { //For debugging
+        String[] files = {
+                RecordManager.FILE_USER_LIST, RecordManager.FILE_PET_LIST, RecordManager.FILE_INCOMING_LIST,
+                RecordManager.FILE_RESERVED, RecordManager.FILE_ADOPTED,
+                RecordManager.FILE_CANCELLATION_REQUEST, RecordManager.FILE_CANCELLED_LIST,
+                RecordManager.FILE_RETURN_REQUEST, RecordManager.FILE_RETURNED_LIST
+        };
+
+        for (String fileName : files) {
+            try {
+                new File(fileName).createNewFile(); // does nothing if it already exists
+            } catch (IOException e) {
+                System.out.println("Could not create " + fileName + ".");
+            }
+        }
+    }
+
     public static String findRecord(String fileName, String searchFor, int colIndex) {
         try (Scanner read = new Scanner(new File(fileName))) {
             while (read.hasNextLine()) {

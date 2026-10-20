@@ -124,11 +124,11 @@ public abstract class Pet {
     }
 
     public void addAdoptionHistory(String date, String details) {
-        adoptionHistory.put(date, details);
+        adoptionHistory.put(removeSeparators(date), removeSeparators(details));
     }
 
     public void addMedicalHistory(String date, String details) {
-        medicalHistory.put(date, details);
+        medicalHistory.put(removeSeparators(date), removeSeparators(details));
     }
 
     private static String formatHistory(Map<String, String> history, String emptyMessage) {
@@ -166,7 +166,8 @@ public abstract class Pet {
                 String.valueOf(age),
                 String.valueOf(price),
                 adoptionStatus.name(),
-                historyToFileText(medicalHistory), historyToFileText(adoptionHistory)
+                historyToFileText(medicalHistory),
+                historyToFileText(adoptionHistory)
         );
     }
 

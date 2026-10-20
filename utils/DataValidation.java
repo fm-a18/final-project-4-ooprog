@@ -348,22 +348,6 @@ public class DataValidation {
         return number;
     }
 
-//    public static String getCategoryPrefix(String category) {
-//        if (category == null) {
-//            return null;
-//        }
-//        switch (category.trim().toLowerCase()) {
-//            case "dog":
-//                return Dog.ID_PREFIX;
-//            case "cat":
-//                return Cat.ID_PREFIX;
-//            case "bird":
-//                return Bird.ID_PREFIX;
-//            default:
-//                return null;
-//        }
-//    }
-
     public static String validatePetIdInput() {
         boolean isValidated = false;
         String input = "";
@@ -389,19 +373,28 @@ public class DataValidation {
 
     }
 
-    public static String validatePetID(String prompt, String regex) {
+    public static String validatePetID(int petType) {
+        String petPrefix = switch (petType){
+            case 1 -> "D";
+            case 2 -> "C";
+            case 3 -> "B";
+            default -> throw new IllegalStateException("Unexpected Category Type: " + petType);
+        };
+
         String id = "";
         boolean isValid = false;
         while (!isValid) {
             System.out.println(
                     "PET ID FORMAT: First letter of pet type (D, C, B) followed by 4 digits (e.g., D0001, C0002, B0003)");
-            System.out.print(prompt);
+            System.out.print("Pet ID: ");
             id = sc.nextLine().trim().toUpperCase();
 
             if (id.isEmpty()) {
                 System.out.println("Error: Pet ID cannot be empty.");
-            } else if (!id.matches(regex)) {
+            } else if (!id.matches("^([DBC])\\d{4}$")) {
                 System.out.println("Invalid Pet ID. Try another ID.");
+            } else if (!id.startsWith(petPrefix)) {
+                System.out.printf("Error: Pet ID must start with '%s' for this pet type.%n", petPrefix);
             } else {
                 isValid = true;
             }

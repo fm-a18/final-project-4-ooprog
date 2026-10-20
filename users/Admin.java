@@ -43,9 +43,10 @@ public class Admin extends User {
                     "#Shelter Management",
                     "Manage Incoming Pets",
 
-                    "#Exit");
+                    "#Exit",
+                    "Log Out");
             int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 4, 5, 6, 7, 8, 0);
+                    1, 2, 3, 4, 5, 6, 7, 8, 9);
 
             switch (choice) {
                 case 1 -> viewAllPets();
@@ -56,7 +57,7 @@ public class Admin extends User {
                 case 6 -> cancelAdoptionRequest();
                 case 7 -> approvePetReturn();
                 case 8 -> manageIncomingPets();
-                case 0 -> isDone = true;
+                case 9 -> isDone = true;
             }
         }
     }
@@ -143,7 +144,7 @@ public class Admin extends User {
 
     private void cancelAdoptionRequest() {
         System.out.println("Cancellation Requests");
-        String record = findAndConfirmTransaction("CANCELLATION_REQUEST.txt", "Cancellation Request");
+        String record = findAndConfirmTransaction(RecordManager.FILE_CANCELLATION_REQUEST, "Cancellation Request");
         if (record == null)
             return;
 
@@ -168,7 +169,7 @@ public class Admin extends User {
 
     private void approvePetReturn() {
         System.out.println("Return Requests");
-        String record = findAndConfirmTransaction("RETURN_REQUEST.txt", "Return Request");
+        String record = findAndConfirmTransaction(RecordManager.FILE_RETURN_REQUEST, "Return Request");
         if (record == null)
             return;
 
@@ -191,7 +192,7 @@ public class Admin extends User {
 
     }
 
-    private void manageIncomingPets() { //double check if it will allow duplicated id
+    private void manageIncomingPets() {
         System.out.println("Incoming Pet Requests");
 
         var incomingPets = RecordManager.readRecords(RecordManager.FILE_INCOMING_LIST,
@@ -214,7 +215,11 @@ public class Admin extends User {
             }
         }
 
-        assert selectedPet != null;
+        if (selectedPet == null) {
+            System.out.println("Pet " + petID + " is not in the incoming list.");
+            return;
+        }
+
         DisplayUtils.printSummaryBox("INCOMING PET", new String[][] {
                 { "Pet ID", selectedPet.getPetID() },
                 { "Name", selectedPet.getPetName() },
@@ -230,8 +235,11 @@ public class Admin extends User {
             return;
         }
 
-        FileHandler.appendRecord(RecordManager.FILE_PET_LIST, selectedPet.toFileString());
-        PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
+        if (!PetManager.getInstance().registerPet(selectedPet)) {
+            System.out.println("Pet ID " + petID + " already exists in inventory. Approval stopped.");
+            return;
+        }
+        FileHandler.removeRecord(RecordManager.FILE_INCOMING_LIST, petID, 0);
 
         System.out.printf("Incoming pet with ID %s approved and added to inventory.\n", petID);
 

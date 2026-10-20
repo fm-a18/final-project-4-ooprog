@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class PetManager {
     private static PetManager instance;
@@ -30,12 +31,12 @@ public class PetManager {
         DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird");
         int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3);
 
-        String petID = DataValidation.validatePetIdInput();
-        String petName = DataValidation.validateString("Enter Name: ");
-        String petBreed = DataValidation.validateString("Enter Breed: ");
-        char petGender = DataValidation.charChoiceValidation("Enter Gender (M/F): ", 'M', 'F');
-        int petAge = DataValidation.validatePetAgeInput("Enter age: ");
-        double petPrice = DataValidation.validatePriceInput("Enter price of pet: ");
+        String petID = DataValidation.validatePetID(choice);
+        String petName = DataValidation.validateString("Name");
+        String petBreed = DataValidation.validateString("Breed");
+        char petGender = DataValidation.charChoiceValidation("Gender", 'M', 'F');
+        int petAge = DataValidation.validatePetAgeInput("Pet Age");
+        double petPrice = DataValidation.validatePriceInput("Price of Pet");
 
         Pet pet = createNewPet(choice, petID, petName, petBreed, petGender, petAge, petPrice);
 
@@ -83,6 +84,20 @@ public class PetManager {
         return false;
     }
 
+    public boolean registerPet(Pet pet) { //For incoming pets
+        if (findPetID(pet.getPetID()) != null) {
+            return false;
+        }
+
+        pet.setAdoptionStatus(AdoptionStatus.AVAILABLE);
+        if (!savePet(pet)) {
+            return false;
+        }
+
+        pets.add(pet);
+        return true;
+    }
+
     public void updatePetMedicalHistory() {
         String petID = DataValidation.validateString("Enter Pet ID: ");
         Pet pet = findPetID(petID);
@@ -108,13 +123,6 @@ public class PetManager {
     }
 
     public ArrayList<Pet> getAllPets() {
-        if (pets.isEmpty()) {
-            ArrayList<Pet> all = PetManager.getInstance().getAllPets();
-            if (all == null) {
-                return null;
-            }
-        }
-
         return pets;
     }
 
@@ -208,20 +216,54 @@ public class PetManager {
             System.out.println("No pets found.");
             return;
         }
+
         DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird");
-        int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3);
+        int categoryChoice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3);
 
         DisplayUtils.printMenu("Sort By..", "Age", "Price", "Gender", "#Exit", "Back");
-        int choicev1 = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3, 4);
+        int sortBy = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3, 4);
 
-        if (choicev1 == 4) {
+        if (sortBy == 4) {
             return;
         }
 
         DisplayUtils.printMenu("Order: ", "Ascending", "Descending");
-        int choicev2 = DataValidation.intChoiceValidation("Enter choice: ", 1, 2);
+        int isAscendingOrDescending = DataValidation.intChoiceValidation("Enter choice: ", 1, 2);
 
-        FileHandler.sortCategory(RecordManager.FILE_PET_LIST, choice, choicev1, choicev2 == 1);
+        sortAndShow(categoryChoice, sortBy, isAscendingOrDescending == 1);
+    }
+
+    private void sortAndShow(int categoryChoice, int sortBy, boolean isAscendingOrDescending) {
+        String type = switch (categoryChoice) {
+            case 1 -> Dog.TYPE;
+            case 2 -> Cat.TYPE;
+            default -> Bird.TYPE;
+        };
+
+        ArrayList<Pet> sorted = new ArrayList<>();
+        for (Pet pet : pets) {
+            if (pet.getType().equals(type)) {
+                sorted.add(pet);
+            }
+        }
+
+        if (sorted.isEmpty()) {
+            System.out.println("No pets found.");
+            return;
+        }
+
+        Comparator<Pet> comparator = switch (sortBy) {
+            case 1 -> Comparator.comparingInt(Pet::getAge);
+            case 2 -> Comparator.comparingDouble(Pet::getPrice);
+            default -> Comparator.comparing(Pet::getGender);
+        };
+
+        if (!isAscendingOrDescending) {
+            comparator = comparator.reversed();
+        }
+
+        sorted.sort(comparator);
+        DisplayUtils.displayPetsForStaff(sorted);
 
     }
 
