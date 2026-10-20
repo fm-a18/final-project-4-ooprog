@@ -451,6 +451,7 @@ public class Customer extends User {
             System.out.println("No pets available for return.");
             return;
         }
+
         String transactionNum = DataValidation.transactionNumberValidation(
                 "Enter Transaction Number from your Request of Adoption Confirmation Message: ");
 
@@ -474,7 +475,15 @@ public class Customer extends User {
         }
 
         String adoptedPet = FileHandler.findRecord(RecordManager.FILE_ADOPTED, transactionNum, RES_TRANSACTION_NUM);
-        String dateAdopted = adoptedPet.split("\\s*\\|\\s*")[RecordManager.AD_DATE_FINALIZED];
+
+        if (adoptedPet == null) {
+            System.out.println("Adoption record not found.");
+            return;
+        }
+
+        String[] adoptedParts = adoptedPet.split("\\s*\\|\\s*");
+
+        String dateAdopted = adoptedParts[RecordManager.AD_DATE_FINALIZED];
 
         System.out.println("Adoption found!");
         DisplayUtils.printSummaryBox("PET DETAILS",
@@ -494,7 +503,14 @@ public class Customer extends User {
             return;
         }
 
-        PetManager.getInstance().updatePetStatus(found.getPetID(), AdoptionStatus.RETURN_PENDING);
+        ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
+        for (Pet pet : pets) {
+            if (pet.getPetID().equalsIgnoreCase(found.getPetID())) {
+                pet.setAdoptionStatus(AdoptionStatus.RETURN_PENDING);
+                break;
+            }
+        }
+
         FileHandler.appendRecord(RecordManager.FILE_RETURN_REQUEST, adoptedPet);
         System.out.println(
                 "Your return request is now being processed. Wait for the Admin or Coordinator to approve your request.");

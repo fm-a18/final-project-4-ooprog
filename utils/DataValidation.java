@@ -21,7 +21,7 @@ public class DataValidation {
         boolean isValidated = false;
         String input = "";
         while (!isValidated) {
-            System.out.print(prompt);
+            System.out.print(prompt + ": ");
             try {
                 input = sc.nextLine().trim();
             } catch (java.util.NoSuchElementException e) {

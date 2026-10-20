@@ -68,7 +68,8 @@ public class FileHandler {
 
     public static void appendRecord(String fileName, String record){
         try (FileWriter writer = new FileWriter(fileName, true)) {
-            writer.write(record + System.lineSeparator());
+            writer.write(record);
+            writer.write(System.lineSeparator());
         } catch (IOException e) {
             System.out.println("Error in writing to file.");
         }

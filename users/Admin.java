@@ -129,6 +129,20 @@ public class Admin extends User {
         if (pet == null)
             return;
 
+        AdoptionStatus currentStatus = pet.getAdoptionStatus();
+        if (currentStatus == AdoptionStatus.CANCELLATION_REVIEW) {
+            System.out.println("This pet already has a pending cancellation request.");
+            return;
+        } else if (currentStatus == AdoptionStatus.RETURN_PENDING){
+            System.out.println("This pet already has a pending return request.");
+            return;
+        }
+
+        if (currentStatus == AdoptionStatus.ADOPTED) {
+            System.out.println("This pet is already adopted and cannot be approved again.");
+            return;
+        }
+
         String adoptedRecord = RecordManager.buildAdoptedRecord(reservationRecord, this.getEmailAddress());
 
         FileHandler.appendRecord(RecordManager.FILE_ADOPTED, adoptedRecord);
@@ -155,6 +169,12 @@ public class Admin extends User {
         Pet pet = findPet(petID);
         if (pet == null)
             return;
+
+        AdoptionStatus currentStatus = pet.getAdoptionStatus();
+        if (currentStatus == AdoptionStatus.ADOPTED) {
+            System.out.println("This pet is already adopted and cannot be approved again.");
+            return;
+        }
 
         FileHandler.appendRecord(RecordManager.FILE_CANCELLED_LIST, record);
         FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, 0); //Remove from cancellation_request
@@ -220,6 +240,11 @@ public class Admin extends User {
             return;
         }
 
+        if (PetManager.getInstance().findPetID(petID) != null) {
+            System.out.println("This pet ID already exists in the active inventory. Approval cancelled.");
+            return;
+        }
+
         DisplayUtils.printSummaryBox("INCOMING PET", new String[][] {
                 { "Pet ID", selectedPet.getPetID() },
                 { "Name", selectedPet.getPetName() },
@@ -235,11 +260,10 @@ public class Admin extends User {
             return;
         }
 
-        if (!PetManager.getInstance().registerPet(selectedPet)) {
-            System.out.println("Pet ID " + petID + " already exists in inventory. Approval stopped.");
-            return;
-        }
+        FileHandler.appendRecord(RecordManager.FILE_PET_LIST, selectedPet.toFileString());
         FileHandler.removeRecord(RecordManager.FILE_INCOMING_LIST, petID, 0);
+        selectedPet.setAdoptionStatus(AdoptionStatus.AVAILABLE);
+        PetManager.getInstance().getAllPets().add(selectedPet);
 
         System.out.printf("Incoming pet with ID %s approved and added to inventory.\n", petID);
 

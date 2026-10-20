@@ -45,13 +45,24 @@ public class PetManager {
             promptMedicalRecord(pet);
         }
 
-        if (savePet(pet)) {
+        if (saveIncomingPet(pet)) {
             pets.add(pet);
-            System.out.println("Pet successfully added on " + LocalDate.now().format(dateFormat));
+            System.out.println("Pet successfully submitted for approval and saved to INCOMING_PET_LIST.txt");
         } else {
             System.out.println("Pet was not saved.");
         }
 
+    }
+
+    private boolean saveIncomingPet(Pet pet) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(RecordManager.FILE_INCOMING_LIST, true))) {
+            writer.write(pet.toFileString());
+            writer.newLine();
+            return true;
+        } catch (IOException e) {
+            System.out.println("Error writing incoming pet file.");
+            return false;
+        }
     }
 
     private Pet createNewPet(int choice, String id, String name, String breed,
