@@ -437,15 +437,20 @@ public class PetManager {
             return;
         }
 
-        if(FileHandler.findRecord("RETURN_REQUEST", transactionNum, RES_TRANSACTION_NUM) != null){
+        if(FileHandler.findRecord("RETURN_REQUEST.txt", transactionNum, RES_TRANSACTION_NUM) != null){
             System.out.println("A return request for " + found.getTransactionNum() + " is already being processed.");
             return;
         }
 
-        String adoptedPet = FileHandler.findRecord("ADOPTION_LIST.txt", transactionNum, RES_TRANSACTION_NUM);
+        String adoptedPet = FileHandler.findRecord("ADOPTED_LIST.txt", transactionNum, RES_TRANSACTION_NUM);
+
+        if(adoptedPet == null){
+            System.out.println("Adoption record not found.");
+            return;
+        }
         String dateAdopted = adoptedPet.split("\\s*\\|\\s*")[RecordManager.AD_DATE_FINALIZED];
 
-        System.out.println("Adoption found!");
+        System.out.println("Adoption found!\n");
         DisplayUtils.printSummaryBox("PET DETAILS",
                 new String[][] {
                         { "Customer's Name", found.getFirstName() + " " + found.getLastName()},

@@ -92,7 +92,7 @@ public class RecordManager {
         String breed = pet[PET_BREED].trim();
         char gender = pet[PET_GENDER].trim().charAt(0);
         int age = Integer.parseInt(pet[PET_AGE].trim());
-        double price = Double.parseDouble(pet[PET_PRICE].trim());
+        double price = Double.parseDouble(pet[PET_PRICE].trim().replace(",", ""));
 
         return switch (type.toLowerCase()) {
             case "dog" -> new Dog(id, name, breed, gender, age, price);
