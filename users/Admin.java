@@ -200,7 +200,7 @@ public class Admin extends User {
         if (pet == null)
             return;
 
-        String detailsOfReturn = DataValidation.validateString("Details");
+        String detailsOfReturn = DataValidation.validateString("Details: ");
 
         pet.addAdoptionHistory(LocalDate.now().format(Pet.DATE_FORMAT), detailsOfReturn);
         FileHandler.appendRecord(RecordManager.FILE_RETURNED_LIST, record); // Documentation

@@ -58,7 +58,7 @@ public class Main {
         System.out.println("===================== CUSTOMER SIGNUP ======================");
         String firstName = DataValidation.validateString("Enter your First Name: ");
         String lastName = DataValidation.validateString("Enter your Last Name: ");
-        int age = DataValidation.validateCustomerAgeInput("Enter your Age: ");
+        int age = DataValidation.validateCustomerAgeInput("Enter your Age(18-90): ");
         String emailAddress;
         boolean emailExists;
         do {
@@ -162,7 +162,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        FileHandler.ensureFilesExist(); //For debugging
+        FileHandler.ensureFilesExist(); // For debugging
         System.out.println("Welcome!");
 
         boolean isDone = false;

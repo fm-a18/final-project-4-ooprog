@@ -169,7 +169,7 @@ public class PetManager {
 
             switch (choice) {
                 case 1: {
-                    String petName = DataValidation.validateString("Enter pet name:");
+                    String petName = DataValidation.validateString("Enter pet name: ");
                     ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petName,
                             Pet::getPetName);
                     DisplayUtils.displayPetsForStaff(listOfPet);
@@ -197,7 +197,7 @@ public class PetManager {
                     break;
                 }
                 case 3: {
-                    String petBreed = DataValidation.validateString("Enter pet breed:");
+                    String petBreed = DataValidation.validateString("Enter pet breed: ");
                     ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petBreed,
                             Pet::getBreed);
                     DisplayUtils.displayPetsForStaff(listOfPet);
@@ -222,20 +222,24 @@ public class PetManager {
                     String petStatus = "";
                     DisplayUtils.printMenu("PET TYPE",
                             "#Select Adoption Status",
-                            "AVAILABLE",
-                            "ADOPTION_REVIEW",
-                            "RESERVED", "CANCELLATION_REVIEW", "ADOPTED", "RETURN_PENDING", "RETURNED");
+                            AdoptionStatus.AVAILABLE.toString(),
+                            AdoptionStatus.ADOPTION_REVIEW.toString(),
+                            AdoptionStatus.RESERVED.toString(),
+                            AdoptionStatus.CANCELLATION_REVIEW.toString(),
+                            AdoptionStatus.ADOPTED.toString(),
+                            AdoptionStatus.RETURN_PENDING.toString(),
+                            AdoptionStatus.RETURNED.toString());
                     int choiceType = DataValidation.intChoiceValidation("Select Option",
                             1, 2, 3, 4, 5, 6, 7);
 
                     switch (choiceType) {
-                        case 1 -> petStatus = "AVAILABLE";
-                        case 2 -> petStatus = "ADOPTION_REVIEW";
-                        case 3 -> petStatus = "RESERVED";
-                        case 4 -> petStatus = "CANCELLATION_REVIEW";
-                        case 5 -> petStatus = "ADOPTED";
-                        case 6 -> petStatus = "RETURN_PENDING";
-                        case 7 -> petStatus = "RETURNED";
+                        case 1 -> petStatus = AdoptionStatus.AVAILABLE.toString();
+                        case 2 -> petStatus = AdoptionStatus.ADOPTION_REVIEW.toString();
+                        case 3 -> petStatus = AdoptionStatus.RESERVED.toString();
+                        case 4 -> petStatus = AdoptionStatus.CANCELLATION_REVIEW.toString();
+                        case 5 -> petStatus = AdoptionStatus.ADOPTED.toString();
+                        case 6 -> petStatus = AdoptionStatus.RETURN_PENDING.toString();
+                        case 7 -> petStatus = AdoptionStatus.RETURNED.toString();
                         case 0 -> petStatus = "";
                     }
                     ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petStatus,
@@ -411,7 +415,7 @@ public class PetManager {
         double downPaymentAmount = downPayment(paymentPlan, selectedPet.getPrice());
         double balanceLeft = selectedPet.getPrice() - downPaymentAmount;
 
-        LocalDate date = DataValidation.validateDate("Enter date for claiming of pet (mm-dd-yyyy)");
+        LocalDate date = DataValidation.validateDate("Enter date for claiming of pet (mm-dd-yyyy): ");
         while (!DataValidation.dateForClaimingPet(date)) {
             System.out.println("Date should be on or within 7 days after the adoption request.");
             date = DataValidation.validateDate("Enter date for claiming of pet: ");
@@ -528,7 +532,7 @@ public class PetManager {
                 });
 
         char cancelAdoptionConfirmation = DataValidation
-                .charChoiceValidation("Are you sure you want to cancel your reservation? (y/n): ", 'y', 'n');
+                .charChoiceValidation("Are you sure you want to cancel your reservation?: ", 'y', 'n');
 
         if (cancelAdoptionConfirmation == 'N') {
             System.out.println("Adoption Cancellation Cancelled.");
@@ -604,15 +608,8 @@ public class PetManager {
             return;
         }
 
-        ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
-        for (Pet pet : pets) {
-            if (pet.getPetID().equalsIgnoreCase(found.getPetID())) {
-                pet.setAdoptionStatus(AdoptionStatus.RETURN_PENDING);
-                break;
-            }
-        }
-
         FileHandler.appendRecord(FILE_RETURN_REQUEST, adoptedPet);
+        updatePetStatus(found.getPetID(), AdoptionStatus.RETURN_PENDING);
         System.out.println(
                 "Your return request is now being processed. Wait for the Admin or Coordinator to approve your request.");
     }

@@ -41,7 +41,7 @@ public class DataValidation {
         return input;
     }
 
-    public static int validateCustomerAgeInput(String prompt) { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX
+    public static int validateCustomerAgeInput(String prompt) {
         // HUMAN AGE
         boolean isRunning = true;
         int number = 0;
@@ -68,7 +68,7 @@ public class DataValidation {
         return number;
     }
 
-    public static int validatePetAgeInput() { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX PET AGE
+    public static int validatePetAgeInput() {
         boolean isRunning = true;
         int number = 0;
         String inputNumber = "";
@@ -99,6 +99,7 @@ public class DataValidation {
         String input = "";
 
         while (!isValidated) {
+            System.out.println("Email Address Format: name@example.com");
             System.out.print("Enter your Email Address: ");
             try {
                 input = sc.nextLine().trim();
@@ -171,6 +172,7 @@ public class DataValidation {
         String input = "";
 
         while (!isValidated) {
+            System.out.println("Phone Number Format: 09123456789, 0912-345-6789, or 0912 345 6789");
             System.out.print("Enter your Phone Number: ");
             try {
                 input = sc.nextLine().trim();
@@ -443,10 +445,7 @@ public class DataValidation {
         String breed = "N/A";
         char gender = 'U';
         int age = 0;
-        String status = "Available";
         double price = 0.0;
-        HashMap<String, String> adoptionHistory = new HashMap<>();
-        HashMap<String, String> medicalHistory = new HashMap<>();
 
         if (category == null) {
             return null;
