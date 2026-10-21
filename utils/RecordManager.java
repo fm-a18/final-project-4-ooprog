@@ -91,7 +91,7 @@ public class RecordManager {
         String breed = pet[PET_BREED].trim();
         char gender = pet[PET_GENDER].trim().charAt(0);
         int age = Integer.parseInt(pet[PET_AGE].trim());
-        double price = Double.parseDouble(pet[PET_PRICE].trim());
+        double price = Double.parseDouble(pet[PET_PRICE].trim().replace(",", ""));
 
         Pet parsedPet = switch (type.toLowerCase()) {
             case "dog" -> new Dog(id, name, breed, gender, age, price);
@@ -135,7 +135,7 @@ public class RecordManager {
     }
 
     public static ArrayList<Reservation> viewAllPetAdoptedRecords() {
-        return readRecords(FILE_ADOPTED, RES_FIELD_COUNT, RecordManager::parseAdoption);
+        return readRecords(FILE_ADOPTED, AD_FIELD_COUNT, RecordManager::parseAdoption);
     }
 
     public static String buildAdoptedRecord(String reservationRecord, String approvedByEmail) {

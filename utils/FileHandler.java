@@ -42,7 +42,7 @@ public class FileHandler {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error in reading file.");
+            System.out.println("Error in reading file." + e.getMessage());
         }
         return null;
     }
