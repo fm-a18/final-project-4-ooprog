@@ -67,11 +67,29 @@ public class FileHandler {
     }
 
     public static void appendRecord(String fileName, String record){
+        boolean needsNewLine = !endsWithNewLine(fileName);
         try (FileWriter writer = new FileWriter(fileName, true)) {
+            if (needsNewLine) {
+                writer.write(System.lineSeparator());
+            }
             writer.write(record);
             writer.write(System.lineSeparator());
         } catch (IOException e) {
             System.out.println("Error in writing to file.");
+        }
+    }
+
+    private static boolean endsWithNewLine(String fileName) {
+        File file = new File(fileName);
+        if (!file.exists() || file.length() == 0) {
+            return true;
+        }
+        try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
+            raf.seek(file.length() - 1);
+            int last = raf.read();
+            return last == '\n' || last == '\r';
+        } catch (IOException e) {
+            return true;
         }
     }
 
