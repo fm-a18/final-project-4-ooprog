@@ -1,10 +1,7 @@
 package users;
 
 import inventory.Pet;
-import utils.FileHandler;
-import utils.PetManager;
-import utils.DataValidation;
-import utils.DisplayUtils;
+import utils.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -60,7 +57,7 @@ public class Customer extends User {
         System.out.println("Logging out...");
     }
 
-    private ArrayList<Pet> availablePets = PetManager.getInstance().getAvailablePets();
+    private final ArrayList<Pet> availablePets = PetManager.getInstance().getAvailablePets();
 
     private void viewAllPets() {
         if (availablePets.isEmpty()) {
@@ -128,7 +125,7 @@ public class Customer extends User {
                 break;
             case 5: // SEARCH PET BY AGE
             DisplayUtils.centeredTitle("SEARCH PET BY AGE", 60);
-                int age = DataValidation.validatePetAgeInput("Enter Pet Age: ");
+                int age = DataValidation.validatePetAgeInput();
 
                 showResults(FileHandler.filterRecords("PET_LIST.txt", age, Pet::getAge), "VIEW BY PET AGE " + age);
                 break;
@@ -194,7 +191,7 @@ public class Customer extends User {
         }
     }
 
-    private void specificPetDetails(String type, ArrayList<Pet> petTypes) { // EDIT THIS
+    private void specificPetDetails(ArrayList<Pet> petTypes) { // EDIT THIS
         DisplayUtils.centeredTitle("VIEW SPECIFIC PET DETAILS", 60);
         String petID = DataValidation.validatePetIdInput();
 

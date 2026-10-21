@@ -7,13 +7,11 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import inventory.*;
-<<<<<<< HEAD
 import utils.FileHandler;
 import utils.RecordManager;
 
 import static utils.RecordManager.US_EMAIL_ADDRESS;
-=======
->>>>>>> origin/master
+
 
 public class Coordinator extends User {
 
@@ -89,14 +87,14 @@ public class Coordinator extends User {
     }
 
     private void requestPetAdoption() {
-        PetManager.getInstance().requestPetAdoption();
+        PetManager.getInstance().requestAdoption();
     }
 
     private void cancelPetAdoption() {
-        PetManager.getInstance().cancelPetAdoptionRequest();
+        PetManager.getInstance().cancelAdoption();
     }
 
     private void requestPetReturn() {
-        PetManager.getInstance().requestPetReturn();
+        PetManager.getInstance().requestReturn();
     }
 }

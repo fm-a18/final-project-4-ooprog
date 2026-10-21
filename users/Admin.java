@@ -5,7 +5,6 @@ import inventory.Pet;
 import utils.*;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -184,8 +183,6 @@ public class Admin extends User {
         System.out.printf("Cancellation approved for transaction %s.\n", transactionNum);
 
     }
-
-    static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
     private void approvePetReturn() {
         System.out.println("Return Requests");

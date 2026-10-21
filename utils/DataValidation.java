@@ -147,7 +147,7 @@ public class DataValidation {
         LocalDate date = null;
         String res = "";
         while (date == null) {
-            System.out.print(prompt + ": ");
+            System.out.print("Enter Date : ");
             String input = sc.nextLine().trim();
 
             try {
@@ -158,16 +158,6 @@ public class DataValidation {
             }
         }
         return LocalDate.parse(res, dateFormat);
-    }
-
-    public static boolean dateForClaimingPet(LocalDate date) {
-        LocalDate today = LocalDate.now();
-        return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
-    }
-
-    public static boolean dateForClaimingPet(LocalDate date) {
-        LocalDate today = LocalDate.now();
-        return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
     }
 
     public static String validatePhoneNumber() {
@@ -214,8 +204,8 @@ public class DataValidation {
                 continue;
             }
             if (input.isEmpty()) {
-                System.out.println("Error: Email Address cannot be empty.");
-            } else if (!input.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$")) {
+                System.out.println("Error: Password cannot be empty.");
+            } else if (!input.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$")) { // Add special character regex
                 System.out.println(
                         "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
             } else {
@@ -229,7 +219,7 @@ public class DataValidation {
         int value = 0;
         boolean isValidated = false;
         while (!isValidated) {
-            System.out.print(prompt + "(" + getValidIntChoices(choices) + "): ");
+            System.out.print(prompt + " (" + getValidIntChoices(choices) + "): ");
             String input = sc.nextLine().trim();
 
             if (!input.matches("0|[1-9][0-9]*")) {
@@ -263,7 +253,7 @@ public class DataValidation {
         char input = ' ';
         while (!isValidated) {
             try {
-                System.out.print(prompt + "(" + getValidCharChoices(choices) + "): ");
+                System.out.print(prompt + " (" + getValidCharChoices(choices) + "): ");
                 String line = sc.nextLine().trim().toUpperCase();
                 if (line.length() != 1) {
                     printCharChoiceError(choices);
