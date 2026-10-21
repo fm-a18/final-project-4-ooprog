@@ -403,7 +403,7 @@ public class PetManager {
                     "50% Down Payment",
                     "75% Down Payment");
 
-            int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request: ", 1, 2, 3, 0);
+            int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request: ", 1, 2, 3);
 
             switch (choice) {
                 case 1 -> {

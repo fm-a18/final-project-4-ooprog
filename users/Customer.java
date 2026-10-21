@@ -113,8 +113,8 @@ public class Customer extends User {
                         "#Select Gender",
                         "Male",
                         "Female");
-                int choiceGender = DataValidation.intChoiceValidation("Select Option",
-                        1, 2, 0);
+                char choiceGender = DataValidation.charChoiceValidation("Select Option",
+                        'M', 'F');
 
                 if (choiceGender == 0) {
                     break;
@@ -157,7 +157,7 @@ public class Customer extends User {
                 "Cat",
                 "Bird");
         int choiceType = DataValidation.intChoiceValidation("Select Option",
-                1, 2, 3, 0);
+                1, 2, 3);
 
         switch (choiceType) {
             case 1 -> type = "dog";
@@ -217,7 +217,7 @@ public class Customer extends User {
                 "Descending Price",
                 "Price Range");
         int choice = DataValidation.intChoiceValidation("Select Option",
-                1, 2, 3, 0);
+                1, 2, 3);
 
         switch (choice) {
             case 1:
