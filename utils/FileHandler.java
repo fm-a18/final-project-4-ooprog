@@ -266,4 +266,17 @@ public class FileHandler {
         }
         return max;
     }
+
+    public static boolean savePets(ArrayList<Pet> pets) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(RecordManager.FILE_PET_LIST))) {
+            for (Pet pet : pets) {
+                writer.write(pet.toFileString());
+                writer.newLine();
+            }
+            return true;
+        } catch (IOException e) {
+            System.out.println("Error in writing file.");
+            return false;
+        }
+    }
 }

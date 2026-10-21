@@ -184,11 +184,7 @@ public class PetManager {
                     break;
                 }
                 case 5: {
-<<<<<<< HEAD
-                    int petAge = DataValidation.validatePetAgeInput("Enter pet age:");
-=======
                     int petAge = DataValidation.validatePetAgeInput();
->>>>>>> origin/master
                     ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petAge, Pet::getAge);
                     DisplayUtils.displayPetsForStaff(listOfPet);
                     break;
@@ -328,7 +324,7 @@ public class PetManager {
     }
 
     public void requestAdoptionCustomer(ArrayList<Pet> availablePets, Customer customer) {
-        String petID = DataValidation.validatePetID("\nEnter Pet ID to request adoption: ", "^(?i)[DCB]\\d{4}$");
+        String petID = DataValidation.validatePetIdInput();
 
         Pet selectedPet = null;
 
@@ -568,5 +564,23 @@ public class PetManager {
         FileHandler.appendRecord("RETURN_REQUEST.txt", adoptedPet);
         System.out.println(
                 "Your return request is now being processed. Wait for the Admin or Coordinator to approve your request.");
+    }
+
+    public boolean savePets() {
+        return FileHandler.savePets(pets);
+    }
+
+    public boolean approveIncomingPet(Pet pet) {
+        if (findPetID(pet.getPetID()) != null) {
+            return false;
+        }
+
+        pet.setAdoptionStatus(AdoptionStatus.AVAILABLE);
+        pets.add(pet);
+        if (!savePets()) {
+            pets.remove(pet); // keep memory and file in sync
+            return false;
+        }
+        return true;
     }
 }
