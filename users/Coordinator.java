@@ -12,11 +12,10 @@ import utils.RecordManager;
 
 import static utils.RecordManager.US_EMAIL_ADDRESS;
 
-
 public class Coordinator extends User {
 
     public Coordinator(String userID, String firstName, String lastName, int age, String emailAddress,
-                       String address, String phoneNumber, String password) {
+            String address, String phoneNumber, String password) {
         super(userID, firstName, lastName, age, emailAddress,
                 address, phoneNumber, password);
     }
@@ -51,7 +50,7 @@ public class Coordinator extends User {
                 case 2 -> searchByCategory();
                 case 3 -> sortByCategory();
                 case 4 -> addPet();
-                case 5 -> updatePetMedicalHistory(); //wil change to med history
+                case 5 -> updatePetMedicalHistory(); // wil change to med history
                 case 6 -> requestPetAdoption();
                 case 7 -> cancelPetAdoption();
                 case 8 -> requestPetReturn();
@@ -87,14 +86,17 @@ public class Coordinator extends User {
     }
 
     private void requestPetAdoption() {
-        PetManager.getInstance().requestAdoption();
+        PetManager.getInstance().requestAdoption(new Customer(getUserID(), getFirstName(), getLastName(),
+                US_EMAIL_ADDRESS, getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
     }
 
     private void cancelPetAdoption() {
-        PetManager.getInstance().cancelAdoption();
+        PetManager.getInstance().cancelAdoption(new Customer(getUserID(), getFirstName(), getLastName(),
+                US_EMAIL_ADDRESS, getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
     }
 
     private void requestPetReturn() {
-        PetManager.getInstance().requestReturn();
+        PetManager.getInstance().requestReturn(new Customer(getUserID(), getFirstName(), getLastName(),
+                US_EMAIL_ADDRESS, getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
     }
 }
