@@ -13,7 +13,7 @@ import static utils.DisplayUtils.printMenu;
 public class Admin extends User {
 
     public Admin(String userID, String firstName, String lastName, int age, String emailAddress,
-                 String address, String phoneNumber, String password) {
+            String address, String phoneNumber, String password) {
         super(userID, firstName, lastName, age, emailAddress,
                 address, phoneNumber, password);
     }
@@ -29,7 +29,7 @@ public class Admin extends User {
         while (!isDone) {
             printMenu("ADMIN MENU",
                     "#Pet Management",
-                    "View All Available Pets",
+                    "View All Pets",
                     "Search by Category",
                     "Sort by Category",
                     "Add Pet",
@@ -176,8 +176,10 @@ public class Admin extends User {
         }
 
         FileHandler.appendRecord(RecordManager.FILE_CANCELLED_LIST, record);
-        FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, 0); //Remove from cancellation_request
-        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RES_TRANSACTION_ID); //Remove from reserved_req
+        FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, 0); // Remove from
+                                                                                              // cancellation_request
+        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RES_TRANSACTION_ID); // Remove from
+                                                                                                   // reserved_req
         PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
 
         System.out.printf("Cancellation approved for transaction %s.\n", transactionNum);
@@ -202,8 +204,8 @@ public class Admin extends User {
 
         pet.addAdoptionHistory(LocalDate.now().format(Pet.DATE_FORMAT), detailsOfReturn);
         FileHandler.appendRecord(RecordManager.FILE_RETURNED_LIST, record); // Documentation
-        FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, 0); //Remove from return list
-        FileHandler.removeRecord(RecordManager.FILE_ADOPTED, transactionNum, 0); //remove from adopted
+        FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, 0); // Remove from return list
+        FileHandler.removeRecord(RecordManager.FILE_ADOPTED, transactionNum, 0); // remove from adopted
         PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
 
         System.out.printf("Return of pet approved for transaction %s.\n", transactionNum);
@@ -223,7 +225,7 @@ public class Admin extends User {
 
         DisplayUtils.displayPetsForStaff(new ArrayList<>(incomingPets));
         String petID = DataValidation.validatePetIdInput();
-        //view specific pet details
+        // view specific pet details
 
         Pet selectedPet = null;
         for (Pet pet : incomingPets) {
@@ -243,13 +245,13 @@ public class Admin extends User {
             return;
         }
 
-        DisplayUtils.printSummaryBox("INCOMING PET", new String[][]{
-                {"Pet ID", selectedPet.getPetID()},
-                {"Name", selectedPet.getPetName()},
-                {"Type", selectedPet.getType()},
-                {"Breed", selectedPet.getBreed()},
-                {"Age", String.valueOf(selectedPet.getAge())},
-                {"Price", String.format("Php %,.2f", selectedPet.getPrice())}
+        DisplayUtils.printSummaryBox("INCOMING PET", new String[][] {
+                { "Pet ID", selectedPet.getPetID() },
+                { "Name", selectedPet.getPetName() },
+                { "Type", selectedPet.getType() },
+                { "Breed", selectedPet.getBreed() },
+                { "Age", String.valueOf(selectedPet.getAge()) },
+                { "Price", String.format("Php %,.2f", selectedPet.getPrice()) }
         });
 
         char approve = DataValidation.charChoiceValidation("Approve this pet to be added to inventory?", 'Y', 'N');

@@ -18,11 +18,11 @@ public class DataValidation {
             .withResolverStyle(ResolverStyle.STRICT);
     public static final Scanner sc = new Scanner(System.in);
 
-    public static String validateString(String prompt) { // TODO IMPROVE ERROR MESSAGE
+    public static String validateString(String prompt) {
         boolean isValidated = false;
         String input = "";
         while (!isValidated) {
-            System.out.print(prompt + ": ");
+            System.out.print(prompt);
             try {
                 input = sc.nextLine().trim();
             } catch (java.util.NoSuchElementException e) {
@@ -73,7 +73,7 @@ public class DataValidation {
         int number = 0;
         String inputNumber = "";
         while (isRunning) {
-            System.out.print("Enter Pet Age:");
+            System.out.print("Enter Pet Age(1-15): ");
             inputNumber = sc.nextLine().trim();
             if (!inputNumber.matches("-?(0|[1-9]\\d*)")) {
                 System.out.println("Invalid Input. Only input positive integers without leading zeros. Try Again.");
@@ -153,7 +153,7 @@ public class DataValidation {
         LocalDate date = null;
         String res = "";
         while (date == null) {
-            System.out.print("Enter Date : ");
+            System.out.print(prompt);
             String input = sc.nextLine().trim();
 
             try {
@@ -211,7 +211,10 @@ public class DataValidation {
             }
             if (input.isEmpty()) {
                 System.out.println("Error: Password cannot be empty.");
-            } else if (!input.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$")) { // Add special character regex
+            } else if (!input.matches("^(?!.*\\|)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$")) { // Add
+                                                                                                              // special
+                                                                                                              // character
+                                                                                                              // regex
                 System.out.println(
                         "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
             } else {
@@ -325,8 +328,7 @@ public class DataValidation {
                         getValidCharChoices(choices) + ".");
     }
 
-    public static double validatePriceInput(String prompt) { // TODO ADJUST ERROR MESSAGE(REFLECT ACTUAL
-        // LIMIT)
+    public static double validatePriceInput(String prompt) {
         boolean isRunning = true;
         double number = 0;
         String inputNumber = "";

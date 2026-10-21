@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import static utils.RecordManager.viewAllReserveRecords;
+import static utils.RecordManager.FILE_ADOPTED;
 import static utils.RecordManager.FILE_RESERVED;
+import static utils.RecordManager.FILE_RETURN_REQUEST;
 import static utils.RecordManager.RES_TRANSACTION_NUM;
 
 public class PetManager {
@@ -37,12 +39,17 @@ public class PetManager {
         DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird");
         int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3);
 
-        String petID = DataValidation.validatePetIdInput();
-        String petName = DataValidation.validateString("Name");
-        String petBreed = DataValidation.validateString("Breed");
+        String petID = DataValidation.validatePetID(choice);
+        while (findPetID(petID) != null
+                || FileHandler.findRecord(RecordManager.FILE_INCOMING_LIST, petID, 0) != null) {
+            System.out.println("Pet ID already exists. Please use another ID.");
+            petID = DataValidation.validatePetID(choice);
+        }
+        String petName = DataValidation.validateString("Name: ");
+        String petBreed = DataValidation.validateString("Breed: ");
         char petGender = DataValidation.charChoiceValidation("Gender", 'M', 'F');
         int petAge = DataValidation.validatePetAgeInput();
-        double petPrice = DataValidation.validatePriceInput("Price of Pet");
+        double petPrice = DataValidation.validatePriceInput("Price of Pet(100.00 - 10,000.00): ");
 
         Pet pet = createNewPet(choice, petID, petName, petBreed, petGender, petAge, petPrice);
 
@@ -134,7 +141,8 @@ public class PetManager {
     }
 
     private void promptMedicalRecord(Pet pet) {
-        String date = String.valueOf(DataValidation.validateDate("Enter date of the condition/treatment: "));
+        String date = String
+                .valueOf(DataValidation.validateDate("Enter date of the condition/treatment(MM-DD-YYYY): "));
         String condition = DataValidation.validateString("Enter medical condition/treatment name: ");
         pet.addMedicalHistory(date, condition);
     }
@@ -168,7 +176,21 @@ public class PetManager {
                     break;
                 }
                 case 2: {
-                    String petType = DataValidation.validateString("Enter pet type:");
+                    String petType = "";
+                    DisplayUtils.printMenu("PET TYPE",
+                            "#Select Pet Type",
+                            "Dog",
+                            "Cat",
+                            "Bird");
+                    int choiceType = DataValidation.intChoiceValidation("Select Option",
+                            1, 2, 3);
+
+                    switch (choiceType) {
+                        case 1 -> petType = "dog";
+                        case 2 -> petType = "cat";
+                        case 3 -> petType = "bird";
+                        case 0 -> petType = "";
+                    }
                     ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petType,
                             Pet::getType);
                     DisplayUtils.displayPetsForStaff(listOfPet);
@@ -182,7 +204,8 @@ public class PetManager {
                     break;
                 }
                 case 4: {
-                    String petGender = DataValidation.validateString("Enter pet gender:");
+                    char g = DataValidation.charChoiceValidation("Enter pet gender", 'M', 'F');
+                    String petGender = (g == 'M') ? "Male" : "Female";
                     ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petGender,
                             Pet::getGender);
                     DisplayUtils.displayPetsForStaff(listOfPet);
@@ -196,7 +219,25 @@ public class PetManager {
                     break;
                 }
                 case 6: {
-                    String petStatus = DataValidation.validateString("Enter adoption status:");
+                    String petStatus = "";
+                    DisplayUtils.printMenu("PET TYPE",
+                            "#Select Adoption Status",
+                            "AVAILABLE",
+                            "ADOPTION_REVIEW",
+                            "RESERVED", "CANCELLATION_REVIEW", "ADOPTED", "RETURN_PENDING", "RETURNED");
+                    int choiceType = DataValidation.intChoiceValidation("Select Option",
+                            1, 2, 3, 4, 5, 6, 7);
+
+                    switch (choiceType) {
+                        case 1 -> petStatus = "AVAILABLE";
+                        case 2 -> petStatus = "ADOPTION_REVIEW";
+                        case 3 -> petStatus = "RESERVED";
+                        case 4 -> petStatus = "CANCELLATION_REVIEW";
+                        case 5 -> petStatus = "ADOPTED";
+                        case 6 -> petStatus = "RETURN_PENDING";
+                        case 7 -> petStatus = "RETURNED";
+                        case 0 -> petStatus = "";
+                    }
                     ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petStatus,
                             Pet::getAdoptionStatus);
                     DisplayUtils.displayPetsForStaff(listOfPet);
@@ -308,7 +349,8 @@ public class PetManager {
         }
 
         for (Pet pet : pets) {
-            if (!reserve.contains(pet.getPetID().toUpperCase())) {
+            boolean isAvailable = pet.getAdoptionStatus() == AdoptionStatus.AVAILABLE;
+            if (isAvailable && !reserve.contains(pet.getPetID().toUpperCase())) {
                 availablePets.add(pet);
             }
         }
@@ -351,7 +393,7 @@ public class PetManager {
         System.out.println("Pet ID: " + petID + " found and is available for adoption.");
 
         char requestAdoption = DataValidation
-                .charChoiceValidation("\nDo you want to request adoption for Pet ID: " + petID + "? (y/n): ", 'y', 'n');
+                .charChoiceValidation("\nDo you want to request adoption for Pet ID: " + petID + "?", 'y', 'n');
 
         if (requestAdoption == 'N') {
             System.out.println("Adoption request cancelled.");
@@ -389,7 +431,7 @@ public class PetManager {
                 customer.getEmailAddress(), selectedPet, paymentPlan, downPaymentAmount, balanceLeft, transactionNum,
                 date);
         FileHandler.appendRecord(FILE_RESERVED, reservationRecord);
-        selectedPet.setAdoptionStatus(AdoptionStatus.ADOPTION_REVIEW);
+        updatePetStatus(selectedPet.getPetID(), AdoptionStatus.ADOPTION_REVIEW);
 
         DisplayUtils.printSummaryBox("ADOPTION REQUEST DETAILS",
                 new String[][] {
@@ -439,7 +481,7 @@ public class PetManager {
         double amount = 0;
 
         switch (paymentPlan) {
-            case "Full Payment" -> amount = 0;
+            case "Full Payment" -> amount = petPrice;
             case "50% Down Payment" -> amount = petPrice * 0.5;
             case "75% Down Payment" -> amount = petPrice * 0.75;
         }
@@ -532,12 +574,12 @@ public class PetManager {
             return;
         }
 
-        if (FileHandler.findRecord("RETURN_REQUEST.txt", transactionNum, RES_TRANSACTION_NUM) != null) {
+        if (FileHandler.findRecord(FILE_RETURN_REQUEST, transactionNum, RES_TRANSACTION_NUM) != null) {
             System.out.println("A return request for " + found.getTransactionNum() + " is already being processed.");
             return;
         }
 
-        String adoptedPet = FileHandler.findRecord("ADOPTED_LIST.txt", transactionNum, RES_TRANSACTION_NUM);
+        String adoptedPet = FileHandler.findRecord(FILE_ADOPTED, transactionNum, RES_TRANSACTION_NUM);
 
         if (adoptedPet == null) {
             System.out.println("Adoption record not found.");
@@ -555,7 +597,7 @@ public class PetManager {
                 });
 
         char returnAdoptionConfirmation = DataValidation
-                .charChoiceValidation("Are you sure you want to return your pet? (y/n): ", 'y', 'n');
+                .charChoiceValidation("Are you sure you want to return your pet?", 'y', 'n');
 
         if (returnAdoptionConfirmation == 'N') {
             System.out.println("Return Adoption Request Cancelled.");
@@ -570,7 +612,7 @@ public class PetManager {
             }
         }
 
-        FileHandler.appendRecord("RETURN_REQUEST.txt", adoptedPet);
+        FileHandler.appendRecord(FILE_RETURN_REQUEST, adoptedPet);
         System.out.println(
                 "Your return request is now being processed. Wait for the Admin or Coordinator to approve your request.");
     }

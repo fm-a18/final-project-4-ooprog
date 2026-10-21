@@ -31,7 +31,7 @@ public class Coordinator extends User {
         while (!isDone) {
             DisplayUtils.printMenu("COORDINATOR MENU",
                     "#Pet Management",
-                    "View All Available Pets",
+                    "View All Pets",
                     "Search by Category",
                     "Sort by Category",
                     "Add Pet",
