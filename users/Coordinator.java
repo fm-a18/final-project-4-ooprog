@@ -7,18 +7,15 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import inventory.*;
-<<<<<<< HEAD
 import utils.FileHandler;
 import utils.RecordManager;
 
 import static utils.RecordManager.US_EMAIL_ADDRESS;
-=======
->>>>>>> origin/master
 
 public class Coordinator extends User {
 
     public Coordinator(String userID, String firstName, String lastName, int age, String emailAddress,
-                       String address, String phoneNumber, String password) {
+            String address, String phoneNumber, String password) {
         super(userID, firstName, lastName, age, emailAddress,
                 address, phoneNumber, password);
     }
@@ -34,7 +31,7 @@ public class Coordinator extends User {
         while (!isDone) {
             DisplayUtils.printMenu("COORDINATOR MENU",
                     "#Pet Management",
-                    "View All Available Pets",
+                    "View All Pets",
                     "Search by Category",
                     "Sort by Category",
                     "Add Pet",
@@ -53,7 +50,7 @@ public class Coordinator extends User {
                 case 2 -> searchByCategory();
                 case 3 -> sortByCategory();
                 case 4 -> addPet();
-                case 5 -> updatePetMedicalHistory(); //wil change to med history
+                case 5 -> updatePetMedicalHistory(); // wil change to med history
                 case 6 -> requestPetAdoption();
                 case 7 -> cancelPetAdoption();
                 case 8 -> requestPetReturn();
@@ -89,14 +86,17 @@ public class Coordinator extends User {
     }
 
     private void requestPetAdoption() {
-        PetManager.getInstance().requestPetAdoption();
+        PetManager.getInstance().requestAdoption(new Customer(getUserID(), getFirstName(), getLastName(),
+                US_EMAIL_ADDRESS, getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
     }
 
     private void cancelPetAdoption() {
-        PetManager.getInstance().cancelPetAdoptionRequest();
+        PetManager.getInstance().cancelAdoption(new Customer(getUserID(), getFirstName(), getLastName(),
+                US_EMAIL_ADDRESS, getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
     }
 
     private void requestPetReturn() {
-        PetManager.getInstance().requestPetReturn();
+        PetManager.getInstance().requestReturn(new Customer(getUserID(), getFirstName(), getLastName(),
+                US_EMAIL_ADDRESS, getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
     }
 }

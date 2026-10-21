@@ -13,7 +13,7 @@ public abstract class User {
     private final String password;
 
     public User(String userID, String firstName, String lastName, int age, String emailAddress,
-                String address, String phoneNumber, String password){
+            String address, String phoneNumber, String password) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -24,11 +24,11 @@ public abstract class User {
         this.password = password;
     }
 
-    public String getUserID(){
+    public String getUserID() {
         return userID;
     }
 
-    public String getFirstName(){
+    public String getFirstName() {
         return firstName;
     }
 
@@ -42,6 +42,10 @@ public abstract class User {
 
     public String getEmailAddress() {
         return emailAddress;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public String getPhoneNumber() {

@@ -1,9 +1,13 @@
 package inventory;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 import java.util.Map;
 import java.util.TreeMap;
 
 public abstract class Pet {
+    public static final DateTimeFormatter DATE_FORMAT =
+            DateTimeFormatter.ofPattern("MM-dd-uuuu").withResolverStyle(ResolverStyle.STRICT);
     private final String petID;
     private final String name;
     private final String breed;

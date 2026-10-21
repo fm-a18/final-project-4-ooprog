@@ -67,11 +67,29 @@ public class FileHandler {
     }
 
     public static void appendRecord(String fileName, String record){
+        boolean needsNewLine = !endsWithNewLine(fileName);
         try (FileWriter writer = new FileWriter(fileName, true)) {
+            if (needsNewLine) {
+                writer.write(System.lineSeparator());
+            }
             writer.write(record);
             writer.write(System.lineSeparator());
         } catch (IOException e) {
             System.out.println("Error in writing to file.");
+        }
+    }
+
+    private static boolean endsWithNewLine(String fileName) {
+        File file = new File(fileName);
+        if (!file.exists() || file.length() == 0) {
+            return true;
+        }
+        try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
+            raf.seek(file.length() - 1);
+            int last = raf.read();
+            return last == '\n' || last == '\r';
+        } catch (IOException e) {
+            return true;
         }
     }
 
@@ -210,6 +228,7 @@ public class FileHandler {
                     };
                     sorted.add(pet);
                 } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+                    //TODO error msg
                 }
             }
         } catch (IOException e) {
@@ -258,6 +277,7 @@ public class FileHandler {
                         max = Math.max(max, Integer.parseInt(parts[colIndex].substring(prefix.length())));
                     } catch (NumberFormatException e) {
                         // skip IDs that don't end in a number
+                        //TODO error msg
                     }
                 }
             }
@@ -265,5 +285,18 @@ public class FileHandler {
             System.out.println("Error in reading " + fileName + ".");
         }
         return max;
+    }
+
+    public static boolean savePets(ArrayList<Pet> pets) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(RecordManager.FILE_PET_LIST))) {
+            for (Pet pet : pets) {
+                writer.write(pet.toFileString());
+                writer.newLine();
+            }
+            return true;
+        } catch (IOException e) {
+            System.out.println("Error in writing file.");
+            return false;
+        }
     }
 }

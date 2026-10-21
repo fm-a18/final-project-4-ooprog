@@ -14,14 +14,15 @@ import java.time.format.ResolverStyle;
 import java.util.Scanner;
 
 public class DataValidation {
-    static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-uuuu").withResolverStyle(ResolverStyle.STRICT);
+    static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-uuuu")
+            .withResolverStyle(ResolverStyle.STRICT);
     public static final Scanner sc = new Scanner(System.in);
 
-    public static String validateString(String prompt) { // TODO IMPROVE ERROR MESSAGE
+    public static String validateString(String prompt) {
         boolean isValidated = false;
         String input = "";
         while (!isValidated) {
-            System.out.print(prompt + ": ");
+            System.out.print(prompt);
             try {
                 input = sc.nextLine().trim();
             } catch (java.util.NoSuchElementException e) {
@@ -40,7 +41,7 @@ public class DataValidation {
         return input;
     }
 
-    public static int validateCustomerAgeInput(String prompt) { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX
+    public static int validateCustomerAgeInput(String prompt) {
         // HUMAN AGE
         boolean isRunning = true;
         int number = 0;
@@ -67,12 +68,12 @@ public class DataValidation {
         return number;
     }
 
-    public static int validatePetAgeInput() { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX PET AGE
+    public static int validatePetAgeInput() {
         boolean isRunning = true;
         int number = 0;
         String inputNumber = "";
         while (isRunning) {
-            System.out.print("Enter Pet Age:");
+            System.out.print("Enter Pet Age(1-15): ");
             inputNumber = sc.nextLine().trim();
             if (!inputNumber.matches("-?(0|[1-9]\\d*)")) {
                 System.out.println("Invalid Input. Only input positive integers without leading zeros. Try Again.");
@@ -98,6 +99,7 @@ public class DataValidation {
         String input = "";
 
         while (!isValidated) {
+            System.out.println("Email Address Format: name@example.com");
             System.out.print("Enter your Email Address: ");
             try {
                 input = sc.nextLine().trim();
@@ -143,11 +145,16 @@ public class DataValidation {
         return input;
     }
 
+    public static boolean dateForClaimingPet(LocalDate date) {
+        LocalDate today = LocalDate.now();
+        return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
+    }
+
     public static LocalDate validateDate(String prompt) { // coordinator
         LocalDate date = null;
         String res = "";
         while (date == null) {
-            System.out.print(prompt + ": ");
+            System.out.print(prompt);
             String input = sc.nextLine().trim();
 
             try {
@@ -160,21 +167,12 @@ public class DataValidation {
         return LocalDate.parse(res, dateFormat);
     }
 
-    public static boolean dateForClaimingPet(LocalDate date) {
-        LocalDate today = LocalDate.now();
-        return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
-    }
-
-    public static boolean dateForClaimingPet(LocalDate date) {
-        LocalDate today = LocalDate.now();
-        return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
-    }
-
     public static String validatePhoneNumber() {
         boolean isValidated = false;
         String input = "";
 
         while (!isValidated) {
+            System.out.println("Phone Number Format: 09123456789, 0912-345-6789, or 0912 345 6789");
             System.out.print("Enter your Phone Number: ");
             try {
                 input = sc.nextLine().trim();
@@ -214,8 +212,11 @@ public class DataValidation {
                 continue;
             }
             if (input.isEmpty()) {
-                System.out.println("Error: Email Address cannot be empty.");
-            } else if (!input.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$")) {
+                System.out.println("Error: Password cannot be empty.");
+            } else if (!input.matches("^(?!.*\\|)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$")) { // Add
+                                                                                                              // special
+                                                                                                              // character
+                                                                                                              // regex
                 System.out.println(
                         "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
             } else {
@@ -229,7 +230,7 @@ public class DataValidation {
         int value = 0;
         boolean isValidated = false;
         while (!isValidated) {
-            System.out.print(prompt + "(" + getValidIntChoices(choices) + "): ");
+            System.out.print(prompt + " (" + getValidIntChoices(choices) + "): ");
             String input = sc.nextLine().trim();
 
             if (!input.matches("0|[1-9][0-9]*")) {
@@ -263,7 +264,7 @@ public class DataValidation {
         char input = ' ';
         while (!isValidated) {
             try {
-                System.out.print(prompt + "(" + getValidCharChoices(choices) + "): ");
+                System.out.print(prompt + " (" + getValidCharChoices(choices) + "): ");
                 String line = sc.nextLine().trim().toUpperCase();
                 if (line.length() != 1) {
                     printCharChoiceError(choices);
@@ -329,8 +330,7 @@ public class DataValidation {
                         getValidCharChoices(choices) + ".");
     }
 
-    public static double validatePriceInput(String prompt) { // TODO ADJUST ERROR MESSAGE(REFLECT ACTUAL
-        // LIMIT)
+    public static double validatePriceInput(String prompt) {
         boolean isRunning = true;
         double number = 0;
         String inputNumber = "";
@@ -379,7 +379,7 @@ public class DataValidation {
     }
 
     public static String validatePetID(int petType) {
-        String petPrefix = switch (petType){
+        String petPrefix = switch (petType) {
             case 1 -> "D";
             case 2 -> "C";
             case 3 -> "B";
@@ -445,10 +445,7 @@ public class DataValidation {
         String breed = "N/A";
         char gender = 'U';
         int age = 0;
-        String status = "Available";
         double price = 0.0;
-        HashMap<String, String> adoptionHistory = new HashMap<>();
-        HashMap<String, String> medicalHistory = new HashMap<>();
 
         if (category == null) {
             return null;

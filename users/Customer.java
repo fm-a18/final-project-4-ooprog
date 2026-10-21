@@ -1,19 +1,17 @@
 package users;
 
 import inventory.Pet;
-import utils.FileHandler;
-import utils.PetManager;
-import utils.DataValidation;
-import utils.DisplayUtils;
+import utils.*;
+
+import static utils.RecordManager.FILE_PET_LIST;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
 
-
 public class Customer extends User {
     public Customer(String userID, String firstName, String lastName, int age, String emailAddress,
-                    String address, String phoneNumber, String password) {
+            String address, String phoneNumber, String password) {
         super(userID, firstName, lastName, age, emailAddress,
                 address, phoneNumber, password);
     }
@@ -60,7 +58,7 @@ public class Customer extends User {
         System.out.println("Logging out...");
     }
 
-    private ArrayList<Pet> availablePets = PetManager.getInstance().getAvailablePets();
+    private final ArrayList<Pet> availablePets = PetManager.getInstance().getAvailablePets();
 
     private void viewAllPets() {
         if (availablePets.isEmpty()) {
@@ -94,12 +92,13 @@ public class Customer extends User {
                 DisplayUtils.centeredTitle("SEARCH PET BY NAME", 60);
                 String name = DataValidation.validateString("Enter Pet Name: ");
 
-                showResults(FileHandler.filterRecords("PET_LIST.txt", name, Pet::getPetName), "VIEW BY PET NAME: " + name.toUpperCase());
+                showResults(FileHandler.filterRecords(FILE_PET_LIST, name, Pet::getPetName),
+                        "VIEW BY PET NAME: " + name.toUpperCase());
                 break;
             case 2: // VIEW PET BY PET TYPE
-            ArrayList<Pet> pets = getSpecificPetDetailsPerType();
+                ArrayList<Pet> pets = getSpecificPetDetailsPerType();
                 String petType = "";
-                for(Pet pet : pets){
+                for (Pet pet : pets) {
                     petType = pet.getType();
                     break;
                 }
@@ -109,28 +108,29 @@ public class Customer extends User {
                 DisplayUtils.centeredTitle("SEARCH PET BY BREED", 60);
                 String breed = DataValidation.validateString("Enter Pet Breed: ");
 
-                showResults(FileHandler.filterRecords("PET_LIST.txt", breed, Pet::getBreed), "VIEW BY PET BREED " + breed.toUpperCase());
+                showResults(FileHandler.filterRecords(FILE_PET_LIST, breed, Pet::getBreed),
+                        "VIEW BY PET BREED " + breed.toUpperCase());
                 break;
             case 4: // SEARCH PET BY GENDER
                 DisplayUtils.printMenu("SEARCH BY PET GENDER",
                         "#Select Gender",
                         "Male",
                         "Female");
-                int choiceGender = DataValidation.intChoiceValidation("Select Option",
-                        1, 2, 0);
+                char choiceGender = DataValidation.charChoiceValidation("Select Option", 'M', 'F');
 
                 if (choiceGender == 0) {
                     break;
                 }
 
-                String gender = (choiceGender == 1) ? "Male" : "Female";
-                showResults(FileHandler.filterRecords("PET_LIST.txt", String.valueOf(gender), Pet::getGender), "VIEW BY PET GENDER " + gender.toUpperCase());
+                String gender = (choiceGender == 'M') ? "Male" : "Female";
+                showResults(FileHandler.filterRecords(FILE_PET_LIST, String.valueOf(gender), Pet::getGender),
+                        "VIEW BY PET GENDER " + gender.toUpperCase());
                 break;
             case 5: // SEARCH PET BY AGE
-            DisplayUtils.centeredTitle("SEARCH PET BY AGE", 60);
-                int age = DataValidation.validatePetAgeInput("Enter Pet Age: ");
+                DisplayUtils.centeredTitle("SEARCH PET BY AGE", 60);
+                int age = DataValidation.validatePetAgeInput();
 
-                showResults(FileHandler.filterRecords("PET_LIST.txt", age, Pet::getAge), "VIEW BY PET AGE " + age);
+                showResults(FileHandler.filterRecords(FILE_PET_LIST, age, Pet::getAge), "VIEW BY PET AGE " + age);
                 break;
         }
     }
@@ -160,7 +160,7 @@ public class Customer extends User {
                 "Cat",
                 "Bird");
         int choiceType = DataValidation.intChoiceValidation("Select Option",
-                1, 2, 3, 0);
+                1, 2, 3);
 
         switch (choiceType) {
             case 1 -> type = "dog";
@@ -172,9 +172,9 @@ public class Customer extends User {
         return FileHandler.filterRecords(RecordManager.FILE_PET_LIST, type, Pet::getType);
     }
 
-    private void findSpecificPets(){
+    private void findSpecificPets() {
         ArrayList<Pet> pets = getSpecificPetDetailsPerType();
-        if(pets == null || pets.isEmpty()){
+        if (pets == null || pets.isEmpty()) {
             return;
         }
 
@@ -186,7 +186,8 @@ public class Customer extends User {
             return;
         }
 
-        char viewDetailsChoice = DataValidation.charChoiceValidation("Do you want to view specific pet details? (y/n): ", 'Y', 'N');
+        char viewDetailsChoice = DataValidation
+                .charChoiceValidation("Do you want to view specific pet details?", 'Y', 'N');
 
         if (viewDetailsChoice == 'Y') {
             String type = petTypes.getFirst().getType();
@@ -194,7 +195,7 @@ public class Customer extends User {
         }
     }
 
-    private void specificPetDetails(String type, ArrayList<Pet> petTypes) { // EDIT THIS
+    private void specificPetDetails(ArrayList<Pet> petTypes) { // EDIT THIS
         DisplayUtils.centeredTitle("VIEW SPECIFIC PET DETAILS", 60);
         String petID = DataValidation.validatePetIdInput();
 
@@ -220,7 +221,7 @@ public class Customer extends User {
                 "Descending Price",
                 "Price Range");
         int choice = DataValidation.intChoiceValidation("Select Option",
-                1, 2, 3, 0);
+                1, 2, 3);
 
         switch (choice) {
             case 1:

@@ -5,7 +5,6 @@ import inventory.Pet;
 import utils.*;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -14,7 +13,7 @@ import static utils.DisplayUtils.printMenu;
 public class Admin extends User {
 
     public Admin(String userID, String firstName, String lastName, int age, String emailAddress,
-                 String address, String phoneNumber, String password) {
+            String address, String phoneNumber, String password) {
         super(userID, firstName, lastName, age, emailAddress,
                 address, phoneNumber, password);
     }
@@ -30,7 +29,7 @@ public class Admin extends User {
         while (!isDone) {
             printMenu("ADMIN MENU",
                     "#Pet Management",
-                    "View All Available Pets",
+                    "View All Pets",
                     "Search by Category",
                     "Sort by Category",
                     "Add Pet",
@@ -64,7 +63,7 @@ public class Admin extends User {
 
     private void viewAllPets() {
         var pets = PetManager.getInstance().getAllPets();
-        if (pets == null || pets.isEmpty()){
+        if (pets == null || pets.isEmpty()) {
             System.out.println("No pets found.");
             return;
         }
@@ -93,7 +92,7 @@ public class Admin extends User {
 
         String record = FileHandler.findRecord(fileName, findTransactionNum, 0);
 
-        if (record == null){
+        if (record == null) {
             System.out.println("Transaction not found.");
             return null;
         }
@@ -107,7 +106,7 @@ public class Admin extends User {
         return record;
     }
 
-    private Pet findPet(String petID){
+    private Pet findPet(String petID) {
         Pet pet = PetManager.getInstance().findPetID(petID);
         if (pet == null) {
             System.out.println("Pet " + petID + " not found in the pet list. No changes were made.");
@@ -133,7 +132,7 @@ public class Admin extends User {
         if (currentStatus == AdoptionStatus.CANCELLATION_REVIEW) {
             System.out.println("This pet already has a pending cancellation request.");
             return;
-        } else if (currentStatus == AdoptionStatus.RETURN_PENDING){
+        } else if (currentStatus == AdoptionStatus.RETURN_PENDING) {
             System.out.println("This pet already has a pending return request.");
             return;
         }
@@ -177,15 +176,15 @@ public class Admin extends User {
         }
 
         FileHandler.appendRecord(RecordManager.FILE_CANCELLED_LIST, record);
-        FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, 0); //Remove from cancellation_request
-        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RES_TRANSACTION_ID); //Remove from reserved_req
+        FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, 0); // Remove from
+                                                                                              // cancellation_request
+        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RES_TRANSACTION_ID); // Remove from
+                                                                                                   // reserved_req
         PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
 
         System.out.printf("Cancellation approved for transaction %s.\n", transactionNum);
 
     }
-
-    static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
     private void approvePetReturn() {
         System.out.println("Return Requests");
@@ -201,12 +200,12 @@ public class Admin extends User {
         if (pet == null)
             return;
 
-        String detailsOfReturn = DataValidation.validateString("Details");
+        String detailsOfReturn = DataValidation.validateString("Details: ");
 
-        pet.addAdoptionHistory(LocalDate.now().format(dateFormat), detailsOfReturn);
+        pet.addAdoptionHistory(LocalDate.now().format(Pet.DATE_FORMAT), detailsOfReturn);
         FileHandler.appendRecord(RecordManager.FILE_RETURNED_LIST, record); // Documentation
-        FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, 0); //Remove from return list
-        FileHandler.removeRecord(RecordManager.FILE_ADOPTED, transactionNum, 0); //remove from adopted
+        FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, 0); // Remove from return list
+        FileHandler.removeRecord(RecordManager.FILE_ADOPTED, transactionNum, 0); // remove from adopted
         PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
 
         System.out.printf("Return of pet approved for transaction %s.\n", transactionNum);
@@ -226,11 +225,11 @@ public class Admin extends User {
 
         DisplayUtils.displayPetsForStaff(new ArrayList<>(incomingPets));
         String petID = DataValidation.validatePetIdInput();
-        //view specific pet details
+        // view specific pet details
 
         Pet selectedPet = null;
-        for(Pet pet : incomingPets){
-            if(pet.getPetID().equalsIgnoreCase(petID)){
+        for (Pet pet : incomingPets) {
+            if (pet.getPetID().equalsIgnoreCase(petID)) {
                 selectedPet = pet;
                 break;
             }
@@ -261,11 +260,11 @@ public class Admin extends User {
             return;
         }
 
-        PetManager.getInstance().updatePetStatus(String.valueOf(selectedPet), AdoptionStatus.AVAILABLE);
-        FileHandler.appendRecord(RecordManager.FILE_PET_LIST, selectedPet.toFileString());
+        if (!PetManager.getInstance().approveIncomingPet(selectedPet)) {
+            System.out.println("Could not add the pet to inventory. It stays in the incoming list.");
+            return;
+        }
         FileHandler.removeRecord(RecordManager.FILE_INCOMING_LIST, petID, 0);
-
-        PetManager.getInstance().getAllPets().add(selectedPet);
 
         System.out.printf("Incoming pet with ID %s approved and added to inventory.\n", petID);
 
