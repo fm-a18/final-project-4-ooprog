@@ -14,7 +14,8 @@ import java.time.format.ResolverStyle;
 import java.util.Scanner;
 
 public class DataValidation {
-    static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-uuuu").withResolverStyle(ResolverStyle.STRICT);
+    static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-uuuu")
+            .withResolverStyle(ResolverStyle.STRICT);
     public static final Scanner sc = new Scanner(System.in);
 
     public static String validateString(String prompt) { // TODO IMPROVE ERROR MESSAGE
@@ -141,6 +142,11 @@ public class DataValidation {
             }
         }
         return input;
+    }
+
+    public static boolean dateForClaimingPet(LocalDate date) {
+        LocalDate today = LocalDate.now();
+        return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
     }
 
     public static LocalDate validateDate(String prompt) { // coordinator
@@ -369,7 +375,7 @@ public class DataValidation {
     }
 
     public static String validatePetID(int petType) {
-        String petPrefix = switch (petType){
+        String petPrefix = switch (petType) {
             case 1 -> "D";
             case 2 -> "C";
             case 3 -> "B";
