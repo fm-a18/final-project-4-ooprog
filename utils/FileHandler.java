@@ -228,6 +228,7 @@ public class FileHandler {
                     };
                     sorted.add(pet);
                 } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+                    //TODO error msg
                 }
             }
         } catch (IOException e) {
@@ -276,6 +277,7 @@ public class FileHandler {
                         max = Math.max(max, Integer.parseInt(parts[colIndex].substring(prefix.length())));
                     } catch (NumberFormatException e) {
                         // skip IDs that don't end in a number
+                        //TODO error msg
                     }
                 }
             }
