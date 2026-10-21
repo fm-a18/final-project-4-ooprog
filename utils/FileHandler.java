@@ -11,6 +11,27 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 public class FileHandler {
+
+    public static void ensureFilesExist() { //For debugging
+        File dir = new File("data");
+        if (!dir.exists()) dir.mkdirs();
+
+        String[] files = {
+                RecordManager.FILE_USER_LIST, RecordManager.FILE_PET_LIST, RecordManager.FILE_INCOMING_LIST,
+                RecordManager.FILE_RESERVED, RecordManager.FILE_ADOPTED,
+                RecordManager.FILE_CANCELLATION_REQUEST, RecordManager.FILE_CANCELLED_LIST,
+                RecordManager.FILE_RETURN_REQUEST, RecordManager.FILE_RETURNED_LIST
+        };
+
+        for (String fileName : files) {
+            try {
+                new File(fileName).createNewFile(); // does nothing if it already exists
+            } catch (IOException e) {
+                System.out.println("Could not create " + fileName + ".");
+            }
+        }
+    }
+
     public static String findRecord(String fileName, String searchFor, int colIndex) {
         try (Scanner read = new Scanner(new File(fileName))) {
             while (read.hasNextLine()) {
@@ -47,7 +68,8 @@ public class FileHandler {
 
     public static void appendRecord(String fileName, String record){
         try (FileWriter writer = new FileWriter(fileName, true)) {
-            writer.write(record + System.lineSeparator());
+            writer.write(record);
+            writer.write(System.lineSeparator());
         } catch (IOException e) {
             System.out.println("Error in writing to file.");
         }
@@ -126,8 +148,8 @@ public class FileHandler {
                 if(pet != null){
                     pets.add(pet);
                 }
-                return pets;
             }
+            return pets;
         } catch (IOException e){
             System.out.println("Error in reading file.");
         }
@@ -218,5 +240,30 @@ public class FileHandler {
             return;
         }
         DisplayUtils.displayPetsForStaff(sorted);
+    }
+
+    public static int highestNumber(String fileName, int colIndex, String prefix) {
+        int max = 0;
+        File file = new File(fileName);
+        if (!file.exists()) {
+            return 0;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\s*\\|\\s*", -1);
+                if (parts.length > colIndex && parts[colIndex].startsWith(prefix)) {
+                    try {
+                        max = Math.max(max, Integer.parseInt(parts[colIndex].substring(prefix.length())));
+                    } catch (NumberFormatException e) {
+                        // skip IDs that don't end in a number
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error in reading " + fileName + ".");
+        }
+        return max;
     }
 }

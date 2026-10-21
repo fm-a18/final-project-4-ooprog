@@ -1,16 +1,17 @@
 package utils;
 
-import java.time.format.ResolverStyle;
-import java.util.Scanner;
 import inventory.Bird;
 import inventory.Cat;
 import inventory.Dog;
 import inventory.Pet;
+
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+import java.util.Scanner;
 
 public class DataValidation {
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-uuuu").withResolverStyle(ResolverStyle.STRICT);
@@ -20,7 +21,7 @@ public class DataValidation {
         boolean isValidated = false;
         String input = "";
         while (!isValidated) {
-            System.out.print(prompt);
+            System.out.print(prompt + ": ");
             try {
                 input = sc.nextLine().trim();
             } catch (java.util.NoSuchElementException e) {
@@ -66,12 +67,12 @@ public class DataValidation {
         return number;
     }
 
-    public static int validatePetAgeInput(String prompt) { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX PET AGE
+    public static int validatePetAgeInput() { // TODO IMPROVE ERROR MESSAGE AND REFLECT MIN AND MAX PET AGE
         boolean isRunning = true;
         int number = 0;
         String inputNumber = "";
         while (isRunning) {
-            System.out.print(prompt);
+            System.out.print("Enter Pet Age:");
             inputNumber = sc.nextLine().trim();
             if (!inputNumber.matches("-?(0|[1-9]\\d*)")) {
                 System.out.println("Invalid Input. Only input positive integers without leading zeros. Try Again.");
@@ -80,7 +81,7 @@ public class DataValidation {
             try {
                 number = Integer.parseInt(inputNumber);
             } catch (NumberFormatException e) {
-                System.out.println("Invalid Input. Number is too large. Try Again.");
+                System.out.println("Invalid Input. Age is too large. Try Again.");
                 continue;
             }
             if (number < 1 || number > 15) {
@@ -116,7 +117,7 @@ public class DataValidation {
     }
 
     public static boolean emailExists(String emailAddress) {
-        return FileHandler.findRecord("USER_LIST.txt", emailAddress, 4) != null;
+        return FileHandler.findRecord(RecordManager.FILE_USER_LIST, emailAddress, 4) != null;
     }
 
     public static String validateAddress() {
@@ -133,7 +134,7 @@ public class DataValidation {
             }
             if (input.isEmpty()) {
                 System.out.println("Error: Address cannot be empty.");
-            } else if (!input.matches("^(?=.*[A-Za-z])[A-Za-z0-9.,#\\-/\\s]{10,150}$")) {
+            } else if (!input.matches("^(?=.*[A-Za-z])[A-Za-z0-9.,#\\-/\\s]{5,150}$")) {
                 System.out.println("Invalid Address. Please enter a valid address.");
             } else {
                 isValidated = true;
@@ -295,7 +296,7 @@ public class DataValidation {
             sb.append(choices[i]);
 
             if (i < choices.length - 1) {
-                sb.append("/ ");
+                sb.append("/");
             }
         }
 
@@ -309,7 +310,7 @@ public class DataValidation {
             sb.append(Character.toUpperCase(choices[i]));
 
             if (i < choices.length - 1) {
-                sb.append("/ ");
+                sb.append("/");
             }
         }
 
@@ -352,22 +353,6 @@ public class DataValidation {
         return number;
     }
 
-//    public static String getCategoryPrefix(String category) {
-//        if (category == null) {
-//            return null;
-//        }
-//        switch (category.trim().toLowerCase()) {
-//            case "dog":
-//                return Dog.ID_PREFIX;
-//            case "cat":
-//                return Cat.ID_PREFIX;
-//            case "bird":
-//                return Bird.ID_PREFIX;
-//            default:
-//                return null;
-//        }
-//    }
-
     public static String validatePetIdInput() {
         boolean isValidated = false;
         String input = "";
@@ -393,19 +378,28 @@ public class DataValidation {
 
     }
 
-    public static String validatePetID(String prompt, String regex) {
+    public static String validatePetID(int petType) {
+        String petPrefix = switch (petType){
+            case 1 -> "D";
+            case 2 -> "C";
+            case 3 -> "B";
+            default -> throw new IllegalStateException("Unexpected Category Type: " + petType);
+        };
+
         String id = "";
         boolean isValid = false;
         while (!isValid) {
             System.out.println(
                     "PET ID FORMAT: First letter of pet type (D, C, B) followed by 4 digits (e.g., D0001, C0002, B0003)");
-            System.out.print(prompt);
+            System.out.print("Pet ID: ");
             id = sc.nextLine().trim().toUpperCase();
 
             if (id.isEmpty()) {
                 System.out.println("Error: Pet ID cannot be empty.");
-            } else if (!id.matches(regex)) {
+            } else if (!id.matches("^([DBC])\\d{4}$")) {
                 System.out.println("Invalid Pet ID. Try another ID.");
+            } else if (!id.startsWith(petPrefix)) {
+                System.out.printf("Error: Pet ID must start with '%s' for this pet type.%n", petPrefix);
             } else {
                 isValid = true;
             }
@@ -468,17 +462,6 @@ public class DataValidation {
     }
 
     // TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS
-    public static String transactionNumGenerator() {
-        int n = 6;
-        StringBuilder transactionNum = new StringBuilder();
-        String randomNum = "0123456789";
-        Random rand = new Random();
-
-        for (int i = 0; i < n; i++) {
-            transactionNum.append(randomNum.charAt(rand.nextInt(randomNum.length())));
-        }
-        return "TN" + transactionNum.toString();
-    }
 
     public static String transactionNumberValidation(String prompt) {
         String transactionNum = "";

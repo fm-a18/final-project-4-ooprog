@@ -1,4 +1,3 @@
-import inventory.Pet;
 import users.User;
 import utils.DataValidation;
 import utils.DisplayUtils;
@@ -6,20 +5,24 @@ import utils.FileHandler;
 import users.Coordinator;
 import users.Customer;
 import users.Admin;
+import utils.RecordManager;
+
+import static utils.RecordManager.US_ADDRESS;
+import static utils.RecordManager.US_AGE;
+import static utils.RecordManager.US_EMAIL_ADDRESS;
+import static utils.RecordManager.US_FIELD_COUNT;
+import static utils.RecordManager.US_FIRST_NAME;
+import static utils.RecordManager.US_LAST_NAME;
+import static utils.RecordManager.US_PASSWORD;
+import static utils.RecordManager.US_PHONE_NUMBER;
+import static utils.RecordManager.US_ROLE;
+import static utils.RecordManager.US_USER_ID;
 
 import java.io.*;
-import java.util.ArrayList;
 
 import static utils.DataValidation.emailExists;
 
 public class Main {
-    public static final ArrayList<User> listOfUsers = new ArrayList<>();
-    public static final ArrayList<Pet> listOfPets = new ArrayList<>();
-
-    // TODO MIGHT MERGE COORDINATOR + ADMIN LANDING PAGE SINCE CODE BLOCK IS
-    // LITERALLY CARBON COPY
-    // TODO MIGHT ALSO MERGE FOR LOGIN SINCE IT IS ALSO CARBON COPY(JUST MAKE THE
-    // LOGIN HAVE PARAMETERS)
     public static void customerLandingPage() {
         boolean isDone = false;
         while (!isDone) {
@@ -73,15 +76,15 @@ public class Main {
         boolean isFileSaved = false;
         String role = "Customer";
         while (!isFileSaved) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("USER_LIST.txt", true))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(RecordManager.FILE_USER_LIST, true))) {
                 writer.write(
                         String.format("%s|%s|%s|%s|%s|%s|%s|%s|%S%n", userID, firstName, lastName, age, emailAddress,
                                 address, phoneNumber, password, role));
                 System.out.println("User successfully registered!");
                 isFileSaved = true;
             } catch (IOException e) {
-                System.out.println("Error in writing file. Try again? (Y/N)");
-                char retry = DataValidation.charChoiceValidation("Error in writing file. Try again? (Y/N)", 'Y', 'N');
+                System.out.println("Error in writing file. Try again?");
+                char retry = DataValidation.charChoiceValidation("Error in writing file. Try again?", 'Y', 'N');
                 if (retry != 'Y') {
                     isFileSaved = true;
                 }
@@ -89,117 +92,77 @@ public class Main {
         }
     }
 
-    private static String generateCustomerId() throws IOException {
-        int nextId = 1;
-        File userFile = new File("USER_LIST.txt");
-        if (userFile.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(userFile))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] fields = line.split("\\s*\\|\\s*", -1);
-                    if (fields.length > 0 && fields[0].matches("CU\\d+")) {
-                        int id = Integer.parseInt(fields[0].substring(2));
-                        nextId = Math.max(nextId, id + 1);
-                    }
-                }
-            }
-        }
-        return String.format("CU%04d", nextId);
-    }
-
     public static void customerLogin() {
-        File file = new File("USER_LIST.txt");
-        if (!file.exists()) {
-            System.out.println("No User Records found.");
-            return;
-        }
-        System.out.println("====================== CUSTOMER LOGIN ======================");
-        String email = DataValidation.validateEmailAddress();
-        String userData = FileHandler.findRecord("USER_LIST.txt", email, 4);
-        if (userData == null) {
-            System.out.println("Account not found");
-            return;
-        }
-        String[] parts = userData.split("\\s*\\|\\s*");
-
-        String password = DataValidation.validatePassword();
-        if (!parts[7].equals(password)) {
-            System.out.println("Incorrect password.");
-            return;
-        }
-        System.out.println("Login successful.");
-        Customer loggedInCustomer = new Customer(parts[0], parts[1], parts[2], Integer.parseInt(parts[3]), parts[4],
-                parts[5], parts[6], parts[7]);
-        adopterIn(loggedInCustomer);
+        login("CUSTOMER LOGIN", "CUSTOMER");
     }
 
     public static void coordinatorLogin() {
-        File file = new File("USER_LIST.txt");
-        if (!file.exists()) {
-            System.out.println("No Coordinator Records found.");
-            return;
-        }
-        System.out.println("==================== COORDINATOR LOGIN =====================");
-        String email = DataValidation.validateEmailAddress();
-        String coordinatorData = FileHandler.findRecord("USER_LIST.txt", email, 4);
-        if (coordinatorData == null) {
-            System.out.println("Coordinator account not found");
-            return;
-        }
-        String[] parts = coordinatorData.split("\\s*\\|\\s*");
-
-        String password = DataValidation.validatePassword();
-        if (!parts[7].equals(password)) {
-            System.out.println("Incorrect password.");
-            return;
-        }
-        System.out.println("Login successful.");
-        Coordinator loggedInCoordinator = new Coordinator(parts[0], parts[1], parts[2], Integer.parseInt(parts[3]),
-                parts[4],
-                parts[5], parts[6], parts[7]);
-        coordinatorIn(loggedInCoordinator);
+        login("COORDINATOR LOGIN", "COORDINATOR");
     }
 
     public static void adminLogin() {
-        File file = new File("USER_LIST.txt");
-        if (!file.exists()) {
-            System.out.println("No Admin Records found.");
-            return;
-        }
-        System.out.println("======================= ADMIN LOGIN ========================");
-        String email = DataValidation.validateEmailAddress();
-        String adminData = FileHandler.findRecord("USER_LIST.txt", email, 4);
-        if (adminData == null) {
-            System.out.println("Admin account not found");
-            return;
-        }
-        String[] parts = adminData.split("\\s*\\|\\s*");
+        login("ADMIN LOGIN", "ADMIN");
+    }
 
-        String password = DataValidation.validatePassword();
-        if (!parts[7].equals(password)) {
-            System.out.println("Incorrect password.");
+    private static void login(String title, String expectedRole) {
+        String[] parts = authenticate(title, expectedRole);
+        if (parts == null) {
             return;
         }
         System.out.println("Login successful.");
-        Admin loggedInAdmin = new Admin(parts[0], parts[1], parts[2], Integer.parseInt(parts[3]), parts[4],
-                parts[5], parts[6], parts[7]);
-        adminIn(loggedInAdmin);
+        createUser(parts).showMenu(DataValidation.sc);
     }
 
-    public static void adopterIn(Customer loggedInCustomer) {
-        listOfUsers.add(loggedInCustomer);
-        loggedInCustomer.showMenu(DataValidation.sc);
+    private static String[] authenticate(String title, String expectedRole) {
+        if (!new File(RecordManager.FILE_USER_LIST).exists()) {
+            System.out.println("No User Records found.");
+            return null;
+        }
+
+        DisplayUtils.centeredTitle(title, DisplayUtils.MENU_WIDTH);
+        String email = DataValidation.validateEmailAddress();
+        String userData = FileHandler.findRecord(RecordManager.FILE_USER_LIST, email, US_EMAIL_ADDRESS);
+        String password = promptLoginPassword();
+
+        if (userData == null) {
+            System.out.println("Invalid email, password, or account type.");
+            return null;
+        }
+
+        String[] parts = userData.split("\\s*\\|\\s*", -1);
+        if (parts.length != US_FIELD_COUNT) {
+            System.out.println("This account record is damaged. Check USER_LIST.txt.");
+            return null;
+        }
+
+        boolean isAuthorized = parts[US_PASSWORD].equals(password)
+                && parts[US_ROLE].equalsIgnoreCase(expectedRole);
+        if (!isAuthorized) {
+            System.out.println("Invalid email, password, or account type.");
+            return null;
+        }
+        return parts;
     }
 
-    public static void coordinatorIn(Coordinator loggedInCoordinator) {
-        loggedInCoordinator.showMenu(DataValidation.sc);
+    private static String promptLoginPassword() {
+        System.out.print("Enter your Password: ");
+        return DataValidation.sc.nextLine().trim();
     }
 
-    public static void adminIn(Admin loggedInAdmin) {
-        loggedInAdmin.showMenu(DataValidation.sc);
+    private static User createUser(String[] p) {
+        int age = Integer.parseInt(p[US_AGE]);
+        return switch (p[US_ROLE].toUpperCase()) {
+            case "ADMIN" -> new Admin(p[US_USER_ID], p[US_FIRST_NAME], p[US_LAST_NAME], age,
+                    p[US_EMAIL_ADDRESS], p[US_ADDRESS], p[US_PHONE_NUMBER], p[US_PASSWORD]);
+            case "COORDINATOR" -> new Coordinator(p[US_USER_ID], p[US_FIRST_NAME], p[US_LAST_NAME], age,
+                    p[US_EMAIL_ADDRESS], p[US_ADDRESS], p[US_PHONE_NUMBER], p[US_PASSWORD]);
+            default -> new Customer(p[US_USER_ID], p[US_FIRST_NAME], p[US_LAST_NAME], age,
+                    p[US_EMAIL_ADDRESS], p[US_ADDRESS], p[US_PHONE_NUMBER], p[US_PASSWORD]);
+        };
     }
 
     public static void main(String[] args) {
+        FileHandler.ensureFilesExist(); //For debugging
         System.out.println("Welcome!");
 
         boolean isDone = false;

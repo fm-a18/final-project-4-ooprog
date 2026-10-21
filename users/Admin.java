@@ -4,10 +4,11 @@ import inventory.AdoptionStatus;
 import inventory.Pet;
 import utils.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import static utils.DataValidation.sc;
 import static utils.DisplayUtils.printMenu;
 
 public class Admin extends User {
@@ -42,9 +43,10 @@ public class Admin extends User {
                     "#Shelter Management",
                     "Manage Incoming Pets",
 
-                    "#Exit");
+                    "#Exit",
+                    "Log Out");
             int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 4, 5, 6, 7, 8, 0);
+                    1, 2, 3, 4, 5, 6, 7, 8, 9);
 
             switch (choice) {
                 case 1 -> viewAllPets();
@@ -55,7 +57,7 @@ public class Admin extends User {
                 case 6 -> cancelAdoptionRequest();
                 case 7 -> approvePetReturn();
                 case 8 -> manageIncomingPets();
-                case 0 -> isDone = true;
+                case 9 -> isDone = true;
             }
         }
     }
@@ -70,11 +72,11 @@ public class Admin extends User {
     }
 
     private void searchByCategory() {
-        PetManager.getInstance().searchByCategory(sc);
+        PetManager.getInstance().searchByCategory();
     }
 
     private void filterByStatus() {
-        PetManager.getInstance().sortByCategory(sc);
+        PetManager.getInstance().sortByCategory();
     }
 
     private void addPet() {
@@ -127,11 +129,25 @@ public class Admin extends User {
         if (pet == null)
             return;
 
+        AdoptionStatus currentStatus = pet.getAdoptionStatus();
+        if (currentStatus == AdoptionStatus.CANCELLATION_REVIEW) {
+            System.out.println("This pet already has a pending cancellation request.");
+            return;
+        } else if (currentStatus == AdoptionStatus.RETURN_PENDING){
+            System.out.println("This pet already has a pending return request.");
+            return;
+        }
+
+        if (currentStatus == AdoptionStatus.ADOPTED) {
+            System.out.println("This pet is already adopted and cannot be approved again.");
+            return;
+        }
+
         String adoptedRecord = RecordManager.buildAdoptedRecord(reservationRecord, this.getEmailAddress());
 
         FileHandler.appendRecord(RecordManager.FILE_ADOPTED, adoptedRecord);
         FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, 0);
-        pet.setAdoptionStatus(AdoptionStatus.ADOPTED);
+        PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.ADOPTED);
 
         System.out.printf("Adoption approved for transaction %s.\n", transactionNum);
 
@@ -142,7 +158,7 @@ public class Admin extends User {
 
     private void cancelAdoptionRequest() {
         System.out.println("Cancellation Requests");
-        String record = findAndConfirmTransaction("CANCELLATION_REQUEST.txt", "Cancellation Request");
+        String record = findAndConfirmTransaction(RecordManager.FILE_CANCELLATION_REQUEST, "Cancellation Request");
         if (record == null)
             return;
 
@@ -154,18 +170,26 @@ public class Admin extends User {
         if (pet == null)
             return;
 
+        AdoptionStatus currentStatus = pet.getAdoptionStatus();
+        if (currentStatus == AdoptionStatus.ADOPTED) {
+            System.out.println("This pet is already adopted and cannot be approved again.");
+            return;
+        }
+
         FileHandler.appendRecord(RecordManager.FILE_CANCELLED_LIST, record);
         FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, 0); //Remove from cancellation_request
         FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RES_TRANSACTION_ID); //Remove from reserved_req
-        PetManager.getInstance().findPetID(petID).setAdoptionStatus(AdoptionStatus.AVAILABLE);
+        PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
 
         System.out.printf("Cancellation approved for transaction %s.\n", transactionNum);
 
     }
 
+    static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
     private void approvePetReturn() {
         System.out.println("Return Requests");
-        String record = findAndConfirmTransaction("RETURN_REQUEST.txt", "Return Request");
+        String record = findAndConfirmTransaction(RecordManager.FILE_RETURN_REQUEST, "Return Request");
         if (record == null)
             return;
 
@@ -177,15 +201,19 @@ public class Admin extends User {
         if (pet == null)
             return;
 
+        String detailsOfReturn = DataValidation.validateString("Details");
+
+        pet.addAdoptionHistory(LocalDate.now().format(dateFormat), detailsOfReturn);
         FileHandler.appendRecord(RecordManager.FILE_RETURNED_LIST, record); // Documentation
-        FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, 0);
-        pet.setAdoptionStatus(AdoptionStatus.AVAILABLE); //need to append adoption history
+        FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, 0); //Remove from return list
+        FileHandler.removeRecord(RecordManager.FILE_ADOPTED, transactionNum, 0); //remove from adopted
+        PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
 
         System.out.printf("Return of pet approved for transaction %s.\n", transactionNum);
 
     }
 
-    private void manageIncomingPets() { //double check if it will allow duplicated id
+    private void manageIncomingPets() {
         System.out.println("Incoming Pet Requests");
 
         var incomingPets = RecordManager.readRecords(RecordManager.FILE_INCOMING_LIST,
@@ -208,7 +236,16 @@ public class Admin extends User {
             }
         }
 
-        assert selectedPet != null;
+        if (selectedPet == null) {
+            System.out.println("Pet " + petID + " is not in the incoming list.");
+            return;
+        }
+
+        if (PetManager.getInstance().findPetID(petID) != null) {
+            System.out.println("This pet ID already exists in the active inventory. Approval cancelled.");
+            return;
+        }
+
         DisplayUtils.printSummaryBox("INCOMING PET", new String[][] {
                 { "Pet ID", selectedPet.getPetID() },
                 { "Name", selectedPet.getPetName() },
@@ -224,8 +261,11 @@ public class Admin extends User {
             return;
         }
 
+        PetManager.getInstance().updatePetStatus(String.valueOf(selectedPet), AdoptionStatus.AVAILABLE);
         FileHandler.appendRecord(RecordManager.FILE_PET_LIST, selectedPet.toFileString());
-        selectedPet.setAdoptionStatus(AdoptionStatus.AVAILABLE);
+        FileHandler.removeRecord(RecordManager.FILE_INCOMING_LIST, petID, 0);
+
+        PetManager.getInstance().getAllPets().add(selectedPet);
 
         System.out.printf("Incoming pet with ID %s approved and added to inventory.\n", petID);
 

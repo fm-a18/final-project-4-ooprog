@@ -41,7 +41,8 @@ public class Customer extends User {
                     "#Return",
                     "Request Pet Return",
 
-                    "#Exit");
+                    "#Exit",
+                    "Log Out");
             int choice = DataValidation.intChoiceValidation("Select Option",
                     1, 2, 3, 4, 5, 6, 7, 8);
 
@@ -168,7 +169,7 @@ public class Customer extends User {
             case 0 -> type = "";
         }
 
-        return FileHandler.filterRecords("PET_LIST.txt", type, Pet::getType);
+        return FileHandler.filterRecords(RecordManager.FILE_PET_LIST, type, Pet::getType);
     }
 
     private void findSpecificPets(){
@@ -189,7 +190,7 @@ public class Customer extends User {
 
         if (viewDetailsChoice == 'Y') {
             String type = petTypes.getFirst().getType();
-            specificPetDetails(type, petTypes);
+            specificPetDetails(petTypes);
         }
     }
 
