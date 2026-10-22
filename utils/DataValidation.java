@@ -109,7 +109,7 @@ public class DataValidation {
             }
             if (input.isEmpty()) {
                 System.out.println("Error: Email Address cannot be empty.");
-            } else if (!input.matches("^[\\w._+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            } else if (!input.matches("^[\\\\w!#$%&'*+/=?^`{|}~.-]+@[A-Za-z0-9.-]+\\\\.[A-Za-z]{2,}$")) {
                 System.out.println("Invalid Email Address. Please follow the following format: name@example.com");
             } else {
                 isValidated = true;
