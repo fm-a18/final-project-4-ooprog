@@ -1,0 +1,3 @@
+D0001|Audric|Dog|Student|M|14|1000.0|AVAILABLE|2026-10-23~Ubo|10-21-2026~Just so
+D0002|Raphhy|Dog|tudent|F|14|100.5|AVAILABLE|2007-10-20~Cancer|
+C0002|Nekomimi|Cat|Pussy the Botts|F|2|500.0|AVAILABLE|2006-10-21~Salmonela|

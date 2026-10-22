@@ -1,0 +1,11 @@
+CO0001|Audric|Raymundo|19|audricray@gmail.com|DLSL C2A randoms sections|0921 730 6828|Audric2007@|COORDINATOR
+CO0002|Pauleen|De Chavez|19|dcpau@gmail.com|DLSL C2A randoms sections|0999 999 9999|DCPau2007@|COORDINATOR
+CO0003|Shanisse|De Luna|19|shanskariously@gmail.com|DLSL C2A randoms sections|0988 888 8888|Kariously2007@|COORDINATOR
+AD0001|Frances|Alcala|19|fma18@gmail.com|DLSL C2A randoms sections|0921 730 6828|fmA182007@|ADMIN
+UD0001|Audric|raphael|19|audricrayy@gmal.com|3NIUDVIEVNINUVUNV|0928 282 2222|123Audric@|CUSTOMER
+UD0002|Ads|ADs|19|abc@gmail.com|audircivgnofgvngnbng|0921 730 6828|20May2007@|CUSTOMER
+UD0003|a|b|19|a@gmail.com|ndivgfdbjnfjb|0921 730 6828|20May2007@|CUSTOMER
+UD0004|Test|One|67|test@gmail.com|#110 Pinagtung Ulan|0921 730 6828|20May2007@|CUSTOMER
+UD0005|Test|Two|78|test2@gmail.com|frgijnfjvfnjbfnbf|0921 730 6828|Asasa10@|CUSTOMER
+UD0006|Audric Raphael YRandnvnicidnnvvndjnvondvojnvonjv ovnjvjnoojnfdonj|f jvvbhfdfhvfbivfbhbihgbeeb|23|name@gmail.com|De La Salle Lipa|0921 744 3034|Auds2007@|CUSTOMER
+UD0007|Audric|Raymundo|19|audricray0520@gmail.com|#110 Pinagtung Ulan San Jose. Batangas|0921 730 6828|20May2007@|CUSTOMER
