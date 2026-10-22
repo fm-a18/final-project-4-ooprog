@@ -193,7 +193,6 @@ public class FileHandler {
     private static Pet getPet(int choice, String[] parts) {
         String petID = parts[0];
         String petName = parts[1];
-        String petType = parts[2];
         String petBreed = parts[3];
         char petGender = parts[4].charAt(0);
         int petAge = Integer.parseInt(parts[5]);
