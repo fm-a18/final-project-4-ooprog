@@ -162,7 +162,10 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        FileHandler.ensureFilesExist(); // For debugging
+        // FileHandler.ensureFilesExist(); // For debugging
+        if (!FileHandler.ensureFilesExist()) {
+            return; // data folder not found, so nothing is created or written
+        }
         System.out.println("Welcome!");
 
         boolean isDone = false;
