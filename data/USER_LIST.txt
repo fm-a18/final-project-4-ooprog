@@ -2,5 +2,5 @@ CO0001|Audric|Raymundo|19|audricray@gmail.com|DLSL C2A randoms sections|0921 730
 CO0002|Pauleen|De Chavez|19|dcpau@gmail.com|DLSL C2A randoms sections|0999 999 9999|DCPau2007@|COORDINATOR
 CO0003|Shanisse|De Luna|19|shanskariously@gmail.com|DLSL C2A randoms sections|0988 888 8888|Kariously2007@|COORDINATOR
 AD0001|Frances|Alcala|19|fma18@gmail.com|DLSL C2A randoms sections|0921 730 6828|fmA182007@|ADMIN
-UD0001|Natsuki|Deguchi|25|natsukideguchi@gmal.com|3NIUDVIEVNINUVUNV|0928 282 2222|123Natsuki@|CUSTOMER
+UD0001|Alfea|Zulueta|23|alfeamarie@gmail.com|G22 Cornerstone Entertainment|0922 222 2222|091203@|CUSTOMER
 
