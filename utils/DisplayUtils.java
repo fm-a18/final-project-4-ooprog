@@ -52,11 +52,14 @@ public class DisplayUtils {
         centeredTitle(tableName, TABLE_WIDTH);
 
         System.out.printf(
-                "%-10s | %-20s | %-15s | %-25s | %-12s%n",
+                "%-15s | %-20s | %-15s | %-25s | %-25s | %-15s | %-10s | %-12s%n",
                 "Pet ID",
                 "Pet Name",
                 "Type",
+                "Breed",
+                "Age",
                 "Status",
+                "Gender",
                 "Price");
 
         System.out.println("-".repeat(TABLE_WIDTH));
@@ -67,12 +70,15 @@ public class DisplayUtils {
 
         for (Pet pet : pets) {
             System.out.printf(
-                    "%-10s | %-20s | %-15s | %-25s | %-12s%n",
+                    "%-15s | %-20s | %-15s | %-20s | %-5d | %-12s | %-12s%n",
                     pet.getPetID(),
                     pet.getPetName(),
                     pet.getType(),
+                    pet.getBreed(),
+                    pet.getAge(),
                     pet.getAdoptionStatus(),
-                    String.format("Php %,.2f", pet.getPrice()));
+                    pet.getGender());
+                    String.format("Php %,.2f", pet.getPrice());
         }
 
         System.out.println("-".repeat(TABLE_WIDTH));
