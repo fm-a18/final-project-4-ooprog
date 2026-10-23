@@ -82,8 +82,18 @@ public class Admin extends User {
         PetManager.getInstance().addPet();
     }
 
-    public String findAndConfirmTransaction(String fileName, String action) {
-        String findTransactionNum = DataValidation.transactionNumberValidation("Transaction Number: ");
+    private String findAndConfirmTransaction(String fileName, int fieldCount, String action) {
+        ArrayList<Reservation> pending = RecordManager.readRecords(fileName, fieldCount,
+                RecordManager::parseReservation);
+
+        if (pending.isEmpty()) {
+            System.out.println("No pending " + action.toLowerCase() + "(s) found.");
+            return null;
+        }
+
+        DisplayUtils.displayPendingRequests("PENDING " + action.toUpperCase() + "S", pending);
+
+        String findTransactionNum = DataValidation.transactionNumberValidation("Transaction Number");
 
         if (findTransactionNum == null || findTransactionNum.isBlank()) {
             System.out.println("Invalid Transaction Number.");
@@ -115,8 +125,7 @@ public class Admin extends User {
     }
 
     private void approveAdoptionRequest() {
-        System.out.println("Adoption Requests");
-        String reservationRecord = findAndConfirmTransaction(RecordManager.FILE_RESERVED, "Adoption Request");
+        String reservationRecord = findAndConfirmTransaction(RecordManager.FILE_RESERVED, RecordManager.RES_FIELD_COUNT, "Adoption Request");
         if (reservationRecord == null)
             return;
 
@@ -156,8 +165,7 @@ public class Admin extends User {
     private static final int RES_PET_ID = 4;
 
     private void cancelAdoptionRequest() {
-        System.out.println("Cancellation Requests");
-        String record = findAndConfirmTransaction(RecordManager.FILE_CANCELLATION_REQUEST, "Cancellation Request");
+        String record = findAndConfirmTransaction(RecordManager.FILE_CANCELLATION_REQUEST, RecordManager.RES_FIELD_COUNT, "Cancellation Request");
         if (record == null)
             return;
 
@@ -187,8 +195,7 @@ public class Admin extends User {
     }
 
     private void approvePetReturn() {
-        System.out.println("Return Requests");
-        String record = findAndConfirmTransaction(RecordManager.FILE_RETURN_REQUEST, "Return Request");
+        String record = findAndConfirmTransaction(RecordManager.FILE_RETURN_REQUEST, RecordManager.AD_FIELD_COUNT, "Return Request");
         if (record == null)
             return;
 
@@ -200,9 +207,9 @@ public class Admin extends User {
         if (pet == null)
             return;
 
-        String detailsOfReturn = DataValidation.validateString("Details: ");
+        String detailsOfReturn = DataValidation.validateString("Details");
 
-        pet.addAdoptionHistory(LocalDate.now().format(Pet.DATE_FORMAT), detailsOfReturn);
+        pet.addAdoptionHistory(LocalDate.now(), detailsOfReturn);
         FileHandler.appendRecord(RecordManager.FILE_RETURNED_LIST, record); // Documentation
         FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, 0); // Remove from return list
         FileHandler.removeRecord(RecordManager.FILE_ADOPTED, transactionNum, 0); // remove from adopted

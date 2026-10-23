@@ -107,6 +107,23 @@ public class DisplayUtils {
                 });
     }
 
+    public static void displayPendingRequests(String tableName, ArrayList<Reservation> requests) {
+        centeredTitle(tableName, TABLE_WIDTH);
+
+        System.out.printf("%-16s | %-25s | %-30s | %-10s%n",
+                "Transaction No.", "Customer", "Email", "Pet ID");
+        System.out.println("-".repeat(TABLE_WIDTH));
+
+        for (Reservation request : requests) {
+            System.out.printf("%-16s | %-25s | %-30s | %-10s%n",
+                    request.getTransactionNum(),
+                    request.getFirstName() + " " + request.getLastName(),
+                    request.getEmail(),
+                    request.getPetID());
+        }
+        System.out.println("-".repeat(TABLE_WIDTH));
+    }
+
     public static void printDivider(String tableName) {
         String divider = " " + tableName + " ";
         int dashCount = (MENU_WIDTH - divider.length()) / 2;
