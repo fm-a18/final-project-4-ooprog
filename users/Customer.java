@@ -90,7 +90,7 @@ public class Customer extends User {
         switch (choice) {
             case 1: // SEARCH PET BY NAME
                 DisplayUtils.centeredTitle("SEARCH PET BY NAME", 60);
-                String name = DataValidation.validateString("Enter Pet Name: ");
+                String name = DataValidation.validateString("Enter Pet Name");
 
                 showResults(FileHandler.filterRecords(FILE_PET_LIST, name, Pet::getPetName),
                         "VIEW BY PET NAME: " + name.toUpperCase());
@@ -247,8 +247,8 @@ public class Customer extends User {
     private ArrayList<Pet> filterByPriceRange(ArrayList<Pet> pets) {
         DisplayUtils.centeredTitle("FILTER BY PRICE RANGE", 60);
         ArrayList<Pet> filteredPets = new ArrayList<>();
-        double startingPrice = DataValidation.validatePriceInput("Enter Starting Price: ");
-        double endingPrice = DataValidation.validatePriceInput("Enter Ending Price: ");
+        double startingPrice = DataValidation.validatePriceInput("Enter Starting Price");
+        double endingPrice = DataValidation.validatePriceInput("Enter Ending Price");
 
         for (Pet pet : pets) {
             if (pet.getPrice() >= startingPrice && pet.getPrice() <= endingPrice) {

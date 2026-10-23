@@ -56,8 +56,8 @@ public class Main {
 
     public static void customerSignUp() {
         System.out.println("===================== CUSTOMER SIGNUP ======================");
-        String firstName = DataValidation.validateString("Enter your First Name: ");
-        String lastName = DataValidation.validateString("Enter your Last Name: ");
+        String firstName = DataValidation.validateString("Enter your First Name");
+        String lastName = DataValidation.validateString("Enter your Last Name");
         int age = DataValidation.validateCustomerAgeInput();
         String emailAddress;
         boolean emailExists;

@@ -17,7 +17,7 @@ public class DataValidation {
         boolean isValidated = false;
         String input = "";
         while (!isValidated) {
-            System.out.print(prompt);
+            System.out.print(prompt + ": ");
             try {
                 input = sc.nextLine().trim();
             } catch (java.util.NoSuchElementException e) {
@@ -349,7 +349,7 @@ public class DataValidation {
         String inputNumber = "";
 
         while (isRunning) {
-            System.out.print(prompt);
+            System.out.print(prompt + ": ");
             inputNumber = sc.nextLine().trim();
 
             if (!inputNumber.matches("-?(0|[1-9]\\d*)(\\.\\d+)?")) {
