@@ -8,8 +8,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -22,7 +20,6 @@ import static utils.RecordManager.RES_TRANSACTION_NUM;
 public class PetManager {
     private static PetManager instance;
     private final ArrayList<Pet> pets;
-    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-uuuu").withResolverStyle(ResolverStyle.STRICT);
 
     private PetManager() {
         pets = FileHandler.viewAllPetRecords();
@@ -141,9 +138,8 @@ public class PetManager {
     }
 
     private void promptMedicalRecord(Pet pet) {
-        String date = String
-                .valueOf(DataValidation.validateDate("Enter date of the condition/treatment(MM-DD-YYYY): "));
-        String condition = DataValidation.validateString("Enter medical condition/treatment name: ");
+        LocalDate date = DataValidation.validateDate("Enter date of the condition/treatment(MM-DD-YYYY)");
+        String condition = DataValidation.validateString("Enter medical condition/treatment name");
         pet.addMedicalHistory(date, condition);
     }
 
@@ -156,16 +152,16 @@ public class PetManager {
             System.out.println("No pets found.");
             return;
         }
-        boolean isDone = true;
+        boolean isDone = false;
 
-        while (isDone) {
+        while (!isDone) {
             DisplayUtils.printMenu("Search By Category",
                     "#Pet Details",
                     "Pet Name", "Type", "Breed", "Gender", "Age",
                     "#Pet Records",
-                    "Adoption Status", "#Exit", "Go Back");
+                    "Adoption Status", "#Return", "Back");
 
-            int choice = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3, 4, 5, 6, 7);
+            int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3, 4, 5, 6, 7);
             ArrayList<Pet> listOfPet = new ArrayList<>();
 
             switch (choice) {
@@ -189,7 +185,7 @@ public class PetManager {
                         case 1 -> petType = "dog";
                         case 2 -> petType = "cat";
                         case 3 -> petType = "bird";
-                        case 0 -> petType = "";
+                        default -> throw new IllegalStateException("Unexpected choice: " + choiceType);
                     }
                     listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petType,
                             Pet::getType);
@@ -236,22 +232,26 @@ public class PetManager {
                         case 5 -> petStatus = AdoptionStatus.ADOPTED.toString();
                         case 6 -> petStatus = AdoptionStatus.RETURN_PENDING.toString();
                         case 7 -> petStatus = AdoptionStatus.RETURNED.toString();
-                        case 0 -> petStatus = "";
+                        default -> throw new IllegalStateException("Unexpected choice: " + petStatus);
                     }
                     listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petStatus,
                             Pet::getAdoptionStatus);
                     break;
                 }
                 case 7: {
-                    isDone = false;
+                    isDone = true;
                     break;
                 }
             }
 
-            if (choice != 7 && !listOfPet.isEmpty()) {
-                DisplayUtils.displayPetsForStaff(listOfPet);
-            } else {
+            if (choice == 7) {
+                continue;
+            }
+
+            if (listOfPet.isEmpty()) {
                 System.out.println("No pets found.");
+            } else {
+                DisplayUtils.displayPetsForStaff(listOfPet);
             }
         }
     }
@@ -293,14 +293,14 @@ public class PetManager {
             return;
         }
         DisplayUtils.printMenu("Sort By..", "Age", "Price", "Gender", "#Exit", "Go Back");
-        int sortBy = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3, 4);
+        int sortBy = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3, 4);
 
         if (sortBy == 4) {
             return;
         }
 
         DisplayUtils.printMenu("Order: ", "Ascending", "Descending", "#Exit", "Go Back");
-        int isAscendingOrDescending = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3);
+        int isAscendingOrDescending = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3);
         if (isAscendingOrDescending == 3) {
             return;
         }
@@ -345,9 +345,8 @@ public class PetManager {
     // PET AVAILABLE
     public ArrayList<Pet> getAvailablePets() {
         ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
-        ArrayList<Pet> available = availablePets(pets);
 
-        return available;
+        return availablePets(pets);
     }
 
     public ArrayList<Pet> availablePets(ArrayList<Pet> pets) {
@@ -427,9 +426,9 @@ public class PetManager {
         }
 
         System.out.println("\nConfirm adoption request by entering your email address.");
-        String confirmByEmail = DataValidation.validateEmailAddress();
+        String confirmByEmail = DataValidation.validateEmailAddress(); //Get email
 
-        while (!DataValidation.emailExists(confirmByEmail)) {
+        while (!confirmByEmail.equalsIgnoreCase(customer.getEmailAddress())) { //check if customer's actual email
             System.out.println("Email is not found. Please enter another email.");
             confirmByEmail = DataValidation.validateEmailAddress();
         }
@@ -457,33 +456,29 @@ public class PetManager {
     }
 
     private static String paymentPlanSelection() {
-        boolean isDone = false;
-        while (!isDone) {
-            DisplayUtils.printMenu("SELECT PAYMENT PLAN",
-                    "#Available Payment Plans",
-                    "Full Payment",
-                    "50% Down Payment",
-                    "75% Down Payment");
+        DisplayUtils.printMenu("SELECT PAYMENT PLAN",
+                "#Available Payment Plans",
+                "Full Payment",
+                "50% Down Payment",
+                "75% Down Payment");
 
-            int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request: ", 1, 2, 3);
+        int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request: ", 1, 2, 3);
 
-            switch (choice) {
-                case 1 -> {
-                    System.out.println("You have selected Full Payment.");
-                    return "Full Payment";
-                }
-                case 2 -> {
-                    System.out.println("You have selected 50% Down Payment.");
-                    return "50% Down Payment";
-                }
-                case 3 -> {
-                    System.out.println("You have selected 75% Down Payment.");
-                    return "75% Down Payment";
-                }
-                case 0 -> isDone = true;
+        switch (choice) {
+            case 1 -> {
+                System.out.println("You have selected Full Payment.");
+                return "Full Payment";
             }
+            case 2 -> {
+                System.out.println("You have selected 50% Down Payment.");
+                return "50% Down Payment";
+            }
+            case 3 -> {
+                System.out.println("You have selected 75% Down Payment.");
+                return "75% Down Payment";
+            }
+            default -> throw new IllegalStateException("Unexpected choice: " + choice);
         }
-        return null;
     }
 
     private static double downPayment(String paymentPlan, double petPrice) {
@@ -522,6 +517,11 @@ public class PetManager {
             return;
         }
 
+        if (FileHandler.findRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, RES_TRANSACTION_NUM) != null) {
+            System.out.println("A cancellation request for " + found.getTransactionNum() + " is already being processed.");
+            return;
+        }
+
         System.out.println("Reservation found!");
         DisplayUtils.printSummaryBox("PET DETAILS",
                 new String[][] {
@@ -546,6 +546,7 @@ public class PetManager {
 
         String reservationRecord = FileHandler.findRecord(
                 RecordManager.FILE_RESERVED, transactionNum, RES_TRANSACTION_NUM);
+
         if (reservationRecord == null) {
             System.out.println("Reservation record not found. The cancellation request was not submitted.");
             return;
@@ -594,6 +595,7 @@ public class PetManager {
             System.out.println("Adoption record not found.");
             return;
         }
+
         String dateAdopted = adoptedPet.split("\\s*\\|\\s*")[RecordManager.AD_DATE_FINALIZED];
 
         System.out.println("Adoption found!\n");

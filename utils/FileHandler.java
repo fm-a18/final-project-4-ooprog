@@ -15,11 +15,15 @@ public class FileHandler {
     public static boolean ensureFilesExist() {
         File dir = new File(RecordManager.DATA_DIR);
 
-        // Don't create a new data folder: it would end up in the wrong place
-        // and the program would write to empty files there.
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) {
+                System.out.println("Could not create data directory: " + dir.getAbsolutePath());
+                return false;
+            }
+        }
+
         if (!dir.isDirectory()) {
-            System.out.println("Data folder not found at: " + dir.getAbsolutePath());
-            System.out.println("Run the program from the project root (the folder that contains 'data').");
+            System.out.println("Data path exists but is not a directory: " + dir.getAbsolutePath());
             return false;
         }
 
@@ -32,14 +36,13 @@ public class FileHandler {
 
         for (String fileName : files) {
             File file = new File(fileName);
-            if (file.exists())
-                continue; // leave existing files untouched
 
             try {
-                if (file.createNewFile())
-                    ;
+                if (!file.exists() && !file.createNewFile()) {
+                    System.out.println("Could not create file: " + fileName);
+                }
             } catch (IOException e) {
-                System.out.println("Could not create " + fileName + ".");
+                System.out.println("Could not create " + fileName + ": " + e.getMessage());
             }
         }
         return true;
@@ -198,13 +201,12 @@ public class FileHandler {
         int petAge = Integer.parseInt(parts[5]);
         double petPrice = Double.parseDouble(parts[6]);
 
-        Pet pet = switch (choice) {
+        return switch (choice) {
             case 1 -> new Dog(petID, petName, petBreed, petGender, petAge, petPrice);
             case 2 -> new Cat(petID, petName, petBreed, petGender, petAge, petPrice);
             case 3 -> new Bird(petID, petName, petBreed, petGender, petAge, petPrice);
             default -> null;
         };
-        return pet;
     }
 
     public static void savePet(Pet pet) {

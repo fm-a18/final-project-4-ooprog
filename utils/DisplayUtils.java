@@ -5,8 +5,12 @@ import inventory.Pet;
 import java.util.ArrayList;
 
 public class DisplayUtils {
-    public static final int TABLE_WIDTH = 100;
+    public static final int TABLE_WIDTH = 130;
     public static final int MENU_WIDTH = 60;
+    private static final String CUSTOMER_HEADER_FORMAT = "%-10s | %-15s | %-10s | %-15s | %-5s | %-15s | %-8s%n";
+    private static final String CUSTOMER_ROW_FORMAT = "%-10s | %-15s | %-10s | %-15s | %-5d | %-15s | %-8s%n";
+    private static final String STAFF_HEADER_FORMAT = "%-10s | %-15s | %-10s | %-15s | %-5s | %-25s | %-8s | %-15s%n";
+    private static final String STAFF_ROW_FORMAT = "%-10s | %-15s | %-10s | %-15s | %-5d | %-25s | %-8s | %-15s%n";
 
     public static void centeredTitle(String tableName, int width) {
         System.out.println("=".repeat(width));
@@ -15,25 +19,11 @@ public class DisplayUtils {
         System.out.println("=".repeat(width));
     }
 
-    public static void staffPetHeader(String tableName) {
-        centeredTitle(tableName, TABLE_WIDTH);
-
-        System.out.printf(
-                "%-10s | %-20s | %-15s | %-25s | %-10s%n",
-                "Pet ID",
-                "Pet Name",
-                "Type",
-                "Status",
-                "Price");
-
-        System.out.println("-".repeat(TABLE_WIDTH));
-    }
-
     public static void customerPetHeader(String tableName) {
         centeredTitle(tableName, TABLE_WIDTH);
 
         System.out.printf(
-                "%-20s | %-20s | %-15s | %-15s | %-5s | %-10s | %-15s%n",
+                CUSTOMER_HEADER_FORMAT,
                 "Pet ID",
                 "Pet Name",
                 "Type",
@@ -45,34 +35,54 @@ public class DisplayUtils {
         System.out.println("-".repeat(TABLE_WIDTH));
     }
 
-    public static void displayPetsForStaff(ArrayList<Pet> pets) {
-        staffPetHeader("LIST OF PETS");
-
-        for (Pet pet : pets) {
-            System.out.printf(
-                    "%-10s | %-20s | %-15s | %-25s | %10.2f%n",
-                    pet.getPetID(),
-                    pet.getPetName(),
-                    pet.getType(),
-                    pet.getAdoptionStatus(),
-                    pet.getPrice());
-        }
-
-        System.out.println("-".repeat(TABLE_WIDTH));
-    }
-
     public static void displayPetsForCustomer(ArrayList<Pet> pets) { // Name, Type, Breed, Age, Price
 
         for (Pet pet : pets) {
             System.out.printf(
-                    "%-20s | %-20s | %-15s | %-15s | %-5d | %-10s | %-15s%n",
+                    CUSTOMER_ROW_FORMAT,
                     pet.getPetID(),
                     pet.getPetName(),
                     pet.getType(),
                     pet.getBreed(),
                     pet.getAge(),
-                    pet.getPrice(),
+                    String.format("Php %,.2f", pet.getPrice()),
                     pet.getGender());
+        }
+
+        System.out.println("-".repeat(TABLE_WIDTH));
+    }
+
+    public static void staffPetHeader(String tableName) {
+        centeredTitle(tableName, TABLE_WIDTH);
+
+        System.out.printf(
+                STAFF_HEADER_FORMAT,
+                "Pet ID",
+                "Pet Name",
+                "Type",
+                "Breed",
+                "Age",
+                "Status",
+                "Gender",
+                "Price");
+
+        System.out.println("-".repeat(TABLE_WIDTH));
+    }
+
+    public static void displayPetsForStaff(ArrayList<Pet> pets) {
+        staffPetHeader("LIST OF PETS");
+
+        for (Pet pet : pets) {
+            System.out.printf(
+                    STAFF_ROW_FORMAT,
+                    pet.getPetID(),
+                    pet.getPetName(),
+                    pet.getType(),
+                    pet.getBreed(),
+                    pet.getAge(),
+                    pet.getAdoptionStatus(),
+                    pet.getGender(),
+                    String.format("Php %,.2f", pet.getPrice()));
         }
 
         System.out.println("-".repeat(TABLE_WIDTH));
@@ -105,6 +115,23 @@ public class DisplayUtils {
                         { "Adoption History", pet.getAdoptionHistory() },
                         { "Medical History", pet.getMedicalHistory() }
                 });
+    }
+
+    public static void displayPendingRequests(String tableName, ArrayList<Reservation> requests) {
+        centeredTitle(tableName, TABLE_WIDTH);
+
+        System.out.printf("%-16s | %-25s | %-30s | %-10s%n",
+                "Transaction No.", "Customer", "Email", "Pet ID");
+        System.out.println("-".repeat(TABLE_WIDTH));
+
+        for (Reservation request : requests) {
+            System.out.printf("%-16s | %-25s | %-30s | %-10s%n",
+                    request.getTransactionNum(),
+                    request.getFirstName() + " " + request.getLastName(),
+                    request.getEmail(),
+                    request.getPetID());
+        }
+        System.out.println("-".repeat(TABLE_WIDTH));
     }
 
     public static void printDivider(String tableName) {
