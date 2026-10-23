@@ -149,7 +149,7 @@ public class DataValidation {
         LocalDate date = null;
         String res = "";
         while (date == null) {
-            System.out.print(prompt);
+            System.out.print(prompt + ": ");
             String input = sc.nextLine().trim();
 
             try {
@@ -452,11 +452,11 @@ public class DataValidation {
 
     // TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS
 
-    public static String transactionNumberValidation(String prompt) {
+    public static String transactionNumberValidation() {
         String transactionNum = "";
         boolean isValid = false;
         while (!isValid) {
-            System.out.print(prompt);
+            System.out.print("Enter Transaction Number: ");
             try {
                 transactionNum = sc.nextLine().trim().toUpperCase();
             } catch (NoSuchElementException e) {

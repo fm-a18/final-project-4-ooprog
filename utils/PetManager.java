@@ -496,8 +496,7 @@ public class PetManager {
             System.out.println("No pets are reserved.");
             return;
         }
-        String transactionNum = DataValidation.transactionNumberValidation(
-                "Enter Transaction Number from your Request of Adoption Confirmation Message: ");
+        String transactionNum = DataValidation.transactionNumberValidation();
 
         Reservation found = null;
 
@@ -565,8 +564,7 @@ public class PetManager {
             System.out.println("No pets available for return.");
             return;
         }
-        String transactionNum = DataValidation.transactionNumberValidation(
-                "Enter Transaction Number from your Request of Adoption Confirmation Message: ");
+        String transactionNum = DataValidation.transactionNumberValidation();
 
         Reservation found = null;
 
