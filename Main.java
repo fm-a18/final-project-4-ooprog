@@ -20,8 +20,6 @@ import static utils.RecordManager.US_USER_ID;
 
 import java.io.*;
 
-import static utils.DataValidation.emailExists;
-
 public class Main {
     public static void customerLandingPage() {
         boolean isDone = false;

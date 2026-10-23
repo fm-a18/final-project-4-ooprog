@@ -13,7 +13,7 @@ import static utils.DisplayUtils.printMenu;
 public class Admin extends User {
 
     public Admin(String userID, String firstName, String lastName, int age, String emailAddress,
-            String address, String phoneNumber, String password) {
+                 String address, String phoneNumber, String password) {
         super(userID, firstName, lastName, age, emailAddress,
                 address, phoneNumber, password);
     }
@@ -23,6 +23,7 @@ public class Admin extends User {
         return "Admin";
     }
 
+    @Override
     public void showMenu(Scanner sc) {
         boolean isDone = false;
 
@@ -112,7 +113,7 @@ public class Admin extends User {
             return null;
         }
 
-        String record = FileHandler.findRecord(fileName, findTransactionNum, 0);
+        String record = FileHandler.findRecord(fileName, findTransactionNum, RecordManager.RES_TRANSACTION_NUM);
 
         if (record == null) {
             System.out.println("Transaction not found.");
@@ -138,8 +139,8 @@ public class Admin extends User {
             return;
 
         String[] parts = reservationRecord.split("\\s*\\|\\s*");
-        String petID = parts[RES_PET_ID];
-        String transactionNum = parts[RES_TRANSACTION_ID];
+        String petID = parts[RecordManager.RES_PET_ID];
+        String transactionNum = parts[RecordManager.RES_TRANSACTION_NUM];
 
         Pet pet = findPet(petID);
         if (pet == null)
@@ -167,7 +168,7 @@ public class Admin extends User {
         }
 
         if (decision == 'R') {
-            FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RES_TRANSACTION_ID);
+            FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RecordManager.RES_TRANSACTION_NUM);
             PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
             System.out.printf("Adoption request %s rejected.\n", transactionNum);
             return;
@@ -176,15 +177,12 @@ public class Admin extends User {
         String adoptedRecord = RecordManager.buildAdoptedRecord(reservationRecord, this.getEmailAddress());
 
         FileHandler.appendRecord(RecordManager.FILE_ADOPTED, adoptedRecord);
-        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, 0);
+        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RecordManager.RES_TRANSACTION_NUM);
         PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.ADOPTED);
 
         System.out.printf("Adoption approved for transaction %s.\n", transactionNum);
 
     }
-
-    private static final int RES_TRANSACTION_ID = 0;
-    private static final int RES_PET_ID = 4;
 
     private void cancelAdoptionRequest() {
         String record = findPendingTransaction(RecordManager.FILE_CANCELLATION_REQUEST, RecordManager.RES_FIELD_COUNT,
@@ -193,8 +191,8 @@ public class Admin extends User {
             return;
 
         String[] parts = record.split("\\s*\\|\\s*");
-        String petID = parts[RES_PET_ID];
-        String transactionNum = parts[RES_TRANSACTION_ID];
+        String petID = parts[RecordManager.RES_PET_ID];
+        String transactionNum = parts[RecordManager.RES_TRANSACTION_NUM];
 
         Pet pet = findPet(petID);
         if (pet == null)
@@ -214,14 +212,15 @@ public class Admin extends User {
         }
 
         if (decision == 'R') {
-            FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, RES_TRANSACTION_ID);
+            FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, RecordManager.RES_TRANSACTION_NUM);
             PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.ADOPTION_REVIEW);
             System.out.printf("Cancellation request %s rejected. The reservation stays active.\n", transactionNum);
             return;
         }
 
-        FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, RES_TRANSACTION_ID);
-        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RES_TRANSACTION_ID);
+        FileHandler.appendRecord(RecordManager.FILE_CANCELLED_LIST, record);
+        FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, RecordManager.RES_TRANSACTION_NUM);
+        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RecordManager.RES_TRANSACTION_NUM);
         PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
 
         System.out.printf("Cancellation approved for transaction %s.\n", transactionNum);
@@ -235,8 +234,8 @@ public class Admin extends User {
             return;
 
         String[] parts = record.split("\\s*\\|\\s*");
-        String petID = parts[RES_PET_ID];
-        String transactionNum = parts[RES_TRANSACTION_ID];
+        String petID = parts[RecordManager.RES_PET_ID];
+        String transactionNum = parts[RecordManager.RES_TRANSACTION_NUM];
 
         Pet pet = findPet(petID);
         if (pet == null)
@@ -250,7 +249,7 @@ public class Admin extends User {
         }
 
         if (decision == 'R') {
-            FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, RES_TRANSACTION_ID);
+            FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, RecordManager.RES_TRANSACTION_NUM);
             PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.ADOPTED);
             System.out.printf("Return request %s rejected. The pet stays adopted.\n", transactionNum);
             return;
@@ -259,8 +258,9 @@ public class Admin extends User {
         String detailsOfReturn = DataValidation.validateString("Details");
 
         pet.addAdoptionHistory(LocalDate.now(), detailsOfReturn);
-        FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, RES_TRANSACTION_ID);
-        FileHandler.removeRecord(RecordManager.FILE_ADOPTED, transactionNum, RES_TRANSACTION_ID);
+        FileHandler.appendRecord(RecordManager.FILE_RETURNED_LIST, record);
+        FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, RecordManager.RES_TRANSACTION_NUM);
+        FileHandler.removeRecord(RecordManager.FILE_ADOPTED, transactionNum, RecordManager.RES_TRANSACTION_NUM);
         PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
 
         System.out.printf("Return of pet approved for transaction %s.\n", transactionNum);
@@ -273,7 +273,7 @@ public class Admin extends User {
         var incomingPets = RecordManager.readRecords(RecordManager.FILE_INCOMING_LIST,
                 RecordManager.PET_FIELD_COUNT, RecordManager::parsePet);
 
-        if (incomingPets == null || incomingPets.isEmpty()) {
+        if (incomingPets.isEmpty()) {
             System.out.println("No incoming pets to review.");
             return;
         }

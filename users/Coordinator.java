@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class Coordinator extends User {
 
     public Coordinator(String userID, String firstName, String lastName, int age, String emailAddress,
-            String address, String phoneNumber, String password) {
+                       String address, String phoneNumber, String password) {
         super(userID, firstName, lastName, age, emailAddress,
                 address, phoneNumber, password);
     }
@@ -19,6 +19,7 @@ public class Coordinator extends User {
         return "Coordinator";
     }
 
+    @Override
     public void showMenu(Scanner sc) {
         boolean isDone = false;
 
@@ -87,16 +88,16 @@ public class Coordinator extends User {
 
     private void requestPetAdoption() {
         PetManager.getInstance().requestAdoption(new Customer(getUserID(), getFirstName(), getLastName(),
-                getAge(), getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
+                getAge(), getEmailAddress(), getAddress(), getPhoneNumber(), getPassword()));
     }
 
     private void cancelPetAdoption() {
         PetManager.getInstance().cancelAdoption(new Customer(getUserID(), getFirstName(), getLastName(),
-                getAge(), getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
+                getAge(), getEmailAddress(), getAddress(), getPhoneNumber(), getPassword()));
     }
 
     private void requestPetReturn() {
         PetManager.getInstance().requestReturn(new Customer(getUserID(), getFirstName(), getLastName(),
-                getAge(), getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
+                getAge(), getEmailAddress(), getAddress(), getPhoneNumber(), getPassword()));
     }
 }

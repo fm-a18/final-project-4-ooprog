@@ -80,46 +80,12 @@ public class PetManager {
     }
 
     private Pet createNewPet(int choice, String id, String name, String breed,
-            char gender, int age, double price) {
+                             char gender, int age, double price) {
         return switch (choice) {
             case 1 -> new Dog(id, name, breed, gender, age, price);
             case 2 -> new Cat(id, name, breed, gender, age, price);
             default -> new Bird(id, name, breed, gender, age, price);
         };
-    }
-
-    private boolean savePet(Pet pet) {
-        boolean isFileSaved = false;
-        while (!isFileSaved) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(RecordManager.FILE_PET_LIST, true))) {
-
-                writer.write(pet.toFileString());
-                writer.newLine();
-                return true;
-
-            } catch (IOException e) {
-                System.out.println("Error writing file.");
-                char retry = DataValidation.charChoiceValidation("Try again?", 'Y', 'N');
-                if (retry != 'Y') {
-                    isFileSaved = true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean registerPet(Pet pet) { // For incoming pets
-        if (findPetID(pet.getPetID()) != null) {
-            return false;
-        }
-
-        pet.setAdoptionStatus(AdoptionStatus.AVAILABLE);
-        if (!savePet(pet)) {
-            return false;
-        }
-
-        pets.add(pet);
-        return true;
     }
 
     public void updatePetMedicalHistory() {
@@ -143,7 +109,7 @@ public class PetManager {
 
     private void promptMedicalRecord(Pet pet) {
         LocalDate date = DataValidation.validateDate("Enter date of the condition/treatment(MM-DD-YYYY)");
-        String condition = DataValidation.validateString("Enter medical condition/treatment name");
+        String condition = DataValidation.validateMedicalRecord();
         pet.addMedicalHistory(date, condition);
     }
 
@@ -220,7 +186,7 @@ public class PetManager {
 
             switch (choice) {
                 case 1: {
-                    String petName = DataValidation.validateString("Enter pet name: ");
+                    String petName = DataValidation.validateString("Enter pet name");
                     listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petName,
                             Pet::getPetName);
                     break;
@@ -246,7 +212,7 @@ public class PetManager {
                     break;
                 }
                 case 3: {
-                    String petBreed = DataValidation.validateString("Enter pet breed: ");
+                    String petBreed = DataValidation.validateString("Enter pet breed");
                     listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petBreed,
                             Pet::getBreed);
                     break;
@@ -266,7 +232,7 @@ public class PetManager {
                 }
                 case 6: {
                     String petStatus = "";
-                    DisplayUtils.printMenu("PET TYPE",
+                    DisplayUtils.printMenu("PET STATUS",
                             "#Select Adoption Status",
                             AdoptionStatus.AVAILABLE.toString(),
                             AdoptionStatus.ADOPTION_REVIEW.toString(),
@@ -450,8 +416,7 @@ public class PetManager {
 
         System.out.println("Pet ID: " + petID + " found and is available for adoption.");
 
-        char requestAdoption = DataValidation
-                .charChoiceValidation("\nDo you want to request adoption for Pet ID: " + petID + "?", 'y', 'n');
+        char requestAdoption = DataValidation.charChoiceValidation("Do you want to request adoption for Pet ID: " + petID + "?", 'Y', 'N');
 
         if (requestAdoption == 'N') {
             System.out.println("Adoption request cancelled.");
@@ -484,10 +449,8 @@ public class PetManager {
         }
 
         String transactionNum = TransactionNumGenerator.transactionNumGenerator();
-        RecordManager rm = new RecordManager();
-        String reservationRecord = rm.buildAdoptionRequestRecord(customer.getFirstName(), customer.getLastName(),
-                customer.getEmailAddress(), selectedPet, paymentPlan.getName(), downPaymentAmount, balanceLeft,
-                transactionNum,
+        String reservationRecord = RecordManager.buildAdoptionRequestRecord(customer.getFirstName(), customer.getLastName(),
+                customer.getEmailAddress(), selectedPet, paymentPlan.getName(), downPaymentAmount, balanceLeft, transactionNum,
                 date);
         FileHandler.appendRecord(FILE_RESERVED, reservationRecord);
         updatePetStatus(selectedPet.getPetID(), AdoptionStatus.ADOPTION_REVIEW);
@@ -497,10 +460,10 @@ public class PetManager {
                         { "Transaction Number", transactionNum },
                         { "Pet ID", selectedPet.getPetID() },
                         { "Payment Plan", paymentPlan.getName() },
-                        { "Down Payment", String.valueOf(downPaymentAmount) },
-                        { "Balance", String.valueOf(balanceLeft) },
-                        { "Date Requested", LocalDate.now().toString() },
-                        { "Date Claiming", date.toString() }
+                        { "Down Payment", String.format("Php %,.2f", downPaymentAmount) },
+                        { "Balance", String.format("Php %,.2f", balanceLeft) },
+                        { "Date Requested", LocalDate.now().format(RecordManager.dateFormat) },
+                        { "Date Claiming", date.format(RecordManager.dateFormat) }
                 });
         System.out.println("Adoption request for Pet ID: " + petID + " with transaction number " + transactionNum
                 + " has been submitted for review.");
@@ -513,7 +476,7 @@ public class PetManager {
                 "50% Down Payment",
                 "75% Down Payment");
 
-        int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request: ", 1, 2, 3);
+        int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request", 1, 2, 3);
 
         PaymentPlan plan = switch (choice) {
             case 1 -> new FullPayment();
@@ -570,8 +533,7 @@ public class PetManager {
                         { "Date Claiming", found.getDateClaiming().toString() }
                 });
 
-        char cancelAdoptionConfirmation = DataValidation
-                .charChoiceValidation("Are you sure you want to cancel your reservation?: ", 'y', 'n');
+        char cancelAdoptionConfirmation = DataValidation.charChoiceValidation("Are you sure you want to cancel your reservation?", 'Y', 'N');
 
         if (cancelAdoptionConfirmation == 'N') {
             System.out.println("Adoption Cancellation Cancelled.");
