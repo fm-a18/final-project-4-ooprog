@@ -1,2 +1,7 @@
-UD0011|AJ|Yape|20|aj.yape@gmail.com|Makati City, Manila|0999 999 9999|AJ.Yape123|CUSTOMER
-UD0012|Jaz|Henry|20|JazHenry@gmail.com|New Zealand Australia|0999 999 9999|Jazhenry@21|CUSTOMER
+DLSL C2A randoms sections|0921 730 6828|Audric2007@|COORDINATOR
+CO0002|Pauleen|De Chavez|19|dcpau@gmail.com|DLSL C2A randoms sections|0999 999 9999|DCPau2007@|COORDINATOR
+CO0003|Shanisse|De Luna|19|shanskariously@gmail.com|DLSL C2A randoms sections|0988 888 8888|Kariously2007@|COORDINATOR
+AD0001|Frances|Alcala|19|fma18@gmail.com|DLSL C2A randoms sections|0921 730 6828|fmA182007@|ADMIN
+UD0001|Alfea|Zulueta|23|alfeamarie@gmail.com|G22 Cornerstone Entertainment|0922 222 2222|091203@|CUSTOMER
+UD0002|AJ|Yape|20|aj.yape@gmail.com|Makati City, Manila|0999 999 9999|AJ.Yape123|CUSTOMER
+UD0003|Jaz|Henry|20|JazHenry@gmail.com|New Zealand Australia|0999 999 9999|Jazhenry@21|CUSTOMER
