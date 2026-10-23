@@ -11,7 +11,7 @@ import inventory.*;
 
 public class RecordManager {
     // ALL TXT FILES
-    public static final String DATA_DIR = "final-project-4-ooprog/data/";
+    public static final String DATA_DIR = "data/";
 
     public static final String FILE_RESERVED = DATA_DIR + "RESERVED.txt";
     public static final String FILE_ADOPTED = DATA_DIR + "ADOPTED_LIST.txt";
@@ -51,7 +51,7 @@ public class RecordManager {
     public static final int AD_APPROVED_BY = 11;
     public static final int AD_FIELD_COUNT = 12;
 
-    static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+    public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
     // reader
     public static <T> ArrayList<T> readRecords(String fileName, int expectedFields, Function<String[], T> parser) {
