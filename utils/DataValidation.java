@@ -104,7 +104,7 @@ public class DataValidation {
             }
             if (input.isEmpty()) {
                 System.out.println("Error: Email Address cannot be empty.");
-            } else if (!input.matches("^[\\w!#$%&'*+/=?^`{|}~.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            } else if (!input.matches("^(?!.*\\|)[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
                 System.out.println("Invalid Email Address. Please follow the following format: name@example.com");
             } else {
                 isValidated = true;
@@ -208,7 +208,7 @@ public class DataValidation {
             }
             if (input.isEmpty()) {
                 System.out.println("Error: Password cannot be empty.");
-            } else if (!input.matches("^(?!.*\\|)[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            } else if (!input.matches("^(?!.*\\|)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$")) {
                 System.out.println(
                         "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
             } else {
