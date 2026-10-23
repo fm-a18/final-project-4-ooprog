@@ -3,11 +3,9 @@ package inventory;
 public enum AdoptionStatus {
     AVAILABLE("Available"),
     ADOPTION_REVIEW("Pending Adoption"),
-    RESERVED("Reserved"),
     CANCELLATION_REVIEW("Pending Cancellation"),
     ADOPTED("Adopted"),
-    RETURN_PENDING("Pending Return"),
-    RETURNED("Returned");
+    RETURN_PENDING("Pending Return");
 
     private final String label;
 

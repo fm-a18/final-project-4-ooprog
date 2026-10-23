@@ -15,13 +15,6 @@ public class FileHandler {
     public static boolean ensureFilesExist() {
         File dir = new File(RecordManager.DATA_DIR);
 
-        if (!dir.exists()) {
-            if (!dir.mkdirs()) {
-                System.out.println("Could not create data directory: " + dir.getAbsolutePath());
-                return false;
-            }
-        }
-
         if (!dir.isDirectory()) {
             System.out.println("Data path exists but is not a directory: " + dir.getAbsolutePath());
             return false;
