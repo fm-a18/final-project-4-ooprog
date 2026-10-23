@@ -1,0 +1,2 @@
+D0004|Coffee|Dog|Doberman|F|5|2500.0|AVAILABLE||
+C0004|Ginger|Cat|Tabby|M|5|2500.0|AVAILABLE||

@@ -132,7 +132,8 @@ public class Admin extends User {
     }
 
     private void approveAdoptionRequest() {
-        String reservationRecord = findPendingTransaction(RecordManager.FILE_RESERVED, RecordManager.RES_FIELD_COUNT, "Adoption Request");
+        String reservationRecord = findPendingTransaction(RecordManager.FILE_RESERVED, RecordManager.RES_FIELD_COUNT,
+                "Adoption Request");
         if (reservationRecord == null)
             return;
 
@@ -186,7 +187,8 @@ public class Admin extends User {
     private static final int RES_PET_ID = 4;
 
     private void cancelAdoptionRequest() {
-        String record = findPendingTransaction(RecordManager.FILE_CANCELLATION_REQUEST, RecordManager.RES_FIELD_COUNT, "Cancellation Request");
+        String record = findPendingTransaction(RecordManager.FILE_CANCELLATION_REQUEST, RecordManager.RES_FIELD_COUNT,
+                "Cancellation Request");
         if (record == null)
             return;
 
@@ -227,7 +229,8 @@ public class Admin extends User {
     }
 
     private void approvePetReturn() {
-        String record = findPendingTransaction(RecordManager.FILE_RETURN_REQUEST, RecordManager.AD_FIELD_COUNT, "Return Request");
+        String record = findPendingTransaction(RecordManager.FILE_RETURN_REQUEST, RecordManager.AD_FIELD_COUNT,
+                "Return Request");
         if (record == null)
             return;
 

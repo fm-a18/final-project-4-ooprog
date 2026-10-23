@@ -46,11 +46,11 @@ public class PetManager {
             System.out.println("Pet ID already exists. Please use another ID.");
             petID = DataValidation.validatePetID(choice);
         }
-        String petName = DataValidation.validateString("Name: ");
-        String petBreed = DataValidation.validateString("Breed: ");
+        String petName = DataValidation.validateString("Name");
+        String petBreed = DataValidation.validateString("Breed");
         char petGender = DataValidation.charChoiceValidation("Gender", 'M', 'F');
         int petAge = DataValidation.validatePetAgeInput();
-        double petPrice = DataValidation.validatePriceInput("Price of Pet(100.00 - 10,000.00): ");
+        double petPrice = DataValidation.validatePriceInput("Price of Pet(100.00 - 10,000.00)");
 
         Pet pet = createNewPet(choice, petID, petName, petBreed, petGender, petAge, petPrice);
 
@@ -469,10 +469,10 @@ public class PetManager {
         double downPaymentAmount = paymentPlan.computeDownPayment(selectedPet.getPrice());
         double balanceLeft = selectedPet.getPrice() - downPaymentAmount;
 
-        LocalDate date = DataValidation.validateDate("Enter date for claiming of pet (mm-dd-yyyy): ");
+        LocalDate date = DataValidation.validateDate("Enter date for claiming of pet (mm-dd-yyyy)");
         while (!DataValidation.dateForClaimingPet(date)) {
             System.out.println("Date should be on or within 7 days after the adoption request.");
-            date = DataValidation.validateDate("Enter date for claiming of pet: ");
+            date = DataValidation.validateDate("Enter date for claiming of pet (mm-dd-yyyy)");
         }
 
         System.out.println("\nConfirm adoption request by entering your email address.");
@@ -486,7 +486,8 @@ public class PetManager {
         String transactionNum = TransactionNumGenerator.transactionNumGenerator();
         RecordManager rm = new RecordManager();
         String reservationRecord = rm.buildAdoptionRequestRecord(customer.getFirstName(), customer.getLastName(),
-                customer.getEmailAddress(), selectedPet, paymentPlan.getName(), downPaymentAmount, balanceLeft, transactionNum,
+                customer.getEmailAddress(), selectedPet, paymentPlan.getName(), downPaymentAmount, balanceLeft,
+                transactionNum,
                 date);
         FileHandler.appendRecord(FILE_RESERVED, reservationRecord);
         updatePetStatus(selectedPet.getPetID(), AdoptionStatus.ADOPTION_REVIEW);
@@ -514,7 +515,7 @@ public class PetManager {
 
         int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request: ", 1, 2, 3);
 
-        PaymentPlan plan = switch(choice){
+        PaymentPlan plan = switch (choice) {
             case 1 -> new FullPayment();
             case 2 -> new FiftyPercentDP();
             default -> new SeventyFivePercentDP();
