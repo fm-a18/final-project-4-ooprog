@@ -155,16 +155,16 @@ public class PetManager {
             System.out.println("No pets found.");
             return;
         }
-        boolean isDone = true;
+        boolean isDone = false;
 
-        while (isDone) {
+        while (!isDone) {
             DisplayUtils.printMenu("Search By Category",
                     "#Pet Details",
                     "Pet Name", "Type", "Breed", "Gender", "Age",
                     "#Pet Records",
-                    "Adoption Status", "#Exit", "Go Back");
+                    "Adoption Status", "#Return", "Back");
 
-            int choice = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3, 4, 5, 6, 7);
+            int choice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3, 4, 5, 6, 7);
             ArrayList<Pet> listOfPet = new ArrayList<>();
 
             switch (choice) {
@@ -188,7 +188,7 @@ public class PetManager {
                         case 1 -> petType = "dog";
                         case 2 -> petType = "cat";
                         case 3 -> petType = "bird";
-                        case 0 -> petType = "";
+                        default -> throw new IllegalStateException("Unexpected choice: " + choiceType);
                     }
                     listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petType,
                             Pet::getType);
@@ -235,22 +235,26 @@ public class PetManager {
                         case 5 -> petStatus = AdoptionStatus.ADOPTED.toString();
                         case 6 -> petStatus = AdoptionStatus.RETURN_PENDING.toString();
                         case 7 -> petStatus = AdoptionStatus.RETURNED.toString();
-                        case 0 -> petStatus = "";
+                        default -> throw new IllegalStateException("Unexpected choice: " + petStatus);
                     }
                     listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petStatus,
                             Pet::getAdoptionStatus);
                     break;
                 }
                 case 7: {
-                    isDone = false;
+                    isDone = true;
                     break;
                 }
             }
 
-            if (choice != 7 && !listOfPet.isEmpty()) {
-                DisplayUtils.displayPetsForStaff(listOfPet);
-            } else {
+            if (choice == 7) {
+                continue;
+            }
+
+            if (listOfPet.isEmpty()) {
                 System.out.println("No pets found.");
+            } else {
+                DisplayUtils.displayPetsForStaff(listOfPet);
             }
         }
     }
@@ -292,14 +296,14 @@ public class PetManager {
             return;
         }
         DisplayUtils.printMenu("Sort By..", "Age", "Price", "Gender", "#Exit", "Go Back");
-        int sortBy = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3, 4);
+        int sortBy = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3, 4);
 
         if (sortBy == 4) {
             return;
         }
 
         DisplayUtils.printMenu("Order: ", "Ascending", "Descending", "#Exit", "Go Back");
-        int isAscendingOrDescending = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3);
+        int isAscendingOrDescending = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3);
         if (isAscendingOrDescending == 3) {
             return;
         }
@@ -456,33 +460,29 @@ public class PetManager {
     }
 
     private static String paymentPlanSelection() {
-        boolean isDone = false;
-        while (!isDone) {
-            DisplayUtils.printMenu("SELECT PAYMENT PLAN",
-                    "#Available Payment Plans",
-                    "Full Payment",
-                    "50% Down Payment",
-                    "75% Down Payment");
+        DisplayUtils.printMenu("SELECT PAYMENT PLAN",
+                "#Available Payment Plans",
+                "Full Payment",
+                "50% Down Payment",
+                "75% Down Payment");
 
-            int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request: ", 1, 2, 3);
+        int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request: ", 1, 2, 3);
 
-            switch (choice) {
-                case 1 -> {
-                    System.out.println("You have selected Full Payment.");
-                    return "Full Payment";
-                }
-                case 2 -> {
-                    System.out.println("You have selected 50% Down Payment.");
-                    return "50% Down Payment";
-                }
-                case 3 -> {
-                    System.out.println("You have selected 75% Down Payment.");
-                    return "75% Down Payment";
-                }
-                case 0 -> isDone = true;
+        switch (choice) {
+            case 1 -> {
+                System.out.println("You have selected Full Payment.");
+                return "Full Payment";
             }
+            case 2 -> {
+                System.out.println("You have selected 50% Down Payment.");
+                return "50% Down Payment";
+            }
+            case 3 -> {
+                System.out.println("You have selected 75% Down Payment.");
+                return "75% Down Payment";
+            }
+            default -> throw new IllegalStateException("Unexpected choice: " + choice);
         }
-        return null;
     }
 
     private static double downPayment(String paymentPlan, double petPrice) {
