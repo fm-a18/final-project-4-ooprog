@@ -437,7 +437,7 @@ public class PetManager {
         LocalDate date = DataValidation.validateDate("Enter date for claiming of pet (mm-dd-yyyy)");
         while (!DataValidation.dateForClaimingPet(date)) {
             System.out.println("Date should be on or within 7 days after the adoption request.");
-            date = DataValidation.validateDate("Enter date for claiming of pet");
+            date = DataValidation.validateDate("Enter date for claiming of pet (mm-dd-yyyy)");
         }
 
         System.out.println("\nConfirm adoption request by entering your email address.");
@@ -478,7 +478,7 @@ public class PetManager {
 
         int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request", 1, 2, 3);
 
-        PaymentPlan plan = switch(choice){
+        PaymentPlan plan = switch (choice) {
             case 1 -> new FullPayment();
             case 2 -> new FiftyPercentDP();
             default -> new SeventyFivePercentDP();

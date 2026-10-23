@@ -57,7 +57,16 @@ public class Main {
         String firstName = DataValidation.validateString("Enter your First Name");
         String lastName = DataValidation.validateString("Enter your Last Name");
         int age = DataValidation.validateCustomerAgeInput();
-        String emailAddress = DataValidation.validateNewEmailAddress();
+        String emailAddress;
+        boolean emailExists;
+        do {
+            emailAddress = DataValidation.validateEmailAddress();
+            emailExists = emailExists(emailAddress);
+            if (emailExists) {
+                System.out.println("Email has already been registered. Please try a different one.");
+            }
+        } while (emailExists);
+
         String address = DataValidation.validateAddress();
         String phoneNumber = DataValidation.validatePhoneNumber();
         String password = DataValidation.validatePassword();
@@ -75,8 +84,7 @@ public class Main {
                         address,
                         phoneNumber,
                         password,
-                        role
-                );
+                        role);
 
                 writer.write(record);
                 writer.newLine();

@@ -55,6 +55,7 @@ public class Coordinator extends User {
             }
         }
     }
+
     private void viewAllPets() {
         ArrayList<Pet> pets = PetManager.getInstance().getAllPets();
 

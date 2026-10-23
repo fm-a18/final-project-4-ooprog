@@ -1,0 +1,2 @@
+TN000003|AJ|Yape|aj.yape@gmail.com|B0002|Full Payment|250.00|0.00|10-23-2026|10-26-2026
+TN000004|Jaz|Henry|JazHenry@gmail.com|B0001|Full Payment|100.50|0.00|10-23-2026|10-24-2026
