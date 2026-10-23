@@ -216,22 +216,18 @@ public class PetManager {
                             "#Select Adoption Status",
                             AdoptionStatus.AVAILABLE.toString(),
                             AdoptionStatus.ADOPTION_REVIEW.toString(),
-                            AdoptionStatus.RESERVED.toString(),
                             AdoptionStatus.CANCELLATION_REVIEW.toString(),
                             AdoptionStatus.ADOPTED.toString(),
-                            AdoptionStatus.RETURN_PENDING.toString(),
-                            AdoptionStatus.RETURNED.toString());
+                            AdoptionStatus.RETURN_PENDING.toString());
                     int choiceType = DataValidation.intChoiceValidation("Select Option",
-                            1, 2, 3, 4, 5, 6, 7);
+                            1, 2, 3, 4, 5);
 
                     switch (choiceType) {
                         case 1 -> petStatus = AdoptionStatus.AVAILABLE.toString();
                         case 2 -> petStatus = AdoptionStatus.ADOPTION_REVIEW.toString();
-                        case 3 -> petStatus = AdoptionStatus.RESERVED.toString();
-                        case 4 -> petStatus = AdoptionStatus.CANCELLATION_REVIEW.toString();
-                        case 5 -> petStatus = AdoptionStatus.ADOPTED.toString();
-                        case 6 -> petStatus = AdoptionStatus.RETURN_PENDING.toString();
-                        case 7 -> petStatus = AdoptionStatus.RETURNED.toString();
+                        case 3 -> petStatus = AdoptionStatus.CANCELLATION_REVIEW.toString();
+                        case 4 -> petStatus = AdoptionStatus.ADOPTED.toString();
+                        case 5 -> petStatus = AdoptionStatus.RETURN_PENDING.toString();
                         default -> throw new IllegalStateException("Unexpected choice: " + petStatus);
                     }
                     listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petStatus,
@@ -426,9 +422,9 @@ public class PetManager {
         }
 
         System.out.println("\nConfirm adoption request by entering your email address.");
-        String confirmByEmail = DataValidation.validateEmailAddress(); //Get email
+        String confirmByEmail = DataValidation.validateEmailAddress(); // Get email
 
-        while (!confirmByEmail.equalsIgnoreCase(customer.getEmailAddress())) { //check if customer's actual email
+        while (!confirmByEmail.equalsIgnoreCase(customer.getEmailAddress())) { // check if customer's actual email
             System.out.println("Email is not found. Please enter another email.");
             confirmByEmail = DataValidation.validateEmailAddress();
         }
@@ -517,8 +513,10 @@ public class PetManager {
             return;
         }
 
-        if (FileHandler.findRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, RES_TRANSACTION_NUM) != null) {
-            System.out.println("A cancellation request for " + found.getTransactionNum() + " is already being processed.");
+        if (FileHandler.findRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum,
+                RES_TRANSACTION_NUM) != null) {
+            System.out.println(
+                    "A cancellation request for " + found.getTransactionNum() + " is already being processed.");
             return;
         }
 
