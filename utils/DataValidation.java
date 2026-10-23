@@ -117,6 +117,21 @@ public class DataValidation {
         return FileHandler.findRecord(RecordManager.FILE_USER_LIST, emailAddress, 4) != null;
     }
 
+    public static String validateNewEmailAddress() {
+        boolean isValidated = false;
+        String input = "";
+
+        while (!isValidated) {
+            input = validateEmailAddress();
+            if (emailExists(input)) {
+                System.out.println("Email has already been registered. Please try a different one.");
+            } else {
+                isValidated = true;
+            }
+        }
+        return input;
+    }
+
     public static String validateAddress() {
         boolean isValidated = false;
         String input = "";
