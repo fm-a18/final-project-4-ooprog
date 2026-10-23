@@ -243,7 +243,7 @@ public class FileHandler {
                     };
                     sorted.add(pet);
                 } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
-                    System.out.printf("Skipping invalid pet record in %s: %s%n", fileName, line);
+                    System.out.println("Invalid or incomplete data found.");
                 }
             }
         } catch (IOException e) {
@@ -291,7 +291,8 @@ public class FileHandler {
                     try {
                         max = Math.max(max, Integer.parseInt(parts[colIndex].substring(prefix.length())));
                     } catch (NumberFormatException e) {
-                        System.out.printf("Skipping invalid ID in %s: %s%n", fileName, parts[colIndex]);
+                        // skip IDs that don't end in a number
+                        System.out.println("Invalid ID format in " + fileName + ". Skipping this ID.");
                     }
                 }
             }

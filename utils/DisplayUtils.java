@@ -19,7 +19,7 @@ public class DisplayUtils {
         centeredTitle(tableName, TABLE_WIDTH);
 
         System.out.printf(
-                "%-10s | %-20s | %-15s | %-15s | %-10s%n",
+                "%-10s | %-20s | %-15s | %-25s | %-10s%n",
                 "Pet ID",
                 "Pet Name",
                 "Type",
@@ -50,7 +50,7 @@ public class DisplayUtils {
 
         for (Pet pet : pets) {
             System.out.printf(
-                    "%-10s | %-20s | %-15s | %-15s | %10.2f%n",
+                    "%-10s | %-20s | %-15s | %-25s | %10.2f%n",
                     pet.getPetID(),
                     pet.getPetName(),
                     pet.getType(),
