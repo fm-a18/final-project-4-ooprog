@@ -6,10 +6,6 @@ import inventory.Pet;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import inventory.*;
-import utils.FileHandler;
-import utils.RecordManager;
-
 import static utils.RecordManager.US_EMAIL_ADDRESS;
 
 public class Coordinator extends User {

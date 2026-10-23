@@ -163,16 +163,16 @@ public class PetManager {
                     "#Pet Details",
                     "Pet Name", "Type", "Breed", "Gender", "Age",
                     "#Pet Records",
-                    "Adoption Status", "#Exit", "Log Out");
+                    "Adoption Status", "#Exit", "Go Back");
 
             int choice = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3, 4, 5, 6, 7);
+            ArrayList<Pet> listOfPet = new ArrayList<>();
 
             switch (choice) {
                 case 1: {
                     String petName = DataValidation.validateString("Enter pet name: ");
-                    ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petName,
+                    listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petName,
                             Pet::getPetName);
-                    DisplayUtils.displayPetsForStaff(listOfPet);
                     break;
                 }
                 case 2: {
@@ -191,31 +191,27 @@ public class PetManager {
                         case 3 -> petType = "bird";
                         case 0 -> petType = "";
                     }
-                    ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petType,
+                    listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petType,
                             Pet::getType);
-                    DisplayUtils.displayPetsForStaff(listOfPet);
                     break;
                 }
                 case 3: {
                     String petBreed = DataValidation.validateString("Enter pet breed: ");
-                    ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petBreed,
+                    listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petBreed,
                             Pet::getBreed);
-                    DisplayUtils.displayPetsForStaff(listOfPet);
                     break;
                 }
                 case 4: {
                     char g = DataValidation.charChoiceValidation("Enter pet gender", 'M', 'F');
                     String petGender = (g == 'M') ? "Male" : "Female";
-                    ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petGender,
+                    listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petGender,
                             Pet::getGender);
-                    DisplayUtils.displayPetsForStaff(listOfPet);
                     break;
                 }
                 case 5: {
                     int petAge = DataValidation.validatePetAgeInput();
-                    ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petAge,
+                    listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petAge,
                             Pet::getAge);
-                    DisplayUtils.displayPetsForStaff(listOfPet);
                     break;
                 }
                 case 6: {
@@ -242,15 +238,20 @@ public class PetManager {
                         case 7 -> petStatus = AdoptionStatus.RETURNED.toString();
                         case 0 -> petStatus = "";
                     }
-                    ArrayList<Pet> listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petStatus,
+                    listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petStatus,
                             Pet::getAdoptionStatus);
-                    DisplayUtils.displayPetsForStaff(listOfPet);
                     break;
                 }
                 case 7: {
                     isDone = false;
                     break;
                 }
+            }
+
+            if (choice != 7 && !listOfPet.isEmpty()) {
+                DisplayUtils.displayPetsForStaff(listOfPet);
+            } else {
+                System.out.println("No pets found.");
             }
         }
     }
@@ -286,19 +287,23 @@ public class PetManager {
             return;
         }
 
-        DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird");
-        int categoryChoice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3);
-
-        DisplayUtils.printMenu("Sort By..", "Age", "Price", "Gender", "#Exit", "Back");
+        DisplayUtils.printMenu("Enter Desired Category of Pet:", "Dog", "Cat", "Bird", "#Exit", "Go Back");
+        int categoryChoice = DataValidation.intChoiceValidation("Enter choice", 1, 2, 3, 4);
+        if (categoryChoice == 4) {
+            return;
+        }
+        DisplayUtils.printMenu("Sort By..", "Age", "Price", "Gender", "#Exit", "Go Back");
         int sortBy = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3, 4);
 
         if (sortBy == 4) {
             return;
         }
 
-        DisplayUtils.printMenu("Order: ", "Ascending", "Descending");
-        int isAscendingOrDescending = DataValidation.intChoiceValidation("Enter choice: ", 1, 2);
-
+        DisplayUtils.printMenu("Order: ", "Ascending", "Descending", "#Exit", "Go Back");
+        int isAscendingOrDescending = DataValidation.intChoiceValidation("Enter choice: ", 1, 2, 3);
+        if (isAscendingOrDescending == 3) {
+            return;
+        }
         sortAndShow(categoryChoice, sortBy, isAscendingOrDescending == 1);
     }
 

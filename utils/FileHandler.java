@@ -12,9 +12,16 @@ import java.util.function.Function;
 
 public class FileHandler {
 
-    public static void ensureFilesExist() { //For debugging
-        File dir = new File("data");
-        if (!dir.exists()) dir.mkdirs();
+    public static boolean ensureFilesExist() {
+        File dir = new File(RecordManager.DATA_DIR);
+
+        // Don't create a new data folder: it would end up in the wrong place
+        // and the program would write to empty files there.
+        if (!dir.isDirectory()) {
+            System.out.println("Data folder not found at: " + dir.getAbsolutePath());
+            System.out.println("Run the program from the project root (the folder that contains 'data').");
+            return false;
+        }
 
         String[] files = {
                 RecordManager.FILE_USER_LIST, RecordManager.FILE_PET_LIST, RecordManager.FILE_INCOMING_LIST,
@@ -24,12 +31,18 @@ public class FileHandler {
         };
 
         for (String fileName : files) {
+            File file = new File(fileName);
+            if (file.exists())
+                continue; // leave existing files untouched
+
             try {
-                new File(fileName).createNewFile(); // does nothing if it already exists
+                if (file.createNewFile())
+                    ;
             } catch (IOException e) {
                 System.out.println("Could not create " + fileName + ".");
             }
         }
+        return true;
     }
 
     public static String findRecord(String fileName, String searchFor, int colIndex) {
@@ -47,18 +60,19 @@ public class FileHandler {
         return null;
     }
 
-    public static ArrayList<Pet> viewAllPetRecords(){
+    public static ArrayList<Pet> viewAllPetRecords() {
         return RecordManager.viewAllPetRecords();
     }
 
-    public static ArrayList<Pet> filterRecords(String fileName, Object value, Function <Pet, ?> getters) {
+    public static ArrayList<Pet> filterRecords(String fileName, Object value, Function<Pet, ?> getters) {
         ArrayList<Pet> results = new ArrayList<>();
         String target = String.valueOf(value);
 
-        ArrayList<Pet> pets = RecordManager.readRecords(fileName, RecordManager.PET_FIELD_COUNT, RecordManager::parsePet);
+        ArrayList<Pet> pets = RecordManager.readRecords(fileName, RecordManager.PET_FIELD_COUNT,
+                RecordManager::parsePet);
 
-        for(Pet pet: pets){
-            if(String.valueOf(getters.apply(pet)).equalsIgnoreCase(target)){
+        for (Pet pet : pets) {
+            if (String.valueOf(getters.apply(pet)).equalsIgnoreCase(target)) {
                 results.add(pet);
             }
         }
@@ -66,7 +80,7 @@ public class FileHandler {
         return results;
     }
 
-    public static void appendRecord(String fileName, String record){
+    public static void appendRecord(String fileName, String record) {
         boolean needsNewLine = !endsWithNewLine(fileName);
         try (FileWriter writer = new FileWriter(fileName, true)) {
             if (needsNewLine) {
@@ -118,7 +132,9 @@ public class FileHandler {
         }
     }
 
-    public static boolean updateRecord(String fileName, String searchFor, int index, String newLine) { // for updating pet medical history
+    public static boolean updateRecord(String fileName, String searchFor, int index, String newLine) { // for updating
+                                                                                                       // pet medical
+                                                                                                       // history
         File file = new File(fileName);
         StringBuilder updated = new StringBuilder();
         boolean found = false;
@@ -151,24 +167,24 @@ public class FileHandler {
     public static ArrayList<Pet> loadPets(String fileName, int choice) {
         ArrayList<Pet> pets = new ArrayList<>();
         File file = new File(fileName);
-        if (!file.exists()){
+        if (!file.exists()) {
             return pets;
         }
 
-        try (Scanner read = new Scanner(file)){
-            while(read.hasNextLine()){
+        try (Scanner read = new Scanner(file)) {
+            while (read.hasNextLine()) {
                 String line = read.nextLine();
                 String[] parts = line.split("\\s*\\|\\s*");
-                if(parts.length < 10) {
+                if (parts.length < 10) {
                     continue;
                 }
                 Pet pet = getPet(choice, parts);
-                if(pet != null){
+                if (pet != null) {
                     pets.add(pet);
                 }
             }
             return pets;
-        } catch (IOException e){
+        } catch (IOException e) {
             System.out.println("Error in reading file.");
         }
         return null;
@@ -177,13 +193,12 @@ public class FileHandler {
     private static Pet getPet(int choice, String[] parts) {
         String petID = parts[0];
         String petName = parts[1];
-        String petType = parts[2];
         String petBreed = parts[3];
         char petGender = parts[4].charAt(0);
         int petAge = Integer.parseInt(parts[5]);
         double petPrice = Double.parseDouble(parts[6]);
 
-        Pet pet = switch(choice){
+        Pet pet = switch (choice) {
             case 1 -> new Dog(petID, petName, petBreed, petGender, petAge, petPrice);
             case 2 -> new Cat(petID, petName, petBreed, petGender, petAge, petPrice);
             case 3 -> new Bird(petID, petName, petBreed, petGender, petAge, petPrice);
@@ -192,13 +207,13 @@ public class FileHandler {
         return pet;
     }
 
-    public static void savePet(Pet pet){
+    public static void savePet(Pet pet) {
         appendRecord(RecordManager.FILE_PET_LIST, pet.toFileString());
     }
 
     public static void sortCategory(String fileName, int category, int sortBy, boolean ascending) {
         final int ID = 0, NAME = 1, BREED = 2, GENDER = 3, AGE = 4, PRICE = 5;
-        String[] idPrefix = {"DO", "CA", "BI"};
+        String[] idPrefix = { "DO", "CA", "BI" };
 
         ArrayList<Pet> sorted = new ArrayList<>();
 
@@ -228,7 +243,7 @@ public class FileHandler {
                     };
                     sorted.add(pet);
                 } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
-                    //TODO error msg
+                    System.out.printf("Skipping invalid pet record in %s: %s%n", fileName, line);
                 }
             }
         } catch (IOException e) {
@@ -276,8 +291,7 @@ public class FileHandler {
                     try {
                         max = Math.max(max, Integer.parseInt(parts[colIndex].substring(prefix.length())));
                     } catch (NumberFormatException e) {
-                        // skip IDs that don't end in a number
-                        //TODO error msg
+                        System.out.printf("Skipping invalid ID in %s: %s%n", fileName, parts[colIndex]);
                     }
                 }
             }

@@ -6,7 +6,6 @@ import inventory.Dog;
 import inventory.Pet;
 
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;

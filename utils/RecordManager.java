@@ -10,8 +10,8 @@ import java.util.function.Function;
 import inventory.*;
 
 public class RecordManager {
-    //ALL TXT FILES
-    public static final String DATA_DIR = "data/";
+    // ALL TXT FILES
+    public static final String DATA_DIR = "final-project-4-ooprog/data/";
 
     public static final String FILE_RESERVED = DATA_DIR + "RESERVED.txt";
     public static final String FILE_ADOPTED = DATA_DIR + "ADOPTED_LIST.txt";
@@ -23,17 +23,17 @@ public class RecordManager {
     public static final String FILE_INCOMING_LIST = DATA_DIR + "INCOMING_PET_LIST.txt";
     public static final String FILE_USER_LIST = DATA_DIR + "USER_LIST.txt";
 
-    //FOR USER_LIST.txt
+    // FOR USER_LIST.txt
     public static final int US_USER_ID = 0, US_FIRST_NAME = 1, US_LAST_NAME = 2, US_AGE = 3,
             US_EMAIL_ADDRESS = 4, US_ADDRESS = 5, US_PHONE_NUMBER = 6, US_PASSWORD = 7, US_ROLE = 8;
     public static final int US_FIELD_COUNT = 9;
 
-    //FOR PET_LIST.txt
+    // FOR PET_LIST.txt
     private static final int PET_ID = 0, PET_NAME = 1, PET_TYPE = 2, PET_BREED = 3, PET_GENDER = 4,
             PET_AGE = 5, PET_PRICE = 6, PET_STATUS = 7, PET_MEDICAL = 8, PET_ADOPTION = 9;
     public static final int PET_FIELD_COUNT = 10;
 
-    //FOR RESERVED.txt
+    // FOR RESERVED.txt
     public static final int RES_TRANSACTION_NUM = 0;
     public static final int RES_FIRST_NAME = 1;
     public static final int RES_LAST_NAME = 2;
@@ -46,14 +46,14 @@ public class RecordManager {
     public static final int RES_DATE_CLAIMING = 9;
     public static final int RES_FIELD_COUNT = 10;
 
-    //ADOPTED_LIST.txt
+    // ADOPTED_LIST.txt
     public static final int AD_DATE_FINALIZED = 10;
     public static final int AD_APPROVED_BY = 11;
     public static final int AD_FIELD_COUNT = 12;
 
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
-    //reader
+    // reader
     public static <T> ArrayList<T> readRecords(String fileName, int expectedFields, Function<String[], T> parser) {
         ArrayList<T> records = new ArrayList<>();
         File file = new File(fileName);
@@ -61,7 +61,8 @@ public class RecordManager {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.isBlank()) continue;
+                if (line.isBlank())
+                    continue;
 
                 String[] parts = line.split("\\s*\\|\\s*", -1);
                 if (parts.length != expectedFields) {
@@ -146,8 +147,8 @@ public class RecordManager {
     }
 
     public static String buildUserRecord(String userID, String firstName, String lastName, int age,
-                                         String email, String address, String phone,
-                                         String password, String role) {
+            String email, String address, String phone,
+            String password, String role) {
         String[] parts = new String[US_FIELD_COUNT];
         parts[US_USER_ID] = userID;
         parts[US_FIRST_NAME] = firstName;
@@ -161,7 +162,8 @@ public class RecordManager {
         return String.join("|", parts);
     }
 
-    public String buildAdoptionRequestRecord(String firstName, String lastName, String emailAddress, Pet selectedPet, String paymentPlan, double downPayment, double balanceLeft, String transactionNum, LocalDate date) {
+    public String buildAdoptionRequestRecord(String firstName, String lastName, String emailAddress, Pet selectedPet,
+            String paymentPlan, double downPayment, double balanceLeft, String transactionNum, LocalDate date) {
         String[] parts = new String[RES_FIELD_COUNT];
 
         parts[RES_TRANSACTION_NUM] = transactionNum;
