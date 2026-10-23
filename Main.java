@@ -61,7 +61,7 @@ public class Main {
         boolean emailExists;
         do {
             emailAddress = DataValidation.validateEmailAddress();
-            emailExists = emailExists(emailAddress);
+            emailExists = DataValidation.emailExists(emailAddress);
             if (emailExists) {
                 System.out.println("Email has already been registered. Please try a different one.");
             }
