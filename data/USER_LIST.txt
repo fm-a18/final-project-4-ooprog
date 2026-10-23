@@ -1,0 +1,2 @@
+UD0011|AJ|Yape|20|aj.yape@gmail.com|Makati City, Manila|0999 999 9999|AJ.Yape123|CUSTOMER
+UD0012|Jaz|Henry|20|JazHenry@gmail.com|New Zealand Australia|0999 999 9999|Jazhenry@21|CUSTOMER

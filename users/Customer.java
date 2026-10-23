@@ -190,7 +190,6 @@ public class Customer extends User {
                 .charChoiceValidation("Do you want to view specific pet details?", 'Y', 'N');
 
         if (viewDetailsChoice == 'Y') {
-            String type = petTypes.getFirst().getType();
             specificPetDetails(petTypes);
         }
     }

@@ -177,7 +177,6 @@ public class FileHandler {
     private static Pet getPet(int choice, String[] parts) {
         String petID = parts[0];
         String petName = parts[1];
-        String petType = parts[2];
         String petBreed = parts[3];
         char petGender = parts[4].charAt(0);
         int petAge = Integer.parseInt(parts[5]);
@@ -228,7 +227,7 @@ public class FileHandler {
                     };
                     sorted.add(pet);
                 } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
-                    //TODO error msg
+                    System.out.println("Invalid or incomplete data found.");
                 }
             }
         } catch (IOException e) {
@@ -277,7 +276,7 @@ public class FileHandler {
                         max = Math.max(max, Integer.parseInt(parts[colIndex].substring(prefix.length())));
                     } catch (NumberFormatException e) {
                         // skip IDs that don't end in a number
-                        //TODO error msg
+                        System.out.println("Invalid ID format in " + fileName + ". Skipping this ID.");
                     }
                 }
             }
