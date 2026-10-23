@@ -118,12 +118,8 @@ public class Customer extends User {
                         "Female");
                 char choiceGender = DataValidation.charChoiceValidation("Select Option", 'M', 'F');
 
-                if (choiceGender == 0) {
-                    break;
-                }
-
                 String gender = (choiceGender == 'M') ? "Male" : "Female";
-                showResults(FileHandler.filterRecords(FILE_PET_LIST, String.valueOf(gender), Pet::getGender),
+                showResults(FileHandler.filterRecords(FILE_PET_LIST, gender, Pet::getGender),
                         "VIEW BY PET GENDER " + gender.toUpperCase());
                 break;
             case 5: // SEARCH PET BY AGE

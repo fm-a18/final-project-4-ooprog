@@ -58,7 +58,7 @@ public class Main {
         System.out.println("===================== CUSTOMER SIGNUP ======================");
         String firstName = DataValidation.validateString("Enter your First Name: ");
         String lastName = DataValidation.validateString("Enter your Last Name: ");
-        int age = DataValidation.validateCustomerAgeInput("Enter your Age(18-90): ");
+        int age = DataValidation.validateCustomerAgeInput();
         String emailAddress;
         boolean emailExists;
         do {
@@ -134,7 +134,7 @@ public class Main {
         DisplayUtils.centeredTitle(title, DisplayUtils.MENU_WIDTH);
         String email = DataValidation.validateEmailAddress();
         String userData = FileHandler.findRecord(RecordManager.FILE_USER_LIST, email, US_EMAIL_ADDRESS);
-        String password = promptLoginPassword();
+        String password = DataValidation.validatePasswordForLogin();
 
         if (userData == null) {
             System.out.println("Invalid email, password, or account type.");
@@ -154,11 +154,6 @@ public class Main {
             return null;
         }
         return parts;
-    }
-
-    private static String promptLoginPassword() {
-        System.out.print("Enter your Password: ");
-        return DataValidation.sc.nextLine().trim();
     }
 
     private static User createUser(String[] p) {

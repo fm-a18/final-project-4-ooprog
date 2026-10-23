@@ -5,11 +5,9 @@ import inventory.Cat;
 import inventory.Dog;
 import inventory.Pet;
 
-import java.time.format.DateTimeFormatter;
 import java.util.NoSuchElementException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
 import java.util.Scanner;
 
 public class DataValidation {
@@ -38,13 +36,13 @@ public class DataValidation {
         return input;
     }
 
-    public static int validateCustomerAgeInput(String prompt) {
+    public static int validateCustomerAgeInput() {
         // HUMAN AGE
         boolean isRunning = true;
         int number = 0;
         String inputNumber = "";
         while (isRunning) {
-            System.out.print(prompt);
+            System.out.print("Enter your age (18-90): ");
             inputNumber = sc.nextLine().trim();
             if (!inputNumber.matches("-?(0|[1-9]\\d*)")) {
                 System.out.println("Invalid Input. Only input positive integers without leading zeros. Try Again.");
@@ -106,7 +104,7 @@ public class DataValidation {
             }
             if (input.isEmpty()) {
                 System.out.println("Error: Email Address cannot be empty.");
-            } else if (!input.matches("^[\\\\w!#$%&'*+/=?^`{|}~.-]+@[A-Za-z0-9.-]+\\\\.[A-Za-z]{2,}$")) {
+            } else if (!input.matches("^[\\w!#$%&'*+/=?^`{|}~.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
                 System.out.println("Invalid Email Address. Please follow the following format: name@example.com");
             } else {
                 isValidated = true;
@@ -210,12 +208,30 @@ public class DataValidation {
             }
             if (input.isEmpty()) {
                 System.out.println("Error: Password cannot be empty.");
-            } else if (!input.matches("^(?!.*\\|)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$")) { // Add
-                                                                                                              // special
-                                                                                                              // character
-                                                                                                              // regex
+            } else if (!input.matches("^(?!.*\\|)[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
                 System.out.println(
                         "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
+            } else {
+                isValidated = true;
+            }
+        }
+        return input;
+    }
+
+    public static String validatePasswordForLogin() {
+        boolean isValidated = false;
+        String input = "";
+        while (!isValidated) {
+            System.out.print("Enter your Password: ");
+            try {
+                input = sc.nextLine();
+            } catch (NoSuchElementException e) {
+                System.out.println("Error: Password cannot be empty. Please try again.");
+                continue;
+            }
+
+            if (input.isEmpty()) {
+                System.out.println("Error: Password cannot be empty.");
             } else {
                 isValidated = true;
             }
@@ -386,8 +402,7 @@ public class DataValidation {
         String id = "";
         boolean isValid = false;
         while (!isValid) {
-            System.out.println(
-                    "PET ID FORMAT: First letter of pet type (D, C, B) followed by 4 digits (e.g., D0001, C0002, B0003)");
+            System.out.println("PET ID FORMAT: First letter of pet type (D, C, B) followed by 4 digits (e.g., D0001, C0002, B0003)");
             System.out.print("Pet ID: ");
             id = sc.nextLine().trim().toUpperCase();
 
@@ -433,26 +448,6 @@ public class DataValidation {
             }
         }
         return input;
-    }
-
-    // Builds a placeholder Pet of the given category, e.g. for lookups or
-    // comparisons. Returns null if unknown.
-    public static Pet createTempPet(String category, String petID) {
-        String name = "TEMP";
-        String breed = "N/A";
-        char gender = 'U';
-        int age = 0;
-        double price = 0.0;
-
-        if (category == null) {
-            return null;
-        }
-        return switch (category.trim().toLowerCase()) {
-            case "dog" -> new Dog(petID, name, breed, gender, age, price);
-            case "cat" -> new Cat(petID, name, breed, gender, age, price);
-            case "bird" -> new Bird(petID, name, breed, gender, age, price);
-            default -> null;
-        };
     }
 
     // TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS
