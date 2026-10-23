@@ -1,10 +1,9 @@
-D0001|Buddy|Dog|Golden Retriever|Male|3|5000.00|AVAILABLE|Vaccinated|No adoption history
-C0001|Luna|Cat|Persian|Female|2|3500.00|AVAILABLE|Healthy|No adoption history
-B0001|Kiwi|Bird|Parakeet|Male|1|800.00|AVAILABLE|Healthy|No adoption history
-D0002|Max|Dog|Labrador|Male|4|4500.00|ADOPTION_REVIEW|Vaccinated|No adoption history
-C0002|Mochi|Cat|Siamese|Female|2|3000.00|ADOPTED|Spayed|Adopted on 10-01-2026
-B0002|Rio|Bird|Cockatiel|Male|2|1500.00|AVAILABLE|Healthy|No adoption history
-D0003|Daisy|Dog|Beagle|Female|1|4000.00|RETURN_PENDING|Vaccinated|Previously adopted
-C0003|Coco|Cat|Domestic Shorthair|Male|3|2000.00|AVAILABLE|Neutered|No adoption history
-B0003|Sunny|Bird|Lovebird|Female|1|1200.00|AVAILABLE|Healthy|No adoption history
-D0004|Rocky|Dog|Shih Tzu|Male|5|3800.00|AVAILABLE|Vaccinated|Previously returned
+D0001|Chopper|Dog|Reindeer|M|14|1000.0|CANCELLATION_REVIEW|2026-10-23~Ubo|10-21-2026~Just so
+B0001|Gary|Bird|Sponge|F|14|100.5|AVAILABLE|2007-10-20~Cancer|
+C0001|Nekomimi|Cat|Puss the Boots|F|2|500.0|AVAILABLE|2006-10-21~Salmonela|
+D0002|Biscuit|Dog|Golden|M|3|1200.0|AVAILABLE||
+D0003|Luna|Dog|Siberian Husky|F|2|1500.0|AVAILABLE||
+C0002|Mochi|Cat|Persian|F|4|800.0|AVAILABLE||
+C0003|Oliver|Cat|Maine Coon|M|1|950.5|AVAILABLE||
+B0002|Sunny|Bird|Cockatiel|M|2|250.0|AVAILABLE||
+B0003|Kiwi|Bird|Budgerigar|F|1|75.5|AVAILABLE||
