@@ -15,25 +15,11 @@ public class DisplayUtils {
         System.out.println("=".repeat(width));
     }
 
-    public static void staffPetHeader(String tableName) {
-        centeredTitle(tableName, TABLE_WIDTH);
-
-        System.out.printf(
-                "%-10s | %-20s | %-15s | %-25s | %-10s%n",
-                "Pet ID",
-                "Pet Name",
-                "Type",
-                "Status",
-                "Price");
-
-        System.out.println("-".repeat(TABLE_WIDTH));
-    }
-
     public static void customerPetHeader(String tableName) {
         centeredTitle(tableName, TABLE_WIDTH);
 
         System.out.printf(
-                "%-20s | %-20s | %-15s | %-15s | %-5s | %-10s | %-15s%n",
+                "%-15s | %-20s | %-15s | %-20s | %-5s | %-12s | %-10s%n",
                 "Pet ID",
                 "Pet Name",
                 "Type",
@@ -45,34 +31,48 @@ public class DisplayUtils {
         System.out.println("-".repeat(TABLE_WIDTH));
     }
 
-    public static void displayPetsForStaff(ArrayList<Pet> pets) {
-        staffPetHeader("LIST OF PETS");
-
-        for (Pet pet : pets) {
-            System.out.printf(
-                    "%-10s | %-20s | %-15s | %-25s | %10.2f%n",
-                    pet.getPetID(),
-                    pet.getPetName(),
-                    pet.getType(),
-                    pet.getAdoptionStatus(),
-                    pet.getPrice());
-        }
-
-        System.out.println("-".repeat(TABLE_WIDTH));
-    }
-
     public static void displayPetsForCustomer(ArrayList<Pet> pets) { // Name, Type, Breed, Age, Price
 
         for (Pet pet : pets) {
             System.out.printf(
-                    "%-20s | %-20s | %-15s | %-15s | %-5d | %-10s | %-15s%n",
+                    "%-15s | %-20s | %-15s | %-20s | %-5d | %-12s | %-10s%n",
                     pet.getPetID(),
                     pet.getPetName(),
                     pet.getType(),
                     pet.getBreed(),
                     pet.getAge(),
-                    pet.getPrice(),
+                    String.format("Php %,.2f", pet.getPrice()),
                     pet.getGender());
+        }
+
+        System.out.println("-".repeat(TABLE_WIDTH));
+    }
+
+    public static void staffPetHeader(String tableName) {
+        centeredTitle(tableName, TABLE_WIDTH);
+
+        System.out.printf(
+                "%-10s | %-20s | %-15s | %-25s | %-12s%n",
+                "Pet ID",
+                "Pet Name",
+                "Type",
+                "Status",
+                "Price");
+
+        System.out.println("-".repeat(TABLE_WIDTH));
+    }
+
+    public static void displayPetsForStaff(ArrayList<Pet> pets) {
+        staffPetHeader("LIST OF PETS");
+
+        for (Pet pet : pets) {
+            System.out.printf(
+                    "%-10s | %-20s | %-15s | %-25s | %-12s%n",
+                    pet.getPetID(),
+                    pet.getPetName(),
+                    pet.getType(),
+                    pet.getAdoptionStatus(),
+                    String.format("Php %,.2f", pet.getPrice()));
         }
 
         System.out.println("-".repeat(TABLE_WIDTH));

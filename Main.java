@@ -77,9 +77,21 @@ public class Main {
         String role = "Customer";
         while (!isFileSaved) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(RecordManager.FILE_USER_LIST, true))) {
-                writer.write(
-                        String.format("%s|%s|%s|%s|%s|%s|%s|%s|%S%n", userID, firstName, lastName, age, emailAddress,
-                                address, phoneNumber, password, role));
+                String record = RecordManager.buildUserRecord(
+                        userID,
+                        firstName,
+                        lastName,
+                        age,
+                        emailAddress,
+                        address,
+                        phoneNumber,
+                        password,
+                        role
+                );
+
+                writer.write(record);
+                writer.newLine();
+
                 System.out.println("User successfully registered!");
                 isFileSaved = true;
             } catch (IOException e) {

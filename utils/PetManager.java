@@ -22,7 +22,6 @@ import static utils.RecordManager.RES_TRANSACTION_NUM;
 public class PetManager {
     private static PetManager instance;
     private final ArrayList<Pet> pets;
-    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-uuuu").withResolverStyle(ResolverStyle.STRICT);
 
     private PetManager() {
         pets = FileHandler.viewAllPetRecords();

@@ -13,8 +13,6 @@ import java.time.format.ResolverStyle;
 import java.util.Scanner;
 
 public class DataValidation {
-    static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-uuuu")
-            .withResolverStyle(ResolverStyle.STRICT);
     public static final Scanner sc = new Scanner(System.in);
 
     public static String validateString(String prompt) {
@@ -157,13 +155,13 @@ public class DataValidation {
             String input = sc.nextLine().trim();
 
             try {
-                date = LocalDate.parse(input, dateFormat);
-                res = date.format(dateFormat);
+                date = LocalDate.parse(input, RecordManager.dateFormat);
+                res = date.format(RecordManager.dateFormat);
             } catch (DateTimeParseException e) {
                 System.out.println("Invalid Date Format. Please use (MM-DD-YYYY).");
             }
         }
-        return LocalDate.parse(res, dateFormat);
+        return LocalDate.parse(res, RecordManager.dateFormat);
     }
 
     public static String validatePhoneNumber() {
