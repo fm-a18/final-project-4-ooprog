@@ -13,8 +13,4 @@ public class Cat extends Pet {
         return TYPE;
     }
 
-    @Override
-    public String getPetIDPrefix() {
-        return ID_PREFIX;
-    }
 }
