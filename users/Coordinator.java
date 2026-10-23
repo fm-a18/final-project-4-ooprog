@@ -83,16 +83,16 @@ public class Coordinator extends User {
 
     private void requestPetAdoption() {
         PetManager.getInstance().requestAdoption(new Customer(getUserID(), getFirstName(), getLastName(),
-                US_EMAIL_ADDRESS, getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
+                getAge(), getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
     }
 
     private void cancelPetAdoption() {
         PetManager.getInstance().cancelAdoption(new Customer(getUserID(), getFirstName(), getLastName(),
-                US_EMAIL_ADDRESS, getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
+                getAge(), getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
     }
 
     private void requestPetReturn() {
         PetManager.getInstance().requestReturn(new Customer(getUserID(), getFirstName(), getLastName(),
-                US_EMAIL_ADDRESS, getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
+                getAge(), getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
     }
 }
