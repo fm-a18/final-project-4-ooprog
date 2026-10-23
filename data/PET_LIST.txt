@@ -1,3 +1,9 @@
-D0001|Chopper|Dog|Reindeer|M|14|1000.0|AVAILABLE|2026-10-23~Ubo|10-21-2026~Just so
-D0002|Gary|Bird|Sponge|F|14|100.5|AVAILABLE|2007-10-20~Cancer|
-C0002|Nekomimi|Cat|Pussy the Botts|F|2|500.0|AVAILABLE|2006-10-21~Salmonela|
+D0001|Chopper|Dog|Reindeer|M|14|1000.0|CANCELLATION_REVIEW|2026-10-23~Ubo|10-21-2026~Just so
+B0001|Gary|Bird|Sponge|F|14|100.5|AVAILABLE|2007-10-20~Cancer|
+C0001|Nekomimi|Cat|Puss the Boots|F|2|500.0|AVAILABLE|2006-10-21~Salmonela|
+D0002|Biscuit|Dog|Golden|M|3|1200.0|AVAILABLE||
+D0003|Luna|Dog|Siberian Husky|F|2|1500.0|AVAILABLE||
+C0002|Mochi|Cat|Persian|F|4|800.0|AVAILABLE||
+C0003|Oliver|Cat|Maine Coon|M|1|950.5|AVAILABLE||
+B0002|Sunny|Bird|Cockatiel|M|2|250.0|AVAILABLE||
+B0003|Kiwi|Bird|Budgerigar|F|1|75.5|AVAILABLE||
