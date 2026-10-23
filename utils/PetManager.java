@@ -88,26 +88,6 @@ public class PetManager {
         };
     }
 
-    private boolean savePet(Pet pet) {
-        boolean isFileSaved = false;
-        while (!isFileSaved) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(RecordManager.FILE_PET_LIST, true))) {
-
-                writer.write(pet.toFileString());
-                writer.newLine();
-                return true;
-
-            } catch (IOException e) {
-                System.out.println("Error writing file.");
-                char retry = DataValidation.charChoiceValidation("Try again?", 'Y', 'N');
-                if (retry != 'Y') {
-                    isFileSaved = true;
-                }
-            }
-        }
-        return false;
-    }
-
     public void updatePetMedicalHistory() {
         String petID = DataValidation.validatePetIdInput();
         Pet pet = findPetID(petID);
@@ -469,8 +449,7 @@ public class PetManager {
         }
 
         String transactionNum = TransactionNumGenerator.transactionNumGenerator();
-        RecordManager rm = new RecordManager();
-        String reservationRecord = rm.buildAdoptionRequestRecord(customer.getFirstName(), customer.getLastName(),
+        String reservationRecord = RecordManager.buildAdoptionRequestRecord(customer.getFirstName(), customer.getLastName(),
                 customer.getEmailAddress(), selectedPet, paymentPlan.getName(), downPaymentAmount, balanceLeft, transactionNum,
                 date);
         FileHandler.appendRecord(FILE_RESERVED, reservationRecord);
