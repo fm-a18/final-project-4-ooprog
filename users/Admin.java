@@ -113,7 +113,7 @@ public class Admin extends User {
             return null;
         }
 
-        String record = FileHandler.findRecord(fileName, findTransactionNum, 0);
+        String record = FileHandler.findRecord(fileName, findTransactionNum, RecordManager.RES_TRANSACTION_NUM);
 
         if (record == null) {
             System.out.println("Transaction not found.");
