@@ -12,11 +12,26 @@ import java.util.function.Function;
 
 public class FileHandler {
 
+    public static String resolveDataDir() {
+        String[] candidates = { "data", "final-project-4-ooprog/data" };
+        for (String c : candidates) {
+            if (new File(c).isDirectory()) {
+                return c + "/";
+            }
+        }
+        new File("data").mkdirs(); // nothing found, so create it
+        return "data/";
+    }
+
     public static boolean ensureFilesExist() {
         File dir = new File(RecordManager.DATA_DIR);
 
+        if (!dir.exists() && !dir.mkdirs()) {
+            System.out.println("Could not create data folder: " + dir.getAbsolutePath());
+            return false;
+        }
         if (!dir.isDirectory()) {
-            System.out.println("Data path exists but is not a directory: " + dir.getAbsolutePath());
+            System.out.println("Data path is not a directory: " + dir.getAbsolutePath());
             return false;
         }
 

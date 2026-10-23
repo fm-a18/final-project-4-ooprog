@@ -11,7 +11,7 @@ import inventory.*;
 
 public class RecordManager {
     // ALL TXT FILES
-    public static final String DATA_DIR = "final-project-4-ooprog/data/";
+    public static final String DATA_DIR = FileHandler.resolveDataDir();
 
     public static final String FILE_RESERVED = DATA_DIR + "RESERVED.txt";
     public static final String FILE_ADOPTED = DATA_DIR + "ADOPTED_LIST.txt";
