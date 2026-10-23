@@ -108,9 +108,9 @@ public class PetManager {
     }
 
     private void promptMedicalRecord(Pet pet) {
-        LocalDate date = DataValidation.validateDate("Enter date of the condition/treatment(MM-DD-YYYY)");
+        LocalDate medicalDate = DataValidation.validateDateForPetAge(pet.getAge());
         String condition = DataValidation.validateMedicalRecord();
-        pet.addMedicalHistory(date, condition);
+        pet.addMedicalHistory(medicalDate, condition);
     }
 
     public void viewSpecificPet() {
