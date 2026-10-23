@@ -108,20 +108,6 @@ public class PetManager {
         return false;
     }
 
-    public boolean registerPet(Pet pet) { // For incoming pets
-        if (findPetID(pet.getPetID()) != null) {
-            return false;
-        }
-
-        pet.setAdoptionStatus(AdoptionStatus.AVAILABLE);
-        if (!savePet(pet)) {
-            return false;
-        }
-
-        pets.add(pet);
-        return true;
-    }
-
     public void updatePetMedicalHistory() {
         String petID = DataValidation.validatePetIdInput();
         Pet pet = findPetID(petID);

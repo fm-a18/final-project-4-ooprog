@@ -1,10 +1,5 @@
 package utils;
 
-import inventory.Bird;
-import inventory.Cat;
-import inventory.Dog;
-import inventory.Pet;
-
 import java.util.NoSuchElementException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -455,37 +450,6 @@ public class DataValidation {
             }
         }
         return id;
-    }
-
-    public static String categoryValidation(Scanner sc) {
-        boolean isValidated = false;
-        String input = "";
-
-        while (!isValidated) {
-            System.out.print("Category: ");
-            try {
-                input = sc.nextLine().trim();
-            } catch (java.util.NoSuchElementException e) {
-                System.out.println("Error: No input available. Please try again.");
-                continue;
-            }
-
-            if (input.isEmpty()) {
-                System.out.println("Error: Category cannot be empty.");
-            } else if (input.equalsIgnoreCase("Dog")) {
-                input = "Dog";
-                isValidated = true;
-            } else if (input.equalsIgnoreCase("Cat")) {
-                input = "Cat";
-                isValidated = true;
-            } else if (input.equalsIgnoreCase("Bird")) {
-                input = "Bird";
-                isValidated = true;
-            } else {
-                System.out.println("Error: Category " + input + " does not exist!");
-            }
-        }
-        return input;
     }
 
     // TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS

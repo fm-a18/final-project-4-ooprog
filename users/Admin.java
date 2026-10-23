@@ -270,7 +270,7 @@ public class Admin extends User {
         var incomingPets = RecordManager.readRecords(RecordManager.FILE_INCOMING_LIST,
                 RecordManager.PET_FIELD_COUNT, RecordManager::parsePet);
 
-        if (incomingPets == null || incomingPets.isEmpty()) {
+        if (incomingPets.isEmpty()) {
             System.out.println("No incoming pets to review.");
             return;
         }
