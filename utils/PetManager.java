@@ -1,6 +1,10 @@
 package utils;
 
 import inventory.*;
+import payment.FiftyPercentDP;
+import payment.FullPayment;
+import payment.PaymentPlan;
+import payment.SeventyFivePercentDP;
 import users.Customer;
 import utils.generators.TransactionNumGenerator;
 
@@ -406,13 +410,13 @@ public class PetManager {
             System.out.println("Fill out the following information for the adoption request:");
         }
 
-        String paymentPlan = paymentPlanSelection();
+        PaymentPlan paymentPlan = paymentPlanSelection();
         if (paymentPlan == null) {
             System.out.println("Adoption request cancelled.");
             return;
         }
 
-        double downPaymentAmount = downPayment(paymentPlan, selectedPet.getPrice());
+        double downPaymentAmount = paymentPlan.computeDownPayment(selectedPet.getPrice());
         double balanceLeft = selectedPet.getPrice() - downPaymentAmount;
 
         LocalDate date = DataValidation.validateDate("Enter date for claiming of pet (mm-dd-yyyy): ");
@@ -432,7 +436,7 @@ public class PetManager {
         String transactionNum = TransactionNumGenerator.transactionNumGenerator();
         RecordManager rm = new RecordManager();
         String reservationRecord = rm.buildAdoptionRequestRecord(customer.getFirstName(), customer.getLastName(),
-                customer.getEmailAddress(), selectedPet, paymentPlan, downPaymentAmount, balanceLeft, transactionNum,
+                customer.getEmailAddress(), selectedPet, paymentPlan.getName(), downPaymentAmount, balanceLeft, transactionNum,
                 date);
         FileHandler.appendRecord(FILE_RESERVED, reservationRecord);
         updatePetStatus(selectedPet.getPetID(), AdoptionStatus.ADOPTION_REVIEW);
@@ -441,7 +445,7 @@ public class PetManager {
                 new String[][] {
                         { "Transaction Number", transactionNum },
                         { "Pet ID", selectedPet.getPetID() },
-                        { "Payment Plan", paymentPlan },
+                        { "Payment Plan", paymentPlan.getName() },
                         { "Down Payment", String.valueOf(downPaymentAmount) },
                         { "Balance", String.valueOf(balanceLeft) },
                         { "Date Requested", LocalDate.now().toString() },
@@ -451,7 +455,7 @@ public class PetManager {
                 + " has been submitted for review.");
     }
 
-    private static String paymentPlanSelection() {
+    private static PaymentPlan paymentPlanSelection() {
         DisplayUtils.printMenu("SELECT PAYMENT PLAN",
                 "#Available Payment Plans",
                 "Full Payment",
@@ -460,32 +464,14 @@ public class PetManager {
 
         int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request: ", 1, 2, 3);
 
-        switch (choice) {
-            case 1 -> {
-                System.out.println("You have selected Full Payment.");
-                return "Full Payment";
-            }
-            case 2 -> {
-                System.out.println("You have selected 50% Down Payment.");
-                return "50% Down Payment";
-            }
-            case 3 -> {
-                System.out.println("You have selected 75% Down Payment.");
-                return "75% Down Payment";
-            }
-            default -> throw new IllegalStateException("Unexpected choice: " + choice);
-        }
-    }
+        PaymentPlan plan = switch(choice){
+            case 1 -> new FullPayment();
+            case 2 -> new FiftyPercentDP();
+            default -> new SeventyFivePercentDP();
+        };
 
-    private static double downPayment(String paymentPlan, double petPrice) {
-        double amount = 0;
-
-        switch (paymentPlan) {
-            case "Full Payment" -> amount = petPrice;
-            case "50% Down Payment" -> amount = petPrice * 0.5;
-            case "75% Down Payment" -> amount = petPrice * 0.75;
-        }
-        return amount;
+        System.out.println("You have selected " + plan.getName() + ".");
+        return plan;
     }
 
     // ------------CANCEL REQUEST ADOPTION (CUSTOMER)
