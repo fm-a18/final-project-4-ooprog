@@ -14,7 +14,7 @@ public abstract class Pet {
     private final String breed;
     private final char gender;
     private int age;
-    private double price;
+    private final double price;
     private AdoptionStatus adoptionStatus;
     private final TreeMap<LocalDate, ArrayList<String>> adoptionHistory;
     private final TreeMap<LocalDate, ArrayList<String>> medicalHistory;
@@ -64,10 +64,6 @@ public abstract class Pet {
 
     public double getPrice() {
         return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
     }
 
     public AdoptionStatus getAdoptionStatus() {

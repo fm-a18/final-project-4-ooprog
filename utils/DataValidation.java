@@ -1,10 +1,5 @@
 package utils;
 
-import inventory.Bird;
-import inventory.Cat;
-import inventory.Dog;
-import inventory.Pet;
-
 import java.util.NoSuchElementException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -254,6 +249,29 @@ public class DataValidation {
         return input;
     }
 
+    public static String validateMedicalRecord() {
+        boolean isValidated = false;
+        String input = "";
+        while (!isValidated) {
+            System.out.print("Enter medical condition/treatment name: ");
+            try {
+                input = sc.nextLine().trim();
+            } catch (java.util.NoSuchElementException e) {
+                System.out.print("Invalid String input. Please try again.\n");
+                continue;
+            }
+
+            if (input.isEmpty()) {
+                System.out.print("Invalid String input. Input cannot be empty. Try Again\n");
+            } else if (!input.matches("^(?=.*\\p{L})[\\p{L}\\d.,'()# -]+$")) {
+                System.out.println("Error: Only letters, numbers, spaces, periods, commas, apostrophes, hyphens, parentheses, and # are allowed.");
+            } else {
+                isValidated = true;
+            }
+        }
+        return input;
+    }
+
     public static int intChoiceValidation(String prompt, int... choices) {
         int value = 0;
         boolean isValidated = false;
@@ -432,37 +450,6 @@ public class DataValidation {
             }
         }
         return id;
-    }
-
-    public static String categoryValidation(Scanner sc) {
-        boolean isValidated = false;
-        String input = "";
-
-        while (!isValidated) {
-            System.out.print("Category: ");
-            try {
-                input = sc.nextLine().trim();
-            } catch (java.util.NoSuchElementException e) {
-                System.out.println("Error: No input available. Please try again.");
-                continue;
-            }
-
-            if (input.isEmpty()) {
-                System.out.println("Error: Category cannot be empty.");
-            } else if (input.equalsIgnoreCase("Dog")) {
-                input = "Dog";
-                isValidated = true;
-            } else if (input.equalsIgnoreCase("Cat")) {
-                input = "Cat";
-                isValidated = true;
-            } else if (input.equalsIgnoreCase("Bird")) {
-                input = "Bird";
-                isValidated = true;
-            } else {
-                System.out.println("Error: Category " + input + " does not exist!");
-            }
-        }
-        return input;
     }
 
     // TRANSACTION NUMBER VALIDATION FOR ADOPTION STATUS
