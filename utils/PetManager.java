@@ -266,7 +266,7 @@ public class PetManager {
                 }
                 case 6: {
                     String petStatus = "";
-                    DisplayUtils.printMenu("PET TYPE",
+                    DisplayUtils.printMenu("PET STATUS",
                             "#Select Adoption Status",
                             AdoptionStatus.AVAILABLE.toString(),
                             AdoptionStatus.ADOPTION_REVIEW.toString(),
@@ -495,10 +495,10 @@ public class PetManager {
                         { "Transaction Number", transactionNum },
                         { "Pet ID", selectedPet.getPetID() },
                         { "Payment Plan", paymentPlan.getName() },
-                        { "Down Payment", String.valueOf(downPaymentAmount) },
-                        { "Balance", String.valueOf(balanceLeft) },
-                        { "Date Requested", LocalDate.now().toString() },
-                        { "Date Claiming", date.toString() }
+                        { "Down Payment", String.format("Php %,.2f", downPaymentAmount) },
+                        { "Balance", String.format("Php %,.2f", balanceLeft) },
+                        { "Date Requested", LocalDate.now().format(RecordManager.dateFormat) },
+                        { "Date Claiming", date.format(RecordManager.dateFormat) }
                 });
         System.out.println("Adoption request for Pet ID: " + petID + " with transaction number " + transactionNum
                 + " has been submitted for review.");
