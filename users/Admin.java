@@ -50,7 +50,7 @@ public class Admin extends User {
             switch (choice) {
                 case 1 -> viewAllPets();
                 case 2 -> searchByCategory();
-                case 3 -> filterByStatus();
+                case 3 -> sortByCategory();
                 case 4 -> addPet();
                 case 5 -> approveAdoptionRequest();
                 case 6 -> cancelAdoptionRequest();
@@ -74,7 +74,7 @@ public class Admin extends User {
         PetManager.getInstance().searchByCategory();
     }
 
-    private void filterByStatus() {
+    private void sortByCategory() {
         PetManager.getInstance().sortByCategory();
     }
 
@@ -93,7 +93,7 @@ public class Admin extends User {
 
         DisplayUtils.displayPendingRequests("PENDING " + action.toUpperCase() + "S", pending);
 
-        String findTransactionNum = DataValidation.transactionNumberValidation("Transaction Number");
+        String findTransactionNum = DataValidation.transactionNumberValidation();
 
         if (findTransactionNum == null || findTransactionNum.isBlank()) {
             System.out.println("Invalid Transaction Number.");
@@ -179,15 +179,12 @@ public class Admin extends User {
 
         AdoptionStatus currentStatus = pet.getAdoptionStatus();
         if (currentStatus == AdoptionStatus.ADOPTED) {
-            System.out.println("This pet is already adopted and cannot be approved again.");
+            System.out.println("This pet is already adopted, so its reservation cannot be cancelled.");
             return;
         }
 
-        FileHandler.appendRecord(RecordManager.FILE_CANCELLED_LIST, record);
-        FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, 0); // Remove from
-                                                                                              // cancellation_request
-        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RES_TRANSACTION_ID); // Remove from
-                                                                                                   // reserved_req
+        FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, RES_TRANSACTION_ID);
+        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RES_TRANSACTION_ID);
         PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
 
         System.out.printf("Cancellation approved for transaction %s.\n", transactionNum);
@@ -210,9 +207,8 @@ public class Admin extends User {
         String detailsOfReturn = DataValidation.validateString("Details");
 
         pet.addAdoptionHistory(LocalDate.now(), detailsOfReturn);
-        FileHandler.appendRecord(RecordManager.FILE_RETURNED_LIST, record); // Documentation
-        FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, 0); // Remove from return list
-        FileHandler.removeRecord(RecordManager.FILE_ADOPTED, transactionNum, 0); // remove from adopted
+        FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, RES_TRANSACTION_ID);
+        FileHandler.removeRecord(RecordManager.FILE_ADOPTED, transactionNum, RES_TRANSACTION_ID);
         PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
 
         System.out.printf("Return of pet approved for transaction %s.\n", transactionNum);
