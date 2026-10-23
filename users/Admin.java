@@ -183,9 +183,6 @@ public class Admin extends User {
 
     }
 
-    private static final int RES_TRANSACTION_ID = 0;
-    private static final int RES_PET_ID = 4;
-
     private void cancelAdoptionRequest() {
         String record = findPendingTransaction(RecordManager.FILE_CANCELLATION_REQUEST, RecordManager.RES_FIELD_COUNT, "Cancellation Request");
         if (record == null)

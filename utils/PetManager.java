@@ -46,11 +46,11 @@ public class PetManager {
             System.out.println("Pet ID already exists. Please use another ID.");
             petID = DataValidation.validatePetID(choice);
         }
-        String petName = DataValidation.validateString("Name: ");
-        String petBreed = DataValidation.validateString("Breed: ");
+        String petName = DataValidation.validateString("Name");
+        String petBreed = DataValidation.validateString("Breed");
         char petGender = DataValidation.charChoiceValidation("Gender", 'M', 'F');
         int petAge = DataValidation.validatePetAgeInput();
-        double petPrice = DataValidation.validatePriceInput("Price of Pet(100.00 - 10,000.00): ");
+        double petPrice = DataValidation.validatePriceInput("Price of Pet(100.00 - 10,000.00)");
 
         Pet pet = createNewPet(choice, petID, petName, petBreed, petGender, petAge, petPrice);
 
@@ -220,7 +220,7 @@ public class PetManager {
 
             switch (choice) {
                 case 1: {
-                    String petName = DataValidation.validateString("Enter pet name: ");
+                    String petName = DataValidation.validateString("Enter pet name");
                     listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petName,
                             Pet::getPetName);
                     break;
@@ -246,7 +246,7 @@ public class PetManager {
                     break;
                 }
                 case 3: {
-                    String petBreed = DataValidation.validateString("Enter pet breed: ");
+                    String petBreed = DataValidation.validateString("Enter pet breed");
                     listOfPet = FileHandler.filterRecords(RecordManager.FILE_PET_LIST, petBreed,
                             Pet::getBreed);
                     break;
@@ -450,8 +450,7 @@ public class PetManager {
 
         System.out.println("Pet ID: " + petID + " found and is available for adoption.");
 
-        char requestAdoption = DataValidation
-                .charChoiceValidation("\nDo you want to request adoption for Pet ID: " + petID + "?", 'y', 'n');
+        char requestAdoption = DataValidation.charChoiceValidation("Do you want to request adoption for Pet ID: " + petID + "?", 'Y', 'N');
 
         if (requestAdoption == 'N') {
             System.out.println("Adoption request cancelled.");
@@ -469,10 +468,10 @@ public class PetManager {
         double downPaymentAmount = paymentPlan.computeDownPayment(selectedPet.getPrice());
         double balanceLeft = selectedPet.getPrice() - downPaymentAmount;
 
-        LocalDate date = DataValidation.validateDate("Enter date for claiming of pet (mm-dd-yyyy): ");
+        LocalDate date = DataValidation.validateDate("Enter date for claiming of pet (mm-dd-yyyy)");
         while (!DataValidation.dateForClaimingPet(date)) {
             System.out.println("Date should be on or within 7 days after the adoption request.");
-            date = DataValidation.validateDate("Enter date for claiming of pet: ");
+            date = DataValidation.validateDate("Enter date for claiming of pet");
         }
 
         System.out.println("\nConfirm adoption request by entering your email address.");
@@ -512,7 +511,7 @@ public class PetManager {
                 "50% Down Payment",
                 "75% Down Payment");
 
-        int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request: ", 1, 2, 3);
+        int choice = DataValidation.intChoiceValidation("Select Payment Plan for Adoption Request", 1, 2, 3);
 
         PaymentPlan plan = switch(choice){
             case 1 -> new FullPayment();
@@ -569,8 +568,7 @@ public class PetManager {
                         { "Date Claiming", found.getDateClaiming().toString() }
                 });
 
-        char cancelAdoptionConfirmation = DataValidation
-                .charChoiceValidation("Are you sure you want to cancel your reservation?: ", 'y', 'n');
+        char cancelAdoptionConfirmation = DataValidation.charChoiceValidation("Are you sure you want to cancel your reservation?", 'Y', 'N');
 
         if (cancelAdoptionConfirmation == 'N') {
             System.out.println("Adoption Cancellation Cancelled.");
