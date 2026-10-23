@@ -80,7 +80,7 @@ public class PetManager {
     }
 
     private Pet createNewPet(int choice, String id, String name, String breed,
-            char gender, int age, double price) {
+                             char gender, int age, double price) {
         return switch (choice) {
             case 1 -> new Dog(id, name, breed, gender, age, price);
             case 2 -> new Cat(id, name, breed, gender, age, price);
@@ -143,8 +143,58 @@ public class PetManager {
 
     private void promptMedicalRecord(Pet pet) {
         LocalDate date = DataValidation.validateDate("Enter date of the condition/treatment(MM-DD-YYYY)");
-        String condition = DataValidation.validateString("Enter medical condition/treatment name");
+        String condition = DataValidation.validateMedicalRecord();
         pet.addMedicalHistory(date, condition);
+    }
+
+    public void viewSpecificPet() {
+        if (pets.isEmpty()) {
+            System.out.println("No pets found.");
+            return;
+        }
+
+        DisplayUtils.printMenu("PET TYPE",
+                "#Select Pet Type",
+                "Dog",
+                "Cat",
+                "Bird");
+        int choice = DataValidation.intChoiceValidation("Select Option", 1, 2, 3);
+
+        String type = switch (choice) {
+            case 1 -> Dog.TYPE;
+            case 2 -> Cat.TYPE;
+            default -> Bird.TYPE;
+        };
+
+        ArrayList<Pet> petsOfType = new ArrayList<>();
+        for (Pet pet : pets) {
+            if (pet.getType().equals(type)) {
+                petsOfType.add(pet);
+            }
+        }
+
+        if (petsOfType.isEmpty()) {
+            System.out.println("No pets found.");
+            return;
+        }
+
+        DisplayUtils.displayPetsForStaff(petsOfType);
+
+        char viewDetails = DataValidation.charChoiceValidation("Do you want to view specific pet details?", 'Y', 'N');
+        if (viewDetails != 'Y') {
+            return;
+        }
+
+        DisplayUtils.centeredTitle("VIEW SPECIFIC PET DETAILS", DisplayUtils.MENU_WIDTH);
+        String petID = DataValidation.validatePetIdInput();
+
+        for (Pet pet : petsOfType) {
+            if (pet.idExists(petID)) {
+                DisplayUtils.displayPetDetails(pet);
+                return;
+            }
+        }
+        System.out.println("No pet found with the given ID in this category.");
     }
 
     public ArrayList<Pet> getAllPets() {

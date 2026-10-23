@@ -11,7 +11,7 @@ import static utils.RecordManager.US_EMAIL_ADDRESS;
 public class Coordinator extends User {
 
     public Coordinator(String userID, String firstName, String lastName, int age, String emailAddress,
-            String address, String phoneNumber, String password) {
+                       String address, String phoneNumber, String password) {
         super(userID, firstName, lastName, age, emailAddress,
                 address, phoneNumber, password);
     }
@@ -21,6 +21,7 @@ public class Coordinator extends User {
         return "Coordinator";
     }
 
+    @Override
     public void showMenu(Scanner sc) {
         boolean isDone = false;
 
@@ -30,6 +31,7 @@ public class Coordinator extends User {
                     "View All Pets",
                     "Search by Category",
                     "Sort by Category",
+                    "Search Specific Pet",
                     "Add Pet",
                     "Update Pet Medical History",
 
@@ -39,22 +41,22 @@ public class Coordinator extends User {
                     "Request Pet Return",
                     "#Exit", "Log Out");
             int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 4, 5, 6, 7, 8, 9);
+                    1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
             switch (choice) {
                 case 1 -> viewAllPets();
                 case 2 -> searchByCategory();
                 case 3 -> sortByCategory();
-                case 4 -> addPet();
-                case 5 -> updatePetMedicalHistory(); // wil change to med history
-                case 6 -> requestPetAdoption();
-                case 7 -> cancelPetAdoption();
-                case 8 -> requestPetReturn();
-                case 9 -> isDone = true;
+                case 4 -> searchForSpecificPet();
+                case 5 -> addPet();
+                case 6 -> updatePetMedicalHistory();
+                case 7 -> requestPetAdoption();
+                case 8 -> cancelPetAdoption();
+                case 9 -> requestPetReturn();
+                case 10 -> isDone = true;
             }
         }
     }
-
     private void viewAllPets() {
         ArrayList<Pet> pets = PetManager.getInstance().getAllPets();
 
@@ -73,6 +75,10 @@ public class Coordinator extends User {
         PetManager.getInstance().sortByCategory();
     }
 
+    private void searchForSpecificPet() {
+        PetManager.getInstance().viewSpecificPet();
+    }
+
     private void addPet() {
         PetManager.getInstance().addPet();
     }
@@ -83,16 +89,16 @@ public class Coordinator extends User {
 
     private void requestPetAdoption() {
         PetManager.getInstance().requestAdoption(new Customer(getUserID(), getFirstName(), getLastName(),
-                getAge(), getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
+                getAge(), getEmailAddress(), getAddress(), getPhoneNumber(), getPassword()));
     }
 
     private void cancelPetAdoption() {
         PetManager.getInstance().cancelAdoption(new Customer(getUserID(), getFirstName(), getLastName(),
-                getAge(), getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
+                getAge(), getEmailAddress(), getAddress(), getPhoneNumber(), getPassword()));
     }
 
     private void requestPetReturn() {
         PetManager.getInstance().requestReturn(new Customer(getUserID(), getFirstName(), getLastName(),
-                getAge(), getEmailAddress(), getEmailAddress(), getPhoneNumber(), getPassword()));
+                getAge(), getEmailAddress(), getAddress(), getPhoneNumber(), getPassword()));
     }
 }

@@ -13,7 +13,7 @@ import static utils.DisplayUtils.printMenu;
 public class Admin extends User {
 
     public Admin(String userID, String firstName, String lastName, int age, String emailAddress,
-            String address, String phoneNumber, String password) {
+                 String address, String phoneNumber, String password) {
         super(userID, firstName, lastName, age, emailAddress,
                 address, phoneNumber, password);
     }
@@ -23,6 +23,7 @@ public class Admin extends User {
         return "Admin";
     }
 
+    @Override
     public void showMenu(Scanner sc) {
         boolean isDone = false;
 
@@ -32,7 +33,9 @@ public class Admin extends User {
                     "View All Pets",
                     "Search by Category",
                     "Sort by Category",
+                    "Search Specific Pet",
                     "Add Pet",
+                    "Update Pet Medical History",
 
                     "#Adoption Management",
                     "Approve Adoption Request",
@@ -45,18 +48,20 @@ public class Admin extends User {
                     "#Exit",
                     "Log Out");
             int choice = DataValidation.intChoiceValidation("Select Option",
-                    1, 2, 3, 4, 5, 6, 7, 8, 9);
+                    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 
             switch (choice) {
                 case 1 -> viewAllPets();
                 case 2 -> searchByCategory();
                 case 3 -> sortByCategory();
-                case 4 -> addPet();
-                case 5 -> approveAdoptionRequest();
-                case 6 -> cancelAdoptionRequest();
-                case 7 -> approvePetReturn();
-                case 8 -> manageIncomingPets();
-                case 9 -> isDone = true;
+                case 4 -> searchForSpecificPet();
+                case 5 -> addPet();
+                case 6 -> updatePetMedicalHistory();
+                case 7 -> approveAdoptionRequest();
+                case 8 -> cancelAdoptionRequest();
+                case 9 -> approvePetReturn();
+                case 10 -> manageIncomingPets();
+                case 11 -> isDone = true;
             }
         }
     }
@@ -78,11 +83,19 @@ public class Admin extends User {
         PetManager.getInstance().sortByCategory();
     }
 
+    private void searchForSpecificPet() {
+        PetManager.getInstance().viewSpecificPet();
+    }
+
     private void addPet() {
         PetManager.getInstance().addPet();
     }
 
-    private String findAndConfirmTransaction(String fileName, int fieldCount, String action) {
+    private void updatePetMedicalHistory() {
+        PetManager.getInstance().updatePetMedicalHistory();
+    }
+
+    private String findPendingTransaction(String fileName, int fieldCount, String action) {
         ArrayList<Reservation> pending = RecordManager.readRecords(fileName, fieldCount,
                 RecordManager::parseReservation);
 
@@ -108,11 +121,6 @@ public class Admin extends User {
         }
         System.out.println("Transaction number found.");
 
-        char approve = DataValidation.charChoiceValidation("Approve " + action + "?", 'Y', 'N');
-        if (approve != 'Y') {
-            System.out.println(action + " not approved.");
-            return null;
-        }
         return record;
     }
 
@@ -125,13 +133,13 @@ public class Admin extends User {
     }
 
     private void approveAdoptionRequest() {
-        String reservationRecord = findAndConfirmTransaction(RecordManager.FILE_RESERVED, RecordManager.RES_FIELD_COUNT, "Adoption Request");
+        String reservationRecord = findPendingTransaction(RecordManager.FILE_RESERVED, RecordManager.RES_FIELD_COUNT, "Adoption Request");
         if (reservationRecord == null)
             return;
 
         String[] parts = reservationRecord.split("\\s*\\|\\s*");
-        String petID = parts[RES_PET_ID];
-        String transactionNum = parts[RES_TRANSACTION_ID];
+        String petID = parts[RecordManager.RES_PET_ID];
+        String transactionNum = parts[RecordManager.RES_TRANSACTION_NUM];
 
         Pet pet = findPet(petID);
         if (pet == null)
@@ -151,10 +159,24 @@ public class Admin extends User {
             return;
         }
 
+        char decision = DataValidation.charChoiceValidation("Approve, Reject, or Skip", 'A', 'R', 'S');
+
+        if (decision == 'S') {
+            System.out.println("No changes made.");
+            return;
+        }
+
+        if (decision == 'R') {
+            FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RecordManager.RES_TRANSACTION_NUM);
+            PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
+            System.out.printf("Adoption request %s rejected.\n", transactionNum);
+            return;
+        }
+
         String adoptedRecord = RecordManager.buildAdoptedRecord(reservationRecord, this.getEmailAddress());
 
         FileHandler.appendRecord(RecordManager.FILE_ADOPTED, adoptedRecord);
-        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, 0);
+        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RecordManager.RES_TRANSACTION_NUM);
         PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.ADOPTED);
 
         System.out.printf("Adoption approved for transaction %s.\n", transactionNum);
@@ -165,13 +187,13 @@ public class Admin extends User {
     private static final int RES_PET_ID = 4;
 
     private void cancelAdoptionRequest() {
-        String record = findAndConfirmTransaction(RecordManager.FILE_CANCELLATION_REQUEST, RecordManager.RES_FIELD_COUNT, "Cancellation Request");
+        String record = findPendingTransaction(RecordManager.FILE_CANCELLATION_REQUEST, RecordManager.RES_FIELD_COUNT, "Cancellation Request");
         if (record == null)
             return;
 
         String[] parts = record.split("\\s*\\|\\s*");
-        String petID = parts[RES_PET_ID];
-        String transactionNum = parts[RES_TRANSACTION_ID];
+        String petID = parts[RecordManager.RES_PET_ID];
+        String transactionNum = parts[RecordManager.RES_TRANSACTION_NUM];
 
         Pet pet = findPet(petID);
         if (pet == null)
@@ -183,8 +205,23 @@ public class Admin extends User {
             return;
         }
 
-        FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, RES_TRANSACTION_ID);
-        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RES_TRANSACTION_ID);
+        char decision = DataValidation.charChoiceValidation("Approve, Reject, or Skip", 'A', 'R', 'S');
+
+        if (decision == 'S') {
+            System.out.println("No changes made.");
+            return;
+        }
+
+        if (decision == 'R') {
+            FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, RecordManager.RES_TRANSACTION_NUM);
+            PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.ADOPTION_REVIEW);
+            System.out.printf("Cancellation request %s rejected. The reservation stays active.\n", transactionNum);
+            return;
+        }
+
+        FileHandler.appendRecord(RecordManager.FILE_CANCELLED_LIST, record);
+        FileHandler.removeRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, RecordManager.RES_TRANSACTION_NUM);
+        FileHandler.removeRecord(RecordManager.FILE_RESERVED, transactionNum, RecordManager.RES_TRANSACTION_NUM);
         PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
 
         System.out.printf("Cancellation approved for transaction %s.\n", transactionNum);
@@ -192,23 +229,38 @@ public class Admin extends User {
     }
 
     private void approvePetReturn() {
-        String record = findAndConfirmTransaction(RecordManager.FILE_RETURN_REQUEST, RecordManager.AD_FIELD_COUNT, "Return Request");
+        String record = findPendingTransaction(RecordManager.FILE_RETURN_REQUEST, RecordManager.AD_FIELD_COUNT, "Return Request");
         if (record == null)
             return;
 
         String[] parts = record.split("\\s*\\|\\s*");
-        String petID = parts[RES_PET_ID];
-        String transactionNum = parts[RES_TRANSACTION_ID];
+        String petID = parts[RecordManager.RES_PET_ID];
+        String transactionNum = parts[RecordManager.RES_TRANSACTION_NUM];
 
         Pet pet = findPet(petID);
         if (pet == null)
             return;
 
+        char decision = DataValidation.charChoiceValidation("Approve, Reject, or Skip", 'A', 'R', 'S');
+
+        if (decision == 'S') {
+            System.out.println("No changes made.");
+            return;
+        }
+
+        if (decision == 'R') {
+            FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, RecordManager.RES_TRANSACTION_NUM);
+            PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.ADOPTED);
+            System.out.printf("Return request %s rejected. The pet stays adopted.\n", transactionNum);
+            return;
+        }
+
         String detailsOfReturn = DataValidation.validateString("Details");
 
         pet.addAdoptionHistory(LocalDate.now(), detailsOfReturn);
-        FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, RES_TRANSACTION_ID);
-        FileHandler.removeRecord(RecordManager.FILE_ADOPTED, transactionNum, RES_TRANSACTION_ID);
+        FileHandler.appendRecord(RecordManager.FILE_RETURNED_LIST, record);
+        FileHandler.removeRecord(RecordManager.FILE_RETURN_REQUEST, transactionNum, RecordManager.RES_TRANSACTION_NUM);
+        FileHandler.removeRecord(RecordManager.FILE_ADOPTED, transactionNum, RecordManager.RES_TRANSACTION_NUM);
         PetManager.getInstance().updatePetStatus(petID, AdoptionStatus.AVAILABLE);
 
         System.out.printf("Return of pet approved for transaction %s.\n", transactionNum);
@@ -228,7 +280,6 @@ public class Admin extends User {
 
         DisplayUtils.displayPetsForStaff(new ArrayList<>(incomingPets));
         String petID = DataValidation.validatePetIdInput();
-        // view specific pet details
 
         Pet selectedPet = null;
         for (Pet pet : incomingPets) {
@@ -253,13 +304,22 @@ public class Admin extends User {
                 { "Name", selectedPet.getPetName() },
                 { "Type", selectedPet.getType() },
                 { "Breed", selectedPet.getBreed() },
+                { "Gender", selectedPet.getGender() },
                 { "Age", String.valueOf(selectedPet.getAge()) },
-                { "Price", String.format("Php %,.2f", selectedPet.getPrice()) }
+                { "Price", String.format("Php %,.2f", selectedPet.getPrice()) },
+                { "Medical History", selectedPet.getMedicalHistory() }
         });
 
-        char approve = DataValidation.charChoiceValidation("Approve this pet to be added to inventory?", 'Y', 'N');
-        if (approve != 'Y') {
-            System.out.println("Approval cancelled.");
+        char decision = DataValidation.charChoiceValidation("Approve, Reject, or Skip", 'A', 'R', 'S');
+
+        if (decision == 'S') {
+            System.out.println("No changes made.");
+            return;
+        }
+
+        if (decision == 'R') {
+            FileHandler.removeRecord(RecordManager.FILE_INCOMING_LIST, petID, 0);
+            System.out.printf("Incoming pet with ID %s rejected and removed.\n", petID);
             return;
         }
 
@@ -270,6 +330,5 @@ public class Admin extends User {
         FileHandler.removeRecord(RecordManager.FILE_INCOMING_LIST, petID, 0);
 
         System.out.printf("Incoming pet with ID %s approved and added to inventory.\n", petID);
-
     }
 }

@@ -162,7 +162,7 @@ public class RecordManager {
         return String.join("|", parts);
     }
 
-    public String buildAdoptionRequestRecord(String firstName, String lastName, String emailAddress, Pet selectedPet,
+    public static String buildAdoptionRequestRecord(String firstName, String lastName, String emailAddress, Pet selectedPet,
             String paymentPlan, double downPayment, double balanceLeft, String transactionNum, LocalDate date) {
         String[] parts = new String[RES_FIELD_COUNT];
 

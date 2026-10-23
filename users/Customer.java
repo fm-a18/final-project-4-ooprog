@@ -21,6 +21,7 @@ public class Customer extends User {
         return "Customer";
     }
 
+    @Override
     public void showMenu(Scanner sc) {
         boolean isDone = false;
 
@@ -58,9 +59,9 @@ public class Customer extends User {
         System.out.println("Logging out...");
     }
 
-    private final ArrayList<Pet> availablePets = PetManager.getInstance().getAvailablePets();
-
     private void viewAllPets() {
+        ArrayList<Pet> availablePets = PetManager.getInstance().getAvailablePets();
+
         if (availablePets.isEmpty()) {
             DisplayUtils.centeredTitle("VIEW ALL AVAILABLE PETS", 100);
             System.out.println("No available pets found.");
@@ -71,6 +72,8 @@ public class Customer extends User {
     }
 
     private void searchByCategory() {
+        ArrayList<Pet> availablePets = PetManager.getInstance().getAvailablePets();
+
         if (availablePets.isEmpty()) {
             DisplayUtils.centeredTitle("SEARCH BY CATEGORY", 100);
             System.out.println("No available pets found.");
@@ -106,7 +109,7 @@ public class Customer extends User {
                 break;
             case 3: // SEARCH PET BY PET BREED
                 DisplayUtils.centeredTitle("SEARCH PET BY BREED", 60);
-                String breed = DataValidation.validateString("Enter Pet Breed: ");
+                String breed = DataValidation.validateString("Enter Pet Breed");
 
                 showResults(FileHandler.filterRecords(FILE_PET_LIST, breed, Pet::getBreed),
                         "VIEW BY PET BREED " + breed.toUpperCase());
@@ -116,9 +119,9 @@ public class Customer extends User {
                         "#Select Gender",
                         "Male",
                         "Female");
-                char choiceGender = DataValidation.charChoiceValidation("Select Option", 'M', 'F');
+                int genderChoice = DataValidation.intChoiceValidation("Select Option", 1, 2);
 
-                String gender = (choiceGender == 'M') ? "Male" : "Female";
+                String gender = (genderChoice == 1) ? "Male" : "Female";
                 showResults(FileHandler.filterRecords(FILE_PET_LIST, gender, Pet::getGender),
                         "VIEW BY PET GENDER " + gender.toUpperCase());
                 break;
@@ -132,16 +135,21 @@ public class Customer extends User {
     }
 
     private void showResults(ArrayList<Pet> pets, String title) {
-        if (pets == null || pets.isEmpty()) {
+        ArrayList<Pet> available = (pets == null) ? new ArrayList<>()
+                : PetManager.getInstance().availablePets(pets);
+
+        if (available.isEmpty()) {
             DisplayUtils.centeredTitle(title, 100);
             System.out.println("No available pet(s) found.");
             return;
         }
+
         DisplayUtils.customerPetHeader(title);
-        DisplayUtils.displayPetsForCustomer(PetManager.getInstance().availablePets(pets));
+        DisplayUtils.displayPetsForCustomer(available);
     }
 
     private ArrayList<Pet> getSpecificPetDetailsPerType() {
+        ArrayList<Pet> availablePets = PetManager.getInstance().getAvailablePets();
         String type = "";
 
         if (availablePets.isEmpty()) {
@@ -204,6 +212,8 @@ public class Customer extends User {
     }
 
     private void filterByPrice() {
+        ArrayList<Pet> availablePets = PetManager.getInstance().getAvailablePets();
+
         if (availablePets.isEmpty()) {
             DisplayUtils.centeredTitle("FILTER BY PRICE", 100);
             System.out.println("No available pets found.");
