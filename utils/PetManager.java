@@ -8,8 +8,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -140,9 +138,8 @@ public class PetManager {
     }
 
     private void promptMedicalRecord(Pet pet) {
-        String date = String
-                .valueOf(DataValidation.validateDate("Enter date of the condition/treatment(MM-DD-YYYY): "));
-        String condition = DataValidation.validateString("Enter medical condition/treatment name: ");
+        LocalDate date = DataValidation.validateDate("Enter date of the condition/treatment(MM-DD-YYYY)");
+        String condition = DataValidation.validateString("Enter medical condition/treatment name");
         pet.addMedicalHistory(date, condition);
     }
 
@@ -348,9 +345,8 @@ public class PetManager {
     // PET AVAILABLE
     public ArrayList<Pet> getAvailablePets() {
         ArrayList<Pet> pets = FileHandler.viewAllPetRecords();
-        ArrayList<Pet> available = availablePets(pets);
 
-        return available;
+        return availablePets(pets);
     }
 
     public ArrayList<Pet> availablePets(ArrayList<Pet> pets) {
@@ -430,9 +426,9 @@ public class PetManager {
         }
 
         System.out.println("\nConfirm adoption request by entering your email address.");
-        String confirmByEmail = DataValidation.validateEmailAddress();
+        String confirmByEmail = DataValidation.validateEmailAddress(); //Get email
 
-        while (!DataValidation.emailExists(confirmByEmail)) {
+        while (!confirmByEmail.equalsIgnoreCase(customer.getEmailAddress())) { //check if customer's actual email
             System.out.println("Email is not found. Please enter another email.");
             confirmByEmail = DataValidation.validateEmailAddress();
         }
@@ -521,6 +517,11 @@ public class PetManager {
             return;
         }
 
+        if (FileHandler.findRecord(RecordManager.FILE_CANCELLATION_REQUEST, transactionNum, RES_TRANSACTION_NUM) != null) {
+            System.out.println("A cancellation request for " + found.getTransactionNum() + " is already being processed.");
+            return;
+        }
+
         System.out.println("Reservation found!");
         DisplayUtils.printSummaryBox("PET DETAILS",
                 new String[][] {
@@ -545,6 +546,7 @@ public class PetManager {
 
         String reservationRecord = FileHandler.findRecord(
                 RecordManager.FILE_RESERVED, transactionNum, RES_TRANSACTION_NUM);
+
         if (reservationRecord == null) {
             System.out.println("Reservation record not found. The cancellation request was not submitted.");
             return;
@@ -593,6 +595,7 @@ public class PetManager {
             System.out.println("Adoption record not found.");
             return;
         }
+
         String dateAdopted = adoptedPet.split("\\s*\\|\\s*")[RecordManager.AD_DATE_FINALIZED];
 
         System.out.println("Adoption found!\n");
