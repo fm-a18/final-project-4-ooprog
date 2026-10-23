@@ -155,7 +155,38 @@ public class DataValidation {
         return !date.isBefore(today) && !date.isAfter(today.plusDays(7));
     }
 
-    public static LocalDate validateDate(String prompt) { // coordinator
+    public static LocalDate validateDateForPetAge(int petAge) {
+        LocalDate date = null;
+        String res = "";
+
+        while (date == null) {
+            System.out.print("Enter medical treatment date (MM-DD-YYYY): ");
+            String input = sc.nextLine().trim();
+
+            try {
+                date = LocalDate.parse(input, RecordManager.dateFormat);
+
+                if (date.isBefore(LocalDate.now().minusYears(petAge))) {
+                    System.out.println("Date cannot be earlier than the pet's age.");
+                    date = null;
+                    continue;
+                }
+
+                if (date.isAfter(LocalDate.now())) {
+                    System.out.println("Date cannot be in the future. Please enter today's date or earlier.");
+                    date = null;
+                    continue;
+                }
+
+                res = date.format(RecordManager.dateFormat);
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid Date Format. Please use (MM-DD-YYYY).");
+            }
+        }
+        return LocalDate.parse(res, RecordManager.dateFormat);
+    }
+
+    public static LocalDate validateDate(String prompt) {
         LocalDate date = null;
         String res = "";
         while (date == null) {
@@ -164,6 +195,13 @@ public class DataValidation {
 
             try {
                 date = LocalDate.parse(input, RecordManager.dateFormat);
+
+                if (date.isAfter(LocalDate.now())) {
+                    System.out.println("Date cannot be in the future. Please enter today's date or an earlier date.");
+                    date = null;
+                    continue;
+                }
+
                 res = date.format(RecordManager.dateFormat);
             } catch (DateTimeParseException e) {
                 System.out.println("Invalid Date Format. Please use (MM-DD-YYYY).");

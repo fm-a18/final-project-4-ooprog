@@ -5,12 +5,14 @@ import inventory.Pet;
 import java.util.ArrayList;
 
 public class DisplayUtils {
-    public static final int TABLE_WIDTH = 130;
+    public static final int TABLE_WIDTH = 135;
     public static final int MENU_WIDTH = 60;
-    private static final String CUSTOMER_HEADER_FORMAT = "%-10s | %-15s | %-10s | %-15s | %-5s | %-15s | %-8s%n";
-    private static final String CUSTOMER_ROW_FORMAT = "%-10s | %-15s | %-10s | %-15s | %-5d | %-15s | %-8s%n";
-    private static final String STAFF_HEADER_FORMAT = "%-10s | %-15s | %-10s | %-15s | %-5s | %-25s | %-8s | %-15s%n";
-    private static final String STAFF_ROW_FORMAT = "%-10s | %-15s | %-10s | %-15s | %-5d | %-25s | %-8s | %-15s%n";
+
+    private static final String CUSTOMER_HEADER_FORMAT = "%-10s | %-15s | %-10s | %-20s | %-5s | %-15s | %-8s%n";
+    private static final String CUSTOMER_ROW_FORMAT    = "%-10s | %-15s | %-10s | %-20s | %-5d | %-15s | %-8s%n";
+
+    private static final String STAFF_HEADER_FORMAT    = "%-10s | %-15s | %-10s | %-20s | %-5s | %-25s | %-8s | %-15s%n";
+    private static final String STAFF_ROW_FORMAT       = "%-10s | %-15s | %-10s | %-20s | %-5d | %-25s | %-8s | %-15s%n";
 
     public static void centeredTitle(String tableName, int width) {
         System.out.println("=".repeat(width));
